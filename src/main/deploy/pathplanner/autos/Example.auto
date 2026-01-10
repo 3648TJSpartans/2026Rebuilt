@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "homeRel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center_to_Forward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "motorSpin"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
