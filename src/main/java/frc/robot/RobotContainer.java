@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.TurretFollowCmd;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
@@ -282,7 +283,7 @@ private final Turret m_turret;
   }
 
   private void configureTurret(){
-
+    m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
   }
 
   public void configureAutoChooser() {
