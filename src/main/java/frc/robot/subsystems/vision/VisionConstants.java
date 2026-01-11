@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.util.TunableNumber;
 
 public class VisionConstants {
         public static final boolean usingMT1 = true;
@@ -29,6 +30,8 @@ public class VisionConstants {
         public static String camera0Name = "limelight-fourone";
         public static String camera1Name = "NA";
         public static int defualtPipeline = 0;
+
+        public static TunableNumber mt1AprilTagThreshold = new TunableNumber("Vision/mt1AprilTagThreshold",2);
         // Robot to camera transforms
         // (Not used by Limelight, configure in web UI instead)
         public static Transform3d robotToCamera0 =

@@ -14,6 +14,8 @@
 package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.defualtPipeline;
+import static frc.robot.subsystems.vision.VisionConstants.mt1AprilTagThreshold;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,7 +111,7 @@ public class VisionIOLimelight implements VisionIO {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
       if (mt1 == null) {
         doRejectUpdate = true;
-      } else if (mt1.tagCount == 0) {
+      } else if (mt1.tagCount < mt1AprilTagThreshold.get()) {
         doRejectUpdate = true;
       }
       if (!doRejectUpdate) {
