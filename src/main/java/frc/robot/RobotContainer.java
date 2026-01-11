@@ -48,6 +48,7 @@ import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -77,7 +78,7 @@ public class RobotContainer {
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
-
+private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -102,6 +103,7 @@ public class RobotContainer {
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
+    
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -170,6 +172,8 @@ public class RobotContainer {
         break;
     }
 
+    m_turret = new Turret(m_drive::getPose);
+
     configureAutos();
 
     // Set up auto routines
@@ -177,6 +181,7 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+    configureTurret();
   }
 
   /**
@@ -274,6 +279,10 @@ public class RobotContainer {
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+  }
+
+  private void configureTurret(){
+
   }
 
   public void configureAutoChooser() {
