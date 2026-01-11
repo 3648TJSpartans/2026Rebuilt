@@ -206,6 +206,7 @@ public class RobotContainer {
     m_copilotController.rightTrigger().onTrue(updateCommand);
 
     new Trigger(DriverStation::isEnabled).onTrue(updateCommand);
+    m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
      * m_led.setLedPattern(LedConstants.elevatorHeight, m_led.elevatorBuffer);
