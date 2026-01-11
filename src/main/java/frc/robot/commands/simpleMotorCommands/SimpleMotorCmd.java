@@ -17,19 +17,19 @@ public class SimpleMotorCmd extends Command {
 
     @Override
     public void initialize() {
-        Logger.recordOutput("simpleMotor/CommandScheduled", true);
+        Logger.recordOutput("Commands/simpleMotor/CommandScheduled", true);
     }
 
     @Override
     public void execute() {
-        Logger.recordOutput("simpleMotor/Speed", speed);
+        Logger.recordOutput("Commands/simpleMotor/Speed", speed);
         m_simpleMotor.setSpeed(speed);
     }
 
     @Override
     public void end(boolean interrupted) {
         m_simpleMotor.stop();
-        Logger.recordOutput("simpleMotor/CommandScheduled", false);
+        Logger.recordOutput("Commands/simpleMotor/CommandScheduled", false);
     }
 
     @Override

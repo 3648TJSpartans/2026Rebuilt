@@ -19,19 +19,19 @@ public class SimpleMotorAnalogCmd extends Command {
 
     @Override
     public void initialize() {
-        Logger.recordOutput("simpleMotor/AnalogCommand/Scheduled", true);
+        Logger.recordOutput("Commands/simpleMotor/AnalogCommand/Scheduled", true);
     }
 
     @Override
     public void execute() {
-        Logger.recordOutput("simpleMotor/AnalogCommand/Speed", speed.get());
+        Logger.recordOutput("Commands/simpleMotor/AnalogCommand/Speed", speed.get());
         m_simpleMotor.setSpeed(speed.get());
     }
 
     @Override
     public void end(boolean interrupted) {
         m_simpleMotor.stop();
-        Logger.recordOutput("simpleMotor/AnalogCommand/Scheduled", false);
+        Logger.recordOutput("Commands/simpleMotor/AnalogCommand/Scheduled", false);
     }
 
     @Override

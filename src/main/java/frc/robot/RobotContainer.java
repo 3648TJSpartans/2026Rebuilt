@@ -135,7 +135,7 @@ public class RobotContainer {
                 // CAN 10
                 m_exampleFlywheel = new RelEncoderSparkMax(
                                 new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
-                Logger.recordOutput("Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
+                Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
                 Logger.recordOutput("Override", override);
                 override = false;
                 switch (Constants.currentMode) {

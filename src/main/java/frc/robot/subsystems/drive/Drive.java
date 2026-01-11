@@ -104,10 +104,10 @@ public class Drive extends SubsystemBase {
         ppConfig, () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+      Logger.recordOutput("Subsystems/Drive/Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
     });
     PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
-      Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+      Logger.recordOutput("Subsystems/Drive/Odometry/TrajectorySetpoint", targetPose);
     });
 
     // Configure SysId
@@ -137,8 +137,8 @@ public class Drive extends SubsystemBase {
 
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
-      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      Logger.recordOutput("Subsystems/Drive/SwerveStates/Setpoints", new SwerveModuleState[] {});
+      Logger.recordOutput("Subsystems/Drive/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
     // Update odometry
@@ -191,8 +191,8 @@ public class Drive extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
 
     // Log unoptimized setpoints
-    Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
+    Logger.recordOutput("Subsystems/Drive/SwerveStates/Setpoints", setpointStates);
+    Logger.recordOutput("Subsystems/Drive/SwerveChassisSpeeds/Setpoints", discreteSpeeds);
 
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
@@ -200,7 +200,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Log optimized setpoints (runSetpoint mutates each state)
-    Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    Logger.recordOutput("Subsystems/Drive/SwerveStates/SetpointsOptimized", setpointStates);
   }
 
   /** Runs the drive in a straight line with the specified drive output. */
@@ -242,7 +242,7 @@ public class Drive extends SubsystemBase {
   /**
    * Returns the module states (turn angles and drive velocities) for all of the modules.
    */
-  @AutoLogOutput(key = "SwerveStates/Measured")
+  @AutoLogOutput(key = "Subsystems/Drive/SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (int i = 0; i < 4; i++) {
@@ -263,7 +263,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the measured chassis speeds of the robot. */
-  @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
+  @AutoLogOutput(key = "Subsystems/Drive/SwerveChassisSpeeds/Measured")
   public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
@@ -287,12 +287,12 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Robot")
+  @AutoLogOutput(key = "Subsystems/Drive/Odometry/Robot")
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
 
-  @AutoLogOutput(key = "Odometry/RobotTargetSpace")
+  @AutoLogOutput(key = "Subsystems/Drive/Odometry/RobotTargetSpace")
   public Pose2d getTargetSpacePose() {
     return targetSpacePoseEstimator.getEstimatedPosition();
   }
@@ -316,16 +316,16 @@ public class Drive extends SubsystemBase {
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
-    Logger.recordOutput("Odometry/visionMesurment/pose", visionRobotPoseMeters);
-    Logger.recordOutput("Odometry/visionMesurment/poseBefore",
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/pose", visionRobotPoseMeters);
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/poseBefore",
         poseEstimator.getEstimatedPosition());
-    Logger.recordOutput("Odometry/visionMesurment/stdDevs",
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/stdDevs",
         visionMeasurementStdDevs.transpose().getData());
-    Logger.recordOutput("Odometry/visionMesurment/timestamp", timestampSeconds);
-    Logger.recordOutput("Odometry/visionMesurment/FPGATime", Timer.getFPGATimestamp());
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/timestamp", timestampSeconds);
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/FPGATime", Timer.getFPGATimestamp());
     poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds,
         visionMeasurementStdDevs);
-    Logger.recordOutput("Odometry/visionMesurment/poseAfter", poseEstimator.getEstimatedPosition());
+    Logger.recordOutput("Subsystems/Drive/Odometry/visionMesurment/poseAfter", poseEstimator.getEstimatedPosition());
   }
 
   public void addTargetSpaceVisionMeasurement(Pose2d visionRobotPoseMeters,
