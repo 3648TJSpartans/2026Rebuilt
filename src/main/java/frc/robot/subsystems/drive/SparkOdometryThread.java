@@ -27,9 +27,8 @@ import org.littletonrobotics.junction.Logger;
 /**
  * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
  *
- * <p>
- * This version includes an overload for Spark signals, which checks for errors to ensure that all
- * measurements in the sample are valid.
+ * <p>This version includes an overload for Spark signals, which checks for errors to ensure that
+ * all measurements in the sample are valid.
  */
 public class SparkOdometryThread {
 
@@ -119,9 +118,11 @@ public class SparkOdometryThread {
            * everything failing. This will print out the broken can and error for you. Best, Micah
            * Gruenwald
            */
-          Logger.recordOutput("Debug/SparkOdometry/errors/" + sparks.get(i).getDeviceId(),
+          Logger.recordOutput(
+              "Debug/SparkOdometry/errors/" + sparks.get(i).getDeviceId(),
               sparks.get(i).getLastError().toString());
-          Logger.recordOutput("Debug/SparkOdometry/errors/" + sparks.get(i).getDeviceId(),
+          Logger.recordOutput(
+              "Debug/SparkOdometry/errors/" + sparks.get(i).getDeviceId(),
               "See SparkOdometryThread.Java, line 115 to learn more about this error. ");
           isValid = false;
         }

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import java.lang.Cloneable;
-import java.lang.Override;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 

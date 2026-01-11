@@ -10,17 +10,17 @@ import frc.robot.util.TunableNumber;
 
 public class SimpleMotorConstants {
 
-    /*
-     * Since motors are controlled by CANs, they each have IDs for which CAN to use.
-     */
+  /*
+   * Since motors are controlled by CANs, they each have IDs for which CAN to use.
+   */
 
-    public static final int simpleMotorCan = 11;
+  public static final int simpleMotorCan = 11;
 
-    /*
-     * TunableNumbers allow constants that need to be adjusted to be tuned while the
-     * robot is running.
-     */
+  /*
+   * TunableNumbers allow constants that need to be adjusted to be tuned while the
+   * robot is running.
+   */
 
-    public static final double speed1 = new TunableNumber("simpleMotor/speed1", 0).get();
-    public static final double speed2 = new TunableNumber("simpleMotor/speed2", 0.1).get();
+  public static final double speed1 = new TunableNumber("simpleMotor/speed1", 0).get();
+  public static final double speed2 = new TunableNumber("simpleMotor/speed2", 0.1).get();
 }

@@ -6,10 +6,8 @@ package frc.robot.util;
 
 import static frc.robot.util.TuningUpdater.*;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
@@ -71,8 +69,8 @@ public class TunableNumber {
    * @return The current value
    */
   public double get() {
-    Logger.recordOutput(key,
-        TUNING_MODE ? SmartDashboard.getNumber(key, defaultValue) : defaultValue);
+    Logger.recordOutput(
+        key, TUNING_MODE ? SmartDashboard.getNumber(key, defaultValue) : defaultValue);
     return TUNING_MODE ? SmartDashboard.getNumber(key, defaultValue) : defaultValue;
   }
 
@@ -80,7 +78,7 @@ public class TunableNumber {
    * Checks whether the number has changed since our last check
    *
    * @return True if the number has changed since the last time this method was called, false
-   *         otherwise
+   *     otherwise
    */
   public boolean hasChanged() {
     double currentValue = get();
