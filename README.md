@@ -13,10 +13,10 @@ Unless otherwise specified, like in naming, this repository should follow [Googl
 ### Logging
 Logging should be as broken down as possible and as frequent as possible. Every variable should be readable.
 
-* Subsystems should be under the banner _Subsystem_.
+* Subsystems should be under the banner _Subsystems_.
 * Commands under the _Commands_.
 * Debug information under _Debug_.
-* Utils under _Util_.
+* Utils under _Utils_.
 
 The folder should in turn be followed by the class name, followed by the method (for particularly complcated systems), followed by the variable logged.  
 __E.g. to log `Drive.getPose()`:__
