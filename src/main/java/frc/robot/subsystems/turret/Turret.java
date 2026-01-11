@@ -60,4 +60,11 @@ public class Turret extends RelEncoderSparkMax{
     Logger.recordOutput("Subsystems/Turret/getTransformToPose/Pose", out);
     return out;
   }
+
+  public Pose3d getTurretFieldPose(){
+    return turretPose;
+  }
+  public double[] getTurretTranslationalVelocity(){
+    return turretTranslationalVelocity;
+  }
 }
