@@ -7,6 +7,6 @@ import frc.robot.util.motorUtil.MotorConfig;
 public class TurretConstants {
 
   public static final MotorConfig kTurretMotorConfig = new MotorConfig("Turret").motorCan(13).p(0.0).d(0.0);
-  public static final Pose3d kTurretOffset = new Pose3d(-.15,-0.08,0.08, new Rotation3d());
+  public static final Pose3d kTurretOffset = new Pose3d(-.20,-0.20,0.20, new Rotation3d());
   
 }

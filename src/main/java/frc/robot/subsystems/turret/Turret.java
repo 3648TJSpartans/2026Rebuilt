@@ -3,10 +3,13 @@ package frc.robot.subsystems.turret;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 
 public class Turret extends RelEncoderSparkMax{
@@ -22,11 +25,14 @@ public class Turret extends RelEncoderSparkMax{
   @AutoLogOutput(key = "Subsystems/Turret/FieldSpacePose")
   public Pose3d getTurretFieldSpace(){
     Pose3d robotPose = new Pose3d(m_robotPoseSupplier.get());
-    Pose3d turretPose = robotPose.plus(new Transform3d(new Pose3d(), m_turretOffset.rotateBy(robotPose.getRotation())));
-    return turretPose;
+    Translation3d rotatedTranslation = m_turretOffset.getTranslation().rotateAround(new Translation3d(), robotPose.getRotation());
+    Logger.recordOutput("Subsystems/Turret/FieldSpacePose/rotatedTranslation",rotatedTranslation);
+    return robotPose;
   }
 
   public Transform3d getTransformToPose(Pose3d target){
-    return target.minus(getTurretFieldSpace());
+    Transform3d out = target.minus(getTurretFieldSpace());
+    Logger.recordOutput("Subsystems/Turret/getTransformToPose/Pose", out);
+    return out;
   }
 }
