@@ -14,14 +14,7 @@
 package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.defualtPipeline;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.math.VecBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,8 +24,12 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.LimelightHelpers;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /** IO implementation for real Limelight hardware. */
 public class VisionIOLimelight implements VisionIO {
@@ -80,8 +77,8 @@ public class VisionIOLimelight implements VisionIO {
   @Override
   public Pose2d getTagRelativePose() {
     double[] tableValues = botpose_targetSpaceSubscriber.get();
-    return new Pose2d(tableValues[2], -tableValues[0],
-        new Rotation2d(Units.degreesToRadians(tableValues[4])));
+    return new Pose2d(
+        tableValues[2], -tableValues[0], new Rotation2d(Units.degreesToRadians(tableValues[4])));
   }
 
   @Override
@@ -133,8 +130,13 @@ public class VisionIOLimelight implements VisionIO {
 
   /** Parses the 3D pose from a Limelight botpose array. */
   private static Pose3d parsePose(double[] rawLLArray) {
-    return new Pose3d(rawLLArray[0], rawLLArray[1], rawLLArray[2],
-        new Rotation3d(Units.degreesToRadians(rawLLArray[3]), Units.degreesToRadians(rawLLArray[4]),
+    return new Pose3d(
+        rawLLArray[0],
+        rawLLArray[1],
+        rawLLArray[2],
+        new Rotation3d(
+            Units.degreesToRadians(rawLLArray[3]),
+            Units.degreesToRadians(rawLLArray[4]),
             Units.degreesToRadians(rawLLArray[5])));
   }
 

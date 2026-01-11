@@ -22,14 +22,14 @@ public interface VisionIO {
   @AutoLog
   public static class VisionIOInputs {
     public boolean connected = false;
-    public TargetObservation latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
+    public TargetObservation latestTargetObservation =
+        new TargetObservation(new Rotation2d(), new Rotation2d());
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
-  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
-  }
+  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
 
   /** Represents a robot pose sample used for pose estimation. */
   public static record PoseObservation(
@@ -38,8 +38,7 @@ public interface VisionIO {
       double ambiguity,
       int tagCount,
       double averageTagDistance,
-      PoseObservationType type) {
-  }
+      PoseObservationType type) {}
 
   public static enum PoseObservationType {
     MEGATAG_1,
@@ -51,15 +50,13 @@ public interface VisionIO {
     return 0;
   }
 
-  public default void updateInputs(VisionIOInputs inputs) {
-  }
+  public default void updateInputs(VisionIOInputs inputs) {}
 
-  public default void setPipeline(int pipeline) {
-  }
+  public default void setPipeline(int pipeline) {}
 
-  public default void resetPipeline() {
-  }
-  public default Pose2d getTagRelativePose(){
+  public default void resetPipeline() {}
+
+  public default Pose2d getTagRelativePose() {
     return new Pose2d();
   }
 }

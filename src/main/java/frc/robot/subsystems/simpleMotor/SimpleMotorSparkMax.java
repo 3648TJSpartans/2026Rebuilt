@@ -1,7 +1,7 @@
 package frc.robot.subsystems.simpleMotor;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 /*
  * This is the file where most of the logic is applied. It
@@ -11,23 +11,23 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class SimpleMotorSparkMax implements SimpleMotorIO {
 
-    private SparkMax motor;
+  private SparkMax motor;
 
-    /* The constructor defines the motor and any necessary variables. */
-    public SimpleMotorSparkMax() {
-        /* All of our motors are brushless. */
-        motor = new SparkMax(SimpleMotorConstants.simpleMotorCan, MotorType.kBrushless);
-    }
+  /* The constructor defines the motor and any necessary variables. */
+  public SimpleMotorSparkMax() {
+    /* All of our motors are brushless. */
+    motor = new SparkMax(SimpleMotorConstants.simpleMotorCan, MotorType.kBrushless);
+  }
 
-    public void stop() {
-        motor.set(0);
-    }
+  public void stop() {
+    motor.set(0);
+  }
 
-    public void setSpeed(double speed) {
-        motor.set(speed);
-    }
+  public void setSpeed(double speed) {
+    motor.set(speed);
+  }
 
-    public double getSpeed() {
-        return motor.get();
-    }
+  public double getSpeed() {
+    return motor.get();
+  }
 }
