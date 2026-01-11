@@ -18,7 +18,7 @@ public class MotorConfig {
     private static final double DEFAULT_Kv = 0.0;
 
 
-    private String m_loggingName = "defaultMotor";
+    private String m_loggingName = "Subsystems/MotorIOs/defaultMotor";
     private int m_motorCan = 1;
 
 
@@ -37,11 +37,11 @@ public class MotorConfig {
     private boolean m_isInverted = false;
 
     public MotorConfig(String name) {
-        m_loggingName = "MotorIOs/" + name;
+        m_loggingName = "Subsystems/MotorIOs/" + name;
     }
 
     public MotorConfig name(String name) {
-        m_loggingName = "MotorIOs/" + name;
+        m_loggingName = "Subsystems/MotorIOs/" + name;
         return this;
     }
 
