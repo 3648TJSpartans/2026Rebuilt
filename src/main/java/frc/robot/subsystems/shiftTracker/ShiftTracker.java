@@ -23,7 +23,10 @@ public class ShiftTracker extends SubsystemBase{
     Logger.recordOutput("Subsystems/ShiftTracker/teleopEnabled", teleopEnabled);
     if(teleopEnabled){
       updateInputs();
+      return;
     }
+    // This code is used to make sure the robot doesn't stop itself when testing, or if we were to implement this wrong in autos. If it cuases error, comment it out.
+    overrideInputs();
   }
   
   private void updateInputs(){
@@ -31,6 +34,18 @@ public class ShiftTracker extends SubsystemBase{
     onShift = isOnShift();
     timeLeft = timeLeft();
     timeUntil = timeUntil();
+
+    Logger.recordOutput("Subsystems/ShiftTracker/time", time);
+    Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
+    Logger.recordOutput("Subsystems/ShiftTracker/timeLeft", timeLeft);
+    Logger.recordOutput("Subsystems/ShiftTracker/timeUntil", timeUntil);
+  }
+
+  private void overrideInputs(){
+    time = 0;
+    onShift = true;
+    timeLeft = 25.0;
+    timeUntil = 0.0;
 
     Logger.recordOutput("Subsystems/ShiftTracker/time", time);
     Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
