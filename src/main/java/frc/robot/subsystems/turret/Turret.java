@@ -16,20 +16,30 @@ import frc.robot.util.motorUtil.RelEncoderSparkMax;
 public class Turret extends RelEncoderSparkMax{
   private final Translation3d m_turretOffset;
   private final Supplier<Pose2d> m_robotPoseSupplier;
-
-  public Turret(Supplier<Pose2d> robotPoseSupplier) {
+  private final Supplier<double[]> m_robotVelocitySupplier;
+  private Pose3d turretPose;
+  private double[] turretTranslationalVelocity;
+  public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
     m_turretOffset = TurretConstants.kTurretOffset;
     m_robotPoseSupplier = robotPoseSupplier;
+    m_robotVelocitySupplier = robotVelocitySupplier;
+    turretPose = new Pose3d();
+    turretTranslationalVelocity = new double[2];
   }
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
   public Rotation2d getTurretRotation(){
     return new Rotation2d(getPosition() * TurretConstants.encoderPositionFactor + TurretConstants.rotationOffset.getRadians());
   }
+  
+  @Override
+  public void periodic(){
+    super.periodic();
+    updateInputs();
+  }
 
-  @AutoLogOutput(key = "Subsystems/Turret/FieldSpacePose")
-  public Pose3d getTurretFieldSpace(){
+  public void updateInputs(){
     Pose2d robotPose = m_robotPoseSupplier.get();
     double xr = robotPose.getX();
     double yr = robotPose.getY();
@@ -37,12 +47,16 @@ public class Turret extends RelEncoderSparkMax{
     double xt = m_turretOffset.getX() * Math.cos(thetar) - m_turretOffset.getY() * Math.sin(thetar) + xr;
     double yt = m_turretOffset.getX() * Math.sin(thetar) + m_turretOffset.getY() * Math.cos(thetar) + yr;
     Rotation2d absoluteTurretRotation = getTurretRotation().plus(robotPose.getRotation());
-    Pose3d turretPose3d = new Pose3d(xt,yt,m_turretOffset.getZ(), new Rotation3d(absoluteTurretRotation));
-    return turretPose3d;
+    turretPose = new Pose3d(xt,yt,m_turretOffset.getZ(), new Rotation3d(absoluteTurretRotation));
+    Logger.recordOutput("Subsystems/Turret/TurretPose", turretPose);
+    double[] robotVelocity = m_robotVelocitySupplier.get();
+    turretTranslationalVelocity[0] = (yr-yt)*robotVelocity[2] + robotVelocity[0];
+    turretTranslationalVelocity[1] = (xt - xr)*robotVelocity[2] + robotVelocity[1];
+    Logger.recordOutput("Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
   }
 
   public Transform3d getTransformToPose(Pose3d target){
-    Transform3d out = target.minus(getTurretFieldSpace());
+    Transform3d out = target.minus(turretPose);
     Logger.recordOutput("Subsystems/Turret/getTransformToPose/Pose", out);
     return out;
   }
