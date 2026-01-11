@@ -54,14 +54,14 @@ public class DriveTo extends Command {
                 -setVelocity.getY(), -thetaVelocity, robotPose.getRotation()));
 
         // Lets Log stuff
-        Logger.recordOutput("DriveTo/displacement", displacement);
-        Logger.recordOutput("DriveTo/RobotPose", robotPose);
-        Logger.recordOutput("DriveTo/Trajectory", displacement);
-        Logger.recordOutput("DriveTo/TargetPose", targetPose);
-        Logger.recordOutput("DriveTo/setDriveSpeed", driveSpeed);
-        Logger.recordOutput("DriveTo/setDriveVelocity", setVelocity);
-        Logger.recordOutput("DriveTo/thetaDifference", thetaDisplacement);
-        Logger.recordOutput("DriveTo/thetaVelocity", thetaVelocity);
+        Logger.recordOutput("Commands/DriveTo/displacement", displacement);
+        Logger.recordOutput("Commands/DriveTo/RobotPose", robotPose);
+        Logger.recordOutput("Commands/DriveTo/Trajectory", displacement);
+        Logger.recordOutput("Commands/DriveTo/TargetPose", targetPose);
+        Logger.recordOutput("Commands/DriveTo/setDriveSpeed", driveSpeed);
+        Logger.recordOutput("Commands/DriveTo/setDriveVelocity", setVelocity);
+        Logger.recordOutput("Commands/DriveTo/thetaDifference", thetaDisplacement);
+        Logger.recordOutput("Commands/DriveTo/thetaVelocity", thetaVelocity);
     }
 
     public boolean atGoal() {

@@ -18,19 +18,19 @@ public class ExampleMotorCmd extends Command {
 
     @Override
     public void initialize() {
-        Logger.recordOutput("exampleSubsystemCommand/CommandScheduled", true);
+        Logger.recordOutput("Subsystems/exampleSubsystemCommand/CommandScheduled", true);
     }
 
     @Override
     public void execute() {
-        Logger.recordOutput("exampleSubsystemCommand/Speed", power);
+        Logger.recordOutput("Subsystems/exampleSubsystemCommand/Speed", power);
         m_exampleMotorSubsystem.setPower(power);
     }
 
     @Override
     public void end(boolean interrupted) {
         m_exampleMotorSubsystem.stop();
-        Logger.recordOutput("exampleSubsystemCommand/CommandScheduled", false);
+        Logger.recordOutput("Subsystems/exampleSubsystemCommand/CommandScheduled", false);
     }
 
     @Override

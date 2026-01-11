@@ -56,13 +56,13 @@ public class DriveToTag extends Command {
         double thetaVelocity = goToConstants.thetaController.calculate(dtheta);
         // runs velocities
         if (!robotPose.equals(new Pose2d())) {
-            Logger.recordOutput("DriveTo2/SeeingTag", true);
+            Logger.recordOutput("Commands/DriveToTag/SeeingTag", true);
             // drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(setVelocity.getX(),
             // setVelocity.getY(), thetaVelocity, robotPose.getRotation()));
             drive.runVelocity(
                     new ChassisSpeeds(-setVelocity.getX(), -setVelocity.getY(), -thetaVelocity));
         } else {
-            Logger.recordOutput("DriveTo2/SeeingTag", false);
+            Logger.recordOutput("Commands/DriveToTag/SeeingTag", false);
             drive.runVelocity(
                     ChassisSpeeds.fromRobotRelativeSpeeds(0, 0, 0, robotPose.getRotation()));
         }
@@ -70,17 +70,17 @@ public class DriveToTag extends Command {
         // setVelocity.getY(), thetaVelocity, robotPose.getRotation()));
 
         // Lets Log stuff
-        Logger.recordOutput("DriveTo2/displacement", displacement);
-        Logger.recordOutput("DriveTo2/RobotPose", robotPose);
-        Logger.recordOutput("DriveTo2/Trajectory", displacement);
-        Logger.recordOutput("DriveTo2/TargetPose", targetPose);
-        Logger.recordOutput("DriveTo2/setDriveSpeed", driveSpeed);
-        Logger.recordOutput("DriveTo2/setDriveVelocity", setVelocity);
-        Logger.recordOutput("DriveTo2/thetaDifference", thetaDisplacement);
-        Logger.recordOutput("DriveTo2/thetaVelocity", thetaVelocity);
+        Logger.recordOutput("Commands/DriveToTag/displacement", displacement);
+        Logger.recordOutput("Commands/DriveToTag/RobotPose", robotPose);
+        Logger.recordOutput("Commands/DriveToTag/Trajectory", displacement);
+        Logger.recordOutput("Commands/DriveToTag/TargetPose", targetPose);
+        Logger.recordOutput("Commands/DriveToTag/setDriveSpeed", driveSpeed);
+        Logger.recordOutput("Commands/DriveToTag/setDriveVelocity", setVelocity);
+        Logger.recordOutput("Commands/DriveToTag/thetaDifference", thetaDisplacement);
+        Logger.recordOutput("Commands/DriveToTag/thetaVelocity", thetaVelocity);
     }
 
-    @AutoLogOutput(key = "DriveTo2/atGoal")
+    @AutoLogOutput(key = "Commands/DriveToTag/atGoal")
     public boolean atGoal() {
         return Math.abs(dtheta) < goToConstants.thetaTolerance
                 && Math.abs(dp) < goToConstants.driveTolerance;

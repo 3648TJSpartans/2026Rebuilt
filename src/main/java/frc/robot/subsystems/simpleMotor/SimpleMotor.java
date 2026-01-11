@@ -27,7 +27,7 @@ public class SimpleMotor extends SubsystemBase {
     /* Periodic, which runs constantly, is used here to log important values. */
     @Override
     public void periodic() {
-        Logger.recordOutput("simpleMotor/speed", io.getSpeed());
+        Logger.recordOutput("Subsystems/SimpleMotor/speed", io.getSpeed());
     }
 
     /* The remaining methods are all taken from the IO. */
