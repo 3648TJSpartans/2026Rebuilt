@@ -173,7 +173,7 @@ private final Turret m_turret;
         break;
     }
 
-    m_turret = new Turret(m_drive::getPose);
+    m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
 
     configureAutos();
 
