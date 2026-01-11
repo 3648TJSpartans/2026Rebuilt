@@ -45,6 +45,7 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
@@ -247,7 +248,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(4.75))
                 .repeatedly()
                 .withTimeout(15)
-
+                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)))
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -262,6 +263,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.1))
                 .repeatedly()
                 .withTimeout(8)
+                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)))
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -276,6 +278,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.3))
                 .repeatedly()
                 .withTimeout(10)
+                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)))
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -291,6 +294,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.2))
                 .repeatedly()
                 .withTimeout(5)
+                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)))
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
