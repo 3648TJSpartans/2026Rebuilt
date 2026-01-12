@@ -60,7 +60,7 @@ public class TurretFollowCmd extends Command {
         Rotation2d targetAngle = displacement.getAngle();
         Rotation2d robotRotation = robotRotationSupplier.get();
         Rotation2d totalRotation =
-                targetAngle.minus(robotRotation).plus(TurretConstants.rotationOffset);
+                targetAngle.minus(robotRotation);
 
         double setPoint =
                 (totalRotation.getRadians() * TurretConstants.encoderPositionFactor / (2 * Math.PI)

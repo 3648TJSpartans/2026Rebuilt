@@ -30,7 +30,7 @@ public class Turret extends RelEncoderSparkMax{
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
   public Rotation2d getTurretRotation(){
-    return new Rotation2d(getPosition() * TurretConstants.encoderPositionFactor + TurretConstants.rotationOffset.getRadians());
+    return new Rotation2d(getPosition() * TurretConstants.encoderPositionFactor);
   }
   
   @Override
@@ -66,5 +66,9 @@ public class Turret extends RelEncoderSparkMax{
   }
   public double[] getTurretTranslationalVelocity(){
     return turretTranslationalVelocity;
+  }
+
+  public void setZeroHeading(){
+    setEncoder(0.0);
   }
 }

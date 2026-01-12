@@ -283,7 +283,11 @@ private final Turret m_turret;
   }
 
   private void configureTurret(){
-    m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+    m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
+    TunableNumber m_turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.1);
+    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(m_turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-m_turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
   }
 
   public void configureAutoChooser() {
