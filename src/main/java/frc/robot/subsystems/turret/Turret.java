@@ -82,7 +82,7 @@ public class Turret extends RelEncoderSparkMax{
     Logger.recordOutput("Subsystems/Turret/pointAt/target", target);
     Translation2d turretTranslation = new Translation2d(this.turretPose.getX(), this.turretPose.getY());
 
-    Rotation2d targetAngle = target.minus(turretTranslation).getAngle().plus(new Rotation2d(turretPose.getRotation().getZ()));
+    Rotation2d targetAngle = target.minus(turretTranslation).getAngle().minus(m_robotPoseSupplier.get().getRotation());
     Logger.recordOutput("Subsystems/Turret/pointAt/targetAngle", targetAngle);
     setRotation(targetAngle);
   

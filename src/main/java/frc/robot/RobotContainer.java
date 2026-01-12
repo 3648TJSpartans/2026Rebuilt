@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.TurretFollowCmd;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
@@ -295,7 +294,7 @@ private final Turret m_turret;
     TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",1.0);
     TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",1.0);
 
-    m_testController.b().onTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
+    m_testController.b().whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
   }
 
   public void configureAutoChooser() {
