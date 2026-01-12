@@ -53,6 +53,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
@@ -200,12 +201,11 @@ public class RobotContainer {
                 () -> {
                   MotorIO.reconfigureMotors();
                   goToConstants.configurePID();
-                  LoggedAnalogEncoder.updateZeros();
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-
-    new Trigger(DriverStation::isEnabled).onTrue(updateCommand);
+    m_testController.rightTrigger().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
