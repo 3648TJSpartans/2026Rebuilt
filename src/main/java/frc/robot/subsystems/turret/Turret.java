@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 
@@ -19,6 +20,7 @@ public class Turret extends RelEncoderSparkMax{
   private final Supplier<double[]> m_robotVelocitySupplier;
   private Pose3d turretPose;
   private double[] turretTranslationalVelocity;
+
   public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
     m_turretOffset = TurretConstants.kTurretOffset;
@@ -70,5 +72,19 @@ public class Turret extends RelEncoderSparkMax{
 
   public void setZeroHeading(){
     setEncoder(0.0);
+  }
+
+  public void setRotation(Rotation2d rotation){
+    setPosition(rotation.getRadians()/TurretConstants.encoderPositionFactor);
+  }
+
+  public void pointAt(Translation2d target){
+    Logger.recordOutput("Subsystems/Turret/pointAt/target", target);
+    Translation2d turretTranslation = new Translation2d(this.turretPose.getX(), this.turretPose.getY());
+
+    Rotation2d targetAngle = target.minus(turretTranslation).getAngle().plus(new Rotation2d(turretPose.getRotation().getZ()));
+    Logger.recordOutput("Subsystems/Turret/pointAt/targetAngle", targetAngle);
+    setRotation(targetAngle);
+  
   }
 }

@@ -285,9 +285,17 @@ private final Turret m_turret;
   private void configureTurret(){
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
     m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber m_turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.1);
-    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(m_turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
-    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-m_turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.05);
+    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
+    m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+
+    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",1.0);
+    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",1.0);
+
+    m_testController.b().onTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
   }
 
   public void configureAutoChooser() {
