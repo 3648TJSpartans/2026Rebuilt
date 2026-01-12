@@ -58,6 +58,9 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+
+import java.util.Random;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -290,11 +293,12 @@ private final Turret m_turret;
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
     m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    Random rand = new Random();
+    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",rand.nextDouble()*5);
+    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",rand.nextDouble()*5);
 
-    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",1.0);
-    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",1.0);
-
-    m_testController.b().whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
+    m_testController.b()
+    .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
   }
 
   public void configureAutoChooser() {
