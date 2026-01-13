@@ -43,14 +43,19 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+
+import java.util.Random;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -69,7 +74,7 @@ public class RobotContainer {
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
-
+private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -92,6 +97,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_leds = new LedSubsystem();
     // CAN 10
+    
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -160,6 +166,8 @@ public class RobotContainer {
         break;
     }
 
+    m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
+
     configureAutos();
 
     // Set up auto routines
@@ -167,6 +175,7 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+    configureTurret();
   }
 
   /**
@@ -190,12 +199,11 @@ public class RobotContainer {
                 () -> {
                   MotorIO.reconfigureMotors();
                   goToConstants.configurePID();
-                  LoggedAnalogEncoder.updateZeros();
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-
-    new Trigger(DriverStation::isEnabled).onTrue(updateCommand);
+    m_testController.povUp().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
@@ -264,6 +272,23 @@ public class RobotContainer {
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+  }
+
+  private void configureTurret(){
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+    m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.05);
+    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
+    m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    Random rand = new Random();
+    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",rand.nextDouble()*5);
+    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",rand.nextDouble()*5);
+
+    m_testController.b()
+    .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
   }
 
   public void configureAutoChooser() {

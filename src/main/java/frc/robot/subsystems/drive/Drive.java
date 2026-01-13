@@ -369,4 +369,14 @@ public class Drive extends SubsystemBase {
   public double getMaxAngularSpeedRadPerSec() {
     return maxSpeedMetersPerSec / driveBaseRadius;
   }
+
+  @AutoLogOutput(key = "Subsystems/Drive/Velocity (x,y,w)")
+  public double[] getVelocity(){
+    double[] out = new double[3];
+    ChassisSpeeds speeds = getChassisSpeeds();
+    out[0] = speeds.vxMetersPerSecond;
+    out[1] = speeds.vyMetersPerSecond;
+    out[2] = speeds.omegaRadiansPerSecond;
+    return out;
+  }
 }
