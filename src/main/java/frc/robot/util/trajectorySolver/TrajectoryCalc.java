@@ -15,7 +15,7 @@ public class TrajectoryCalc {
     System.out.println("Stationary Trajectory:");
     System.out.println(results);
     System.out.println("\nMoving Trajectory:");
-    results = tc.movingTrajectory(new Translation3d(0,0,0), new Translation3d(2,2,2), new double[]{1,0});
+    results = tc.dynamicTrajectory(new Translation3d(0,0,0), new Translation3d(4,3,2), new double[]{-1,2});
     System.out.println(results);
   }
 
@@ -41,7 +41,7 @@ public class TrajectoryCalc {
     return new Trajectory(thetaShooter,thetaTurret,shooterSpeed,hangTime);
   }
 
-  public static Trajectory movingTrajectory(Translation3d current, Translation3d target, double[] robotVelocity){
+  public static Trajectory dynamicTrajectory(Translation3d current, Translation3d target, double[] robotVelocity){
     Trajectory trajectory = stationaryTrajectory(current, target);
     for(int i =0; i< movingtargetIts; i++){
       Translation3d newTarget = target.minus(new Translation3d(robotVelocity[0]*trajectory.getHangTime(), robotVelocity[1]*trajectory.getHangTime(), 0));
