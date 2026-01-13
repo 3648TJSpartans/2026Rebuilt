@@ -21,7 +21,6 @@ public class Turret extends RelEncoderSparkMax{
   private final Supplier<double[]> m_robotVelocitySupplier;
   private Pose3d turretPose;
   private double[] turretTranslationalVelocity;
-
   public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
     m_turretOffset = TurretConstants.kTurretOffset;
