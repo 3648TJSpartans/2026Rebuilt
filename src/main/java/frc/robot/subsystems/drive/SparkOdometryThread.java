@@ -38,7 +38,7 @@ public class SparkOdometryThread {
   private final List<Queue<Double>> sparkQueues = new ArrayList<>();
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
-
+  private int debugIterator = 0;
   private static SparkOdometryThread instance = null;
   private Notifier notifier = new Notifier(this::run);
 
@@ -99,6 +99,8 @@ public class SparkOdometryThread {
   }
 
   private void run() {
+    debugIterator+=1;
+    Logger.recordOutput("Debug/SparkOdometry/iterator", debugIterator);
     // Save new data to queues
     Drive.odometryLock.lock();
     try {
@@ -108,6 +110,7 @@ public class SparkOdometryThread {
       // Read Spark values, mark invalid in case of error
       double[] sparkValues = new double[sparkSignals.size()];
       boolean isValid = true;
+      Logger.recordOutput("Debug/SparkOdometry/sparkSignalsSize", sparkSignals.size());
       for (int i = 0; i < sparkSignals.size(); i++) {
         sparkValues[i] = sparkSignals.get(i).getAsDouble();
         if (sparks.get(i).getLastError() != REVLibError.kOk) {
@@ -127,6 +130,8 @@ public class SparkOdometryThread {
           isValid = false;
         }
       }
+
+      Logger.recordOutput("Debug/SparkOdometry/isValid", isValid);
       // If valid, add values to queues
       if (isValid) {
         for (int i = 0; i < sparkSignals.size(); i++) {
@@ -136,7 +141,11 @@ public class SparkOdometryThread {
           genericQueues.get(i).offer(genericSignals.get(i).getAsDouble());
         }
         for (int i = 0; i < timestampQueues.size(); i++) {
-          timestampQueues.get(i).offer(timestamp);
+          
+          boolean offer = timestampQueues.get(i).offer(timestamp);
+          Logger.recordOutput("Debug/SparkOdometry/offer/" + i+ "/timestamp",timestamp);
+          Logger.recordOutput("Debug/SparkOdometry/offer/" + i+ "/Accepted", offer);
+          Logger.recordOutput("Debug/SparkOdometry/" + i+ "/OdometryTimestampsSize", timestampQueues.get(i).stream().mapToDouble((Double value) -> value).toArray());
         }
       }
     } finally {
