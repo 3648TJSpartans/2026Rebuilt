@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -43,11 +42,7 @@ import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
-import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
-import frc.robot.subsystems.simpleMotor.SimpleMotor;
-import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -69,10 +64,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-  private final SimpleMotor m_simpleMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
-  private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
@@ -97,9 +90,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
-    m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
@@ -191,7 +182,6 @@ public class RobotContainer {
 
     configureLeds();
     configureAutoChooser();
-    configureSimpleMotor();
     configureDrive();
     configureFlywheel();
     // configureExampleSubsystem();
@@ -311,16 +301,6 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_exampleFlywheel.stop(), m_exampleFlywheel));
   }
 
-  public void configureSimpleMotor() {
-    // Command simpleForward =
-    // new SimpleMotorCmd(m_simpleMotor, SimpleMotorConstants.speed1);
-    // Command simpleBackward =
-    // new SimpleMotorCmd(m_simpleMotor, -SimpleMotorConstants.speed1);
-
-    // m_copilotController.leftBumper().whileTrue(simpleBackward);
-    // m_copilotController.rightBumper().whileTrue(simpleForward);
-  }
-
   public void configureLeds() {
 
     // This code changes LED patterns when the robot is in auto or teleop.
@@ -394,12 +374,6 @@ public class RobotContainer {
     m_driveController
         .leftTrigger()
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
-  }
-
-  public void configureExampleSubsystem() {
-    Command motorCommand =
-        new ExampleMotorCmd(m_exampleMotorSubsystem, ExampleMotorSubsystemConstants.power);
-    m_testController.leftBumper().whileTrue(motorCommand);
   }
 
   public Command getAutonomousCommand() {
