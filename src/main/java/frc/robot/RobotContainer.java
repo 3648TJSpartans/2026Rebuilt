@@ -51,6 +51,7 @@ import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -61,6 +62,7 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+
 import java.util.Random;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -83,7 +85,8 @@ public class RobotContainer {
   private final Climber m_climber;
   private boolean override;
   private boolean endgameClosed = true;
-    private final Turret m_turret;
+  private final Shooter m_shooter;
+  private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -109,6 +112,8 @@ public class RobotContainer {
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
     // CAN 10
+
+    m_shooter = new Shooter();
 
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
@@ -360,11 +365,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
-        "Flywheel simple FF IDentification",
+        "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_exampleFlywheel,
-            speed -> m_exampleFlywheel.runCharacterization(speed),
-            m_exampleFlywheel::getFFCharacterizationVelocity));
+            m_shooter,
+            speed -> m_shooter.runCharacterization(speed),
+            m_shooter::getFFCharacterizationVelocity));
   }
 
   public void configureFlywheel() {
