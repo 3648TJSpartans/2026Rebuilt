@@ -212,7 +212,7 @@ private final Turret m_turret;
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController.rightTrigger().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    m_testController.povUp().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 

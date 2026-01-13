@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -75,7 +76,9 @@ public class Turret extends RelEncoderSparkMax{
   }
 
   public void setRotation(Rotation2d rotation){
-    setPosition(rotation.getRadians()/TurretConstants.encoderPositionFactor);
+    double rotationRads = rotation.getRadians();
+    rotationRads = MathUtil.clamp(rotationRads, TurretConstants.kTurretMinRotation.get(), TurretConstants.kTurretMaxRotation.get());
+    setPosition(rotationRads/TurretConstants.encoderPositionFactor);
   }
 
   public void pointAt(Translation2d target){

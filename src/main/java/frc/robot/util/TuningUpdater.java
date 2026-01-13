@@ -7,7 +7,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TuningUpdater extends SubsystemBase {
   /** If true, TunableNumbers are on, else, they can't be changed. */
-  public static boolean TUNING_MODE = false;
+  public static boolean TUNING_MODE = true;
 
   public static final String TABLE_KEY = "TunableNumbers";
   public static final String dashBoardKey = "TuningOn";
