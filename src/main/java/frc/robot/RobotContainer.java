@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.RotateTo;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
@@ -419,6 +420,8 @@ private final Turret m_turret;
     m_driveController
         .leftTrigger()
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
+
+    m_driveController.leftBumper().whileTrue(new RotateTo(m_drive, () -> m_vision.getTx(0)));
   }
 
   public void configureExampleSubsystem() {

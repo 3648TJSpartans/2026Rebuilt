@@ -4,11 +4,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.subsystems.drive.Drive;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class RotateTo extends Command {
   private final Drive drive;
-  private double targetRotation;
+  private Supplier<Double> targetRotation;
 
   /**
    * Constructor for RotateTo command.
@@ -16,7 +17,7 @@ public class RotateTo extends Command {
    * @param drive: A drive subsystem instance.
    * @param targetRotation: The target rotation angle in radians.
    */
-  public RotateTo(Drive drive, double targetRotation) {
+  public RotateTo(Drive drive, Supplier<Double> targetRotation) {
     this.drive = drive;
     this.targetRotation = targetRotation;
     addRequirements(drive);
@@ -25,12 +26,13 @@ public class RotateTo extends Command {
   @Override
   public void execute() {
     // Calculate the rotation displacement using our theta controller
-    double rotationDisplacement = goToConstants.thetaController.calculate(targetRotation);
+    double rotationDisplacement =
+        goToConstants.thetaController.calculate(Math.toRadians(-targetRotation.get()));
     ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationDisplacement);
     drive.runVelocity(speeds);
 
     // I love logging
-    Logger.recordOutput("Commands/RotateTo/targetRotation", targetRotation);
+    Logger.recordOutput("Commands/RotateTo/targetRotation", targetRotation.get());
     Logger.recordOutput("Commands/RotateTo/rotationDisplacement", rotationDisplacement);
   }
 
