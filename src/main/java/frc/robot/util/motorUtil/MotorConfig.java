@@ -35,11 +35,11 @@ public class MotorConfig {
   private boolean m_isInverted = false;
 
   public MotorConfig(String name) {
-    m_loggingName = "Subsystems/MotorIOs/" + name;
+    m_loggingName = name;
   }
 
   public MotorConfig name(String name) {
-    m_loggingName = "Subsystems/MotorIOs/" + name;
+    m_loggingName = name;
     return this;
   }
 
