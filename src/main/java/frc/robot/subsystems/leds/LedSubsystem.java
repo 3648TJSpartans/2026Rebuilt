@@ -30,12 +30,13 @@ public class LedSubsystem extends SubsystemBase {
 
     // Create sub-buffers
     // left buffers
-    /*
+    /* 
     buffer1Left = ledBuffer.createView(LedConstants.buffer1StartLeft, LedConstants.buffer1EndLeft);
     buffer2Left = ledBuffer.createView(LedConstants.buffer2StartLeft, LedConstants.buffer2EndLeft);
     buffer3Left = ledBuffer.createView(LedConstants.buffer3StartLeft, LedConstants.buffer3EndLeft);
     buffer4Left = ledBuffer.createView(LedConstants.buffer4StartLeft, LedConstants.buffer4EndLeft);
     // right buffers
+    /*
     buffer1Right = ledBuffer.createView(LedConstants.buffer1StartRight, LedConstants.buffer1EndRight);
     buffer2Right = ledBuffer.createView(LedConstants.buffer2StartRight, LedConstants.buffer2EndRight);
     buffer3Right = ledBuffer.createView(LedConstants.buffer3StartRight, LedConstants.buffer3EndRight);
@@ -49,7 +50,7 @@ public class LedSubsystem extends SubsystemBase {
 
   // Writes a specified LED pattern to the buffer. A bunch of patterns can be
   // found in LEDConstants, or you can make your own.
-  /*public void setLedPattern(LEDPattern pattern, int level) {
+  public void setLedPattern(LEDPattern pattern, int level) {
     if (level == 1) {
       pattern.applyTo(buffer1Left);
       LedConstants.noColor.applyTo(buffer2Left);
@@ -61,7 +62,8 @@ public class LedSubsystem extends SubsystemBase {
       LedConstants.noColor.applyTo(buffer2Right);
       LedConstants.noColor.applyTo(buffer3Right);
       LedConstants.noColor.applyTo(buffer1Right);
-    }
+  }
+    /* 
     if (level == 2) {
       pattern.applyTo(buffer1Left);
       pattern.applyTo(buffer2Left);
@@ -109,5 +111,9 @@ public class LedSubsystem extends SubsystemBase {
   public void setGlobalPattern(LEDPattern pattern) {
     pattern.applyTo(ledBuffer);
     led.setData(ledBuffer);
+  }
+
+  public void setSingleLed(int r, int g, int b, int i) {
+    ledBuffer.setRGB(i,r,g,b);
   }
 }
