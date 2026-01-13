@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TrajectoryCalc",
+      "request": "launch",
+      "mainClass": "frc.robot.util.TrajectoryCalc",
+      "projectName": "2026Rebuilt"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "frc.robot.Main",
