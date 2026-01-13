@@ -51,8 +51,6 @@ import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
-import frc.robot.subsystems.simpleMotor.SimpleMotor;
-import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -77,7 +75,6 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-  private final SimpleMotor m_simpleMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
@@ -107,7 +104,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
