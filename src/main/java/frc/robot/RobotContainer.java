@@ -219,6 +219,7 @@ public class RobotContainer {
   }
 
   private void configureAlerts() {
+    new Trigger(DriverStation::isEnabled).onTrue(new InstantCommand(() -> m_leds.setSingleLed(0,0,255,0)));
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
