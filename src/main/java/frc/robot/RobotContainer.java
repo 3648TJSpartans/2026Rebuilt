@@ -194,7 +194,7 @@ public class RobotContainer {
     configureAutoChooser();
     configureSimpleMotor();
     configureDrive();
-    configureFlywheel();
+    configureShooter();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -302,8 +302,20 @@ public class RobotContainer {
     TunableNumber targetY =
         new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
 
-    m_testController.b()
-    .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
+    m_testController
+        .b()
+        .whileTrue(
+            Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
+  }
+
+  private void configureShooter() {
+    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
+    m_testController
+        .x()
+        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
+
+    m_shooter.setDefaultCommand(
+        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
   }
 
   public void configureAutoChooser() {
@@ -328,17 +340,6 @@ public class RobotContainer {
             m_shooter,
             speed -> m_shooter.runCharacterization(speed),
             m_shooter::getFFCharacterizationVelocity));
-  }
-
-  public void configureFlywheel() {
-
-    TunableNumber flywheelSpeed = new TunableNumber("MotorIOs/Flywheel/commandSpeed", -1000.0);
-    m_copilotController
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> m_exampleFlywheel.runFFVelocity(flywheelSpeed.get()), m_exampleFlywheel))
-        .onFalse(Commands.runOnce(() -> m_exampleFlywheel.stop(), m_exampleFlywheel));
   }
 
   public void configureSimpleMotor() {
