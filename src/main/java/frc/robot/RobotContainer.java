@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -53,12 +54,8 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
-import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
-import frc.robot.util.motorUtil.RelEncoderSparkMax;
-
 import java.util.Random;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -75,10 +72,10 @@ public class RobotContainer {
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
-  private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
-private final Turret m_turret;
+  private final Shooter m_shooter;
+  private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -102,9 +99,8 @@ private final Turret m_turret;
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
-    
-    m_exampleFlywheel =
-        new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
+
+    m_shooter = new Shooter();
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
     override = false;
@@ -208,8 +204,10 @@ private final Turret m_turret;
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController.povUp().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
-    new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
+    m_testController
+        .povUp()
+        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
@@ -280,18 +278,29 @@ private final Turret m_turret;
             );
   }
 
-  private void configureTurret(){
-    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+  private void configureTurret() {
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new
+    // Rotation2d())));
     m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.05);
-    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
-    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
+    m_testController
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
-    m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    m_testController
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
     Random rand = new Random();
-    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",rand.nextDouble()*5);
-    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",rand.nextDouble()*5);
+    TunableNumber targetX =
+        new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
+    TunableNumber targetY =
+        new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
 
     m_testController.b()
     .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
@@ -314,11 +323,11 @@ private final Turret m_turret;
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
-        "Flywheel simple FF IDentification",
+        "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_exampleFlywheel,
-            speed -> m_exampleFlywheel.runCharacterization(speed),
-            m_exampleFlywheel::getFFCharacterizationVelocity));
+            m_shooter,
+            speed -> m_shooter.runCharacterization(speed),
+            m_shooter::getFFCharacterizationVelocity));
   }
 
   public void configureFlywheel() {
