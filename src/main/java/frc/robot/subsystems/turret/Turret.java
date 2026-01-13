@@ -73,12 +73,20 @@ public class Turret extends RelEncoderSparkMax{
   public void setZeroHeading(){
     setEncoder(0.0);
   }
-
+  //sets rotation in robot space
   public void setRotation(Rotation2d rotation){
     double rotationRads = rotation.getRadians();
     rotationRads = MathUtil.clamp(rotationRads, TurretConstants.kTurretMinRotation.get(), TurretConstants.kTurretMaxRotation.get());
     setPosition(rotationRads/TurretConstants.encoderPositionFactor);
   }
+
+  //Sets the roation in field space
+  public void setFieldRotation(Rotation2d rotation){
+    Rotation2d robotRotation = m_robotPoseSupplier.get().getRotation();
+    Rotation2d turretRotation = rotation.minus(robotRotation);
+    setRotation(turretRotation);
+  }
+
 
   public void pointAt(Translation2d target){
     Logger.recordOutput("Subsystems/Turret/pointAt/target", target);
