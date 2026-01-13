@@ -397,8 +397,8 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 m_drive,
-                () -> m_driveController.getLeftY(),
-                () -> m_driveController.getLeftX(),
+                () -> -m_driveController.getLeftY(),
+                () -> -m_driveController.getLeftX(),
                 () -> {
                   Rotation2d driveRotation = m_drive.getRotation();
                   double smallestDiff = Double.MAX_VALUE;
