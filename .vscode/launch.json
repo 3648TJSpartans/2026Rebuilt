@@ -8,6 +8,13 @@
       "type": "java",
       "name": "TrajectoryCalc",
       "request": "launch",
+      "mainClass": "frc.robot.util.trajectorySolver.TrajectoryCalc",
+      "projectName": "2026Rebuilt"
+    },
+    {
+      "type": "java",
+      "name": "TrajectoryCalc",
+      "request": "launch",
       "mainClass": "frc.robot.util.TrajectoryCalc",
       "projectName": "2026Rebuilt"
     },
