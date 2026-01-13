@@ -374,8 +374,9 @@ public class Drive extends SubsystemBase {
   public double[] getVelocity(){
     double[] out = new double[3];
     ChassisSpeeds speeds = getChassisSpeeds();
-    out[0] = speeds.vxMetersPerSecond;
-    out[1] = speeds.vyMetersPerSecond;
+    double theta = getRotation().getRadians();
+    out[0] = Math.cos(theta)*speeds.vxMetersPerSecond - Math.sin(theta)*speeds.vyMetersPerSecond;
+    out[1] = Math.sin(theta)*speeds.vxMetersPerSecond + Math.cos(theta)* speeds.vyMetersPerSecond;
     out[2] = speeds.omegaRadiansPerSecond;
     return out;
   }
