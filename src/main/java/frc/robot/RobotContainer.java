@@ -58,9 +58,7 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
-
 import java.util.Random;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -81,7 +79,7 @@ public class RobotContainer {
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
-private final Turret m_turret;
+  private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -106,7 +104,7 @@ private final Turret m_turret;
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
-    
+
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -212,8 +210,10 @@ private final Turret m_turret;
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController.povUp().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
-    new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
+    m_testController
+        .povUp()
+        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
@@ -284,21 +284,34 @@ private final Turret m_turret;
             );
   }
 
-  private void configureTurret(){
-    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+  private void configureTurret() {
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new
+    // Rotation2d())));
     m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.05);
-    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
-    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
+    m_testController
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
-    m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    m_testController
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
     Random rand = new Random();
-    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",rand.nextDouble()*5);
-    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",rand.nextDouble()*5);
+    TunableNumber targetX =
+        new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
+    TunableNumber targetY =
+        new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
 
-    m_testController.b()
-    .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
+    m_testController
+        .b()
+        .whileTrue(
+            Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
   }
 
   public void configureAutoChooser() {
@@ -371,15 +384,34 @@ private final Turret m_turret;
             () -> -m_driveController.getRightX(),
             m_driveController.leftBumper()));
 
-    // Lock to 0° when A button is held
-    // m_driveController
-    // .b()
-    // .whileTrue(
-    // DriveCommands.joystickDriveAtAngle(
-    // m_drive,
-    // () -> m_driveController.getLeftY(),
-    // () -> m_driveController.getLeftX(),
-    // () -> new Rotation2d()));
+    // Lock to nearest 45° when A button is held
+    Rotation2d[] lockpoints = {
+      new Rotation2d(Math.PI / 4),
+      new Rotation2d(3 * Math.PI / 4),
+      new Rotation2d(-3 * Math.PI / 4),
+      new Rotation2d(-Math.PI / 4),
+    };
+
+    m_driveController
+        .rightBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                m_drive,
+                () -> m_driveController.getLeftY(),
+                () -> m_driveController.getLeftX(),
+                () -> {
+                  Rotation2d driveRotation = m_drive.getRotation();
+                  double smallestDiff = Double.MAX_VALUE;
+                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  for (Rotation2d lockpoint : lockpoints) {
+                    double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
+                    if (diff < smallestDiff) {
+                      smallestDiff = diff;
+                      closestLockpoint = lockpoint;
+                    }
+                  }
+                  return closestLockpoint;
+                }));
 
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
