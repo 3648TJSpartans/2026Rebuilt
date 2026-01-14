@@ -8,17 +8,14 @@ public class TrajectoryCalc {
   public static final int movingtargetIts = 1;
 
   public static void main(String[] args) {
-    TrajectoryCalc tc = new TrajectoryCalc();
-    Trajectory results =
-        tc.stationaryTrajectory(
-            new Translation3d(0, 0, 0), new Translation3d(2, 2, 2), 7 / 8, 2.12);
-
-    System.out.println("Stationary Trajectory:");
-    System.out.println(results);
     System.out.println("\nMoving Trajectory:");
-    results =
-        tc.dynamicTrajectory(
-            new Translation3d(0, 0, 0), new Translation3d(4, 3, 2), new double[] {-1, 2});
+    Trajectory results =
+        dynamicTrajectory(
+            new Translation3d(0, 0, 0),
+            new Translation3d(4.034536, 4.625594, 1.430425),
+            new double[] {-1, 2},
+            7.0 / 8,
+            2.1336);
     System.out.println(results);
   }
 
