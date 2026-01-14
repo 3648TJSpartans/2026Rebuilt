@@ -567,6 +567,16 @@ public class LimelightHelpers {
           avgTagDist,
           isMegaTag2 ? PoseObservationType.MEGATAG_2 : PoseObservationType.MEGATAG_1);
     }
+
+    public PoseObservation getAsObservartion(Rotation3d robotRotation) {
+      return new PoseObservation(
+          timestampSeconds,
+          new Pose3d(pose.getX(), pose.getY(), 0, robotRotation),
+          rawFiducials.length > 0 ? 0.0 : rawFiducials[0].ambiguity,
+          tagCount,
+          avgTagDist,
+          isMegaTag2 ? PoseObservationType.MEGATAG_2 : PoseObservationType.MEGATAG_1);
+    }
   }
 
   /** Encapsulates the state of an internal Limelight IMU. */
