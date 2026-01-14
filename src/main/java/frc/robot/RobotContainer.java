@@ -49,6 +49,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.leds.LedConstants;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Shooter;
@@ -79,6 +80,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Hood m_hood;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final ShiftTracker m_shiftTracker;
   private final RelEncoderSparkMax m_exampleFlywheel;
@@ -112,7 +114,7 @@ public class RobotContainer {
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
     // CAN 10
-
+    m_hood = new Hood();
     m_shooter = new Shooter();
 
     m_exampleFlywheel =
@@ -214,6 +216,8 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     configureClimber();
+    configureTurret();
+    configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -342,6 +346,12 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
+
+    m_driveController
+        .rightBumper()
+        .whileTrue(
+            new RunDynamicTrajectory(
+                m_turret, m_shooter, m_hood, () -> TrajectoryConstants.hubPose));
   }
 
   private void configureShooter() {
@@ -407,6 +417,8 @@ public class RobotContainer {
     // teleop.onTrue(TeleopLED);
     /* */
   }
+
+  private void configureHood() {}
 
   public void configureDrive() {
     // Default command, normal field-relative drive/

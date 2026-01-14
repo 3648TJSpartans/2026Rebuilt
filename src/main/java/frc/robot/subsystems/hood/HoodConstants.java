@@ -8,7 +8,7 @@ public class HoodConstants {
       new TunableNumber("Subsystems/Hood/turretRotationFactor", 1.0);
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Hood/MotorIO")
-          .motorCan(13)
+          .motorCan(15)
           .p(0)
           .i(0)
           .d(0)
