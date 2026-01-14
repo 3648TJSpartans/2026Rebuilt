@@ -1,0 +1,20 @@
+package frc.robot.subsystems.hood;
+
+import frc.robot.util.TunableNumber;
+import frc.robot.util.motorUtil.MotorConfig;
+
+public class HoodConstants {
+  public static final TunableNumber hoodEncoderFactor =
+      new TunableNumber("Subsystems/Hood/turretRotationFactor", 1.0);
+  public static final MotorConfig motorConfig =
+      new MotorConfig("Subsystems/Hood/MotorIO")
+          .motorCan(13)
+          .p(0)
+          .i(0)
+          .d(0)
+          .positionTolerance(0.01);
+  public static final TunableNumber minAngle =
+      new TunableNumber("Subsystems/Hood/limits/minAngle", 0.0);
+  public static final TunableNumber maxAngle =
+      new TunableNumber("Subsystems/Hood/limits/minAngle", 1.0);
+}
