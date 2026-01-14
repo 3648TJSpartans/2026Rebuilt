@@ -390,15 +390,34 @@ public class RobotContainer {
             () -> -m_driveController.getRightX(),
             m_driveController.leftBumper()));
 
-    // Lock to 0° when A button is held
-    // m_driveController
-    // .b()
-    // .whileTrue(
-    // DriveCommands.joystickDriveAtAngle(
-    // m_drive,
-    // () -> m_driveController.getLeftY(),
-    // () -> m_driveController.getLeftX(),
-    // () -> new Rotation2d()));
+    // Lock to nearest 45° when A button is held
+    Rotation2d[] lockpoints = {
+      new Rotation2d(Math.PI / 4),
+      new Rotation2d(3 * Math.PI / 4),
+      new Rotation2d(-3 * Math.PI / 4),
+      new Rotation2d(-Math.PI / 4),
+    };
+
+    m_driveController
+        .rightBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                m_drive,
+                () -> -m_driveController.getLeftY(),
+                () -> -m_driveController.getLeftX(),
+                () -> {
+                  Rotation2d driveRotation = m_drive.getRotation();
+                  double smallestDiff = Double.MAX_VALUE;
+                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  for (Rotation2d lockpoint : lockpoints) {
+                    double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
+                    if (diff < smallestDiff) {
+                      smallestDiff = diff;
+                      closestLockpoint = lockpoint;
+                    }
+                  }
+                  return closestLockpoint;
+                }));
 
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
