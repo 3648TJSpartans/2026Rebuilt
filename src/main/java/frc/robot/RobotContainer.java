@@ -48,8 +48,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
-import frc.robot.subsystems.simpleMotor.SimpleMotor;
-import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -57,9 +56,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
-import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
-import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import java.util.Random;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -74,13 +71,12 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-  private final SimpleMotor m_simpleMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
-  private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
+  private final Shooter m_shooter;
   private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
@@ -102,13 +98,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
 
-    m_exampleFlywheel =
-        new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
+    m_shooter = new Shooter();
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
     override = false;
@@ -202,7 +196,7 @@ public class RobotContainer {
     configureAutoChooser();
     configureSimpleMotor();
     configureDrive();
-    configureFlywheel();
+    configureShooter();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -320,6 +314,16 @@ public class RobotContainer {
         .whileTrue(new RunDynamicTrajectory(m_turret, () -> TrajectoryConstants.hubPose));
   }
 
+  private void configureShooter() {
+    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
+    m_testController
+        .x()
+        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
+
+    m_shooter.setDefaultCommand(
+        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
+  }
+
   public void configureAutoChooser() {
 
     autoChooser.addOption(
@@ -337,22 +341,11 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
-        "Flywheel simple FF IDentification",
+        "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_exampleFlywheel,
-            speed -> m_exampleFlywheel.runCharacterization(speed),
-            m_exampleFlywheel::getFFCharacterizationVelocity));
-  }
-
-  public void configureFlywheel() {
-
-    TunableNumber flywheelSpeed = new TunableNumber("MotorIOs/Flywheel/commandSpeed", -1000.0);
-    m_copilotController
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> m_exampleFlywheel.runFFVelocity(flywheelSpeed.get()), m_exampleFlywheel))
-        .onFalse(Commands.runOnce(() -> m_exampleFlywheel.stop(), m_exampleFlywheel));
+            m_shooter,
+            speed -> m_shooter.runCharacterization(speed),
+            m_shooter::getFFCharacterizationVelocity));
   }
 
   public void configureSimpleMotor() {
