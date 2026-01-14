@@ -47,6 +47,7 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
@@ -73,6 +74,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Hood m_hood;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private boolean override;
   private boolean endgameClosed = true;
@@ -101,7 +103,7 @@ public class RobotContainer {
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
-
+    m_hood = new Hood();
     m_shooter = new Shooter();
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -178,7 +180,6 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
-    configureTurret();
   }
 
   /**
@@ -197,6 +198,8 @@ public class RobotContainer {
     configureSimpleMotor();
     configureDrive();
     configureShooter();
+    configureTurret();
+    configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -311,7 +314,9 @@ public class RobotContainer {
 
     m_driveController
         .rightBumper()
-        .whileTrue(new RunDynamicTrajectory(m_turret, () -> TrajectoryConstants.hubPose));
+        .whileTrue(
+            new RunDynamicTrajectory(
+                m_turret, m_shooter, m_hood, () -> TrajectoryConstants.hubPose));
   }
 
   private void configureShooter() {
@@ -372,6 +377,8 @@ public class RobotContainer {
     autonomous.onTrue(AutoLED);
     teleop.onTrue(TeleopLED);
   }
+
+  private void configureHood() {}
 
   public void configureDrive() {
     // Default command, normal field-relative drive
