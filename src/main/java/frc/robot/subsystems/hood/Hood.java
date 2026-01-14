@@ -1,0 +1,21 @@
+package frc.robot.subsystems.hood;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.util.motorUtil.AbsEncoderSparkMax;
+
+public class Hood extends AbsEncoderSparkMax {
+  public Hood() {
+    super(HoodConstants.motorConfig);
+  }
+
+  @Override
+  public void setPosition(double setpoint) {
+    setpoint = MathUtil.clamp(setpoint, HoodConstants.minAngle.get(), HoodConstants.maxAngle.get());
+    super.setPosition(setpoint);
+  }
+
+  public void setAngle(Rotation2d angle) {
+    setPosition(angle.getRadians() * HoodConstants.hoodEncoderFactor.get());
+  }
+}

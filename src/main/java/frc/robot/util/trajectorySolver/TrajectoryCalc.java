@@ -1,21 +1,24 @@
 package frc.robot.util.trajectorySolver;
 
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Translation3d;
+import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryCalc {
   public static final double g = 9.79; // m/s^2
   public static final int movingtargetIts = 1;
-  public static final double zOverhang = 3.0;
-  public static final double kOverhang = .8;
+
   public static void main(String[] args) {
     TrajectoryCalc tc = new TrajectoryCalc();
-    Trajectory results = tc.stationaryTrajectory(new Translation3d(0,0,0), new Translation3d(2,2,2));
-   
+    Trajectory results =
+        tc.stationaryTrajectory(
+            new Translation3d(0, 0, 0), new Translation3d(2, 2, 2), 7 / 8, 2.12);
+
     System.out.println("Stationary Trajectory:");
     System.out.println(results);
     System.out.println("\nMoving Trajectory:");
-    results = tc.dynamicTrajectory(new Translation3d(0,0,0), new Translation3d(4,3,2), new double[]{-1,2});
+    results =
+        tc.dynamicTrajectory(
+            new Translation3d(0, 0, 0), new Translation3d(4, 3, 2), new double[] {-1, 2});
     System.out.println(results);
   }
 
@@ -23,29 +26,42 @@ public class TrajectoryCalc {
    * @returns double[] {shooterAngle,turretAngle,shooterSpeed, hangTime}
    * @link{https://www.desmos.com/3d/f7jbtftncs}
    */
-  public static Trajectory stationaryTrajectory(Translation3d current,Translation3d target) {
-    Translation3d overhang = new Translation3d(kOverhang*target.getX(), kOverhang*target.getY(), zOverhang);
-    Logger.recordOutput("Utils/TrajectoryCalc/Path", new Translation3d[]{current,overhang,target});
+  public static Trajectory stationaryTrajectory(
+      Translation3d current, Translation3d target, double overhangRatio, double zOverhang) {
+    Translation3d overhang =
+        new Translation3d(overhangRatio * target.getX(), overhangRatio * target.getY(), zOverhang);
+    Logger.recordOutput(
+        "Utils/TrajectoryCalc/Path", new Translation3d[] {current, overhang, target});
     target = target.minus(current);
     overhang = overhang.minus(current);
-    double thetaTurret  = Math.atan2(target.getY(), target.getX());
-    double xpt = Math.sqrt(target.getX()*target.getX() + target.getY()*target.getY());
-    double xpo = Math.sqrt(overhang.getX()*overhang.getX() + overhang.getY()*overhang.getY());
+    double thetaTurret = Math.atan2(target.getY(), target.getX());
+    double xpt = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    double xpo = Math.sqrt(overhang.getX() * overhang.getX() + overhang.getY() * overhang.getY());
     double zpt = target.getZ();
     double zpo = overhang.getZ();
-    double c2 = (zpt*xpo-zpo*xpt)/(xpt*xpt*xpo- xpt*xpo*xpo);
-    double c1 = zpo/xpo-c2*xpo;
+    double c2 = (zpt * xpo - zpo * xpt) / (xpt * xpt * xpo - xpt * xpo * xpo);
+    double c1 = zpo / xpo - c2 * xpo;
     double thetaShooter = Math.atan(c1);
-    double shooterSpeed = Math.sqrt(-g/(2*c2))/Math.cos(thetaShooter);
-    double hangTime = xpt/(shooterSpeed* Math.cos(thetaShooter));
-    return new Trajectory(thetaShooter,thetaTurret,shooterSpeed,hangTime);
+    double shooterSpeed = Math.sqrt(-g / (2 * c2)) / Math.cos(thetaShooter);
+    double hangTime = xpt / (shooterSpeed * Math.cos(thetaShooter));
+    return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
   }
 
-  public static Trajectory dynamicTrajectory(Translation3d current, Translation3d target, double[] robotVelocity){
-    Trajectory trajectory = stationaryTrajectory(current, target);
-    for(int i =0; i< movingtargetIts; i++){
-      Translation3d newTarget = target.minus(new Translation3d(robotVelocity[0]*trajectory.getHangTime(), robotVelocity[1]*trajectory.getHangTime(), 0));
-      trajectory = stationaryTrajectory(current, newTarget);
+  public static Trajectory dynamicTrajectory(
+      Translation3d current,
+      Translation3d target,
+      double[] robotVelocity,
+      double overhangRatio,
+      double zOverhang) {
+    Trajectory trajectory = stationaryTrajectory(current, target, overhangRatio, zOverhang);
+    for (int i = 0; i < movingtargetIts; i++) {
+      Translation3d newTarget =
+          target.minus(
+              new Translation3d(
+                  robotVelocity[0] * trajectory.getHangTime(),
+                  robotVelocity[1] * trajectory.getHangTime(),
+                  0));
+      trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
     }
     return trajectory;
   }

@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -39,6 +38,7 @@ import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -86,7 +86,7 @@ public class RobotContainer {
   private final Climber m_climber;
   private boolean override;
   private boolean endgameClosed = true;
-  private final Turret m_turret;
+    private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -341,19 +341,10 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
-  }
 
-  private void configureClimber() {
-    m_testController
-        .povUp()
-        .onTrue(Commands.runOnce(() -> m_climber.setPower(0.05), m_climber))
-        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
-    m_testController
-        .povDown()
-        .onTrue(Commands.runOnce(() -> m_climber.setPower(-0.05), m_climber))
-        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
-
-    m_driveController.rightBumper().whileTrue(new RunDynamicTrajectory(m_turret, ()-> new Translation3d(4,4,2)));
+    m_driveController
+        .rightBumper()
+        .whileTrue(new RunDynamicTrajectory(m_turret, () -> TrajectoryConstants.hubPose));
   }
 
   public void configureAutoChooser() {
