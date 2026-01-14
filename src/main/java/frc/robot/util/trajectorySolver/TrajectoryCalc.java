@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 public class TrajectoryCalc {
   public static final double g = 9.79; // m/s^2
   public static final int movingtargetIts = 1;
+  public static final int interpolationPoints = 20;
 
   public static void main(String[] args) {
     System.out.println("\nMoving Trajectory:");
@@ -25,12 +26,14 @@ public class TrajectoryCalc {
    */
   public static Trajectory stationaryTrajectory(
       Translation3d current, Translation3d target, double overhangRatio, double zOverhang) {
+
+    target = target.minus(current);
     Translation3d overhang =
         new Translation3d(overhangRatio * target.getX(), overhangRatio * target.getY(), zOverhang);
+    // overhang = overhang;
     Logger.recordOutput(
-        "Utils/TrajectoryCalc/Path", new Translation3d[] {current, overhang, target});
-    target = target.minus(current);
-    overhang = overhang.minus(current);
+        "Utils/TrajectoryCalc/Path",
+        new Translation3d[] {current, overhang.plus(current), target.plus(current)});
     double thetaTurret = Math.atan2(target.getY(), target.getX());
     double xpt = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     double xpo = Math.sqrt(overhang.getX() * overhang.getX() + overhang.getY() * overhang.getY());
@@ -63,4 +66,30 @@ public class TrajectoryCalc {
     return trajectory;
   }
 
+  public static Translation3d trajectoryAtTime(
+      double time, Trajectory traj, double[] turretVelocity, Translation3d turretTranslation) {
+    return new Translation3d(
+            (traj.getShooterSpeed()
+                        * Math.cos(traj.getShooterAngle())
+                        * Math.cos(traj.getTurretAngle())
+                    + turretVelocity[0])
+                * time,
+            (traj.getShooterSpeed()
+                        * Math.cos(traj.getShooterAngle())
+                        * Math.sin(traj.getTurretAngle())
+                    + turretVelocity[1])
+                * time,
+            traj.getShooterSpeed() * Math.sin(traj.getShooterAngle()) * time - g * time * time / 2)
+        .plus(turretTranslation);
+  }
+
+  public static Translation3d[] interpolateTrajectory(
+      Trajectory traj, double[] turretVelocity, Translation3d turretTranslation) {
+    Translation3d[] out = new Translation3d[interpolationPoints];
+    double dt = traj.getHangTime() / (interpolationPoints - 1);
+    for (int i = 0; i < interpolationPoints; i++) {
+      out[i] = trajectoryAtTime(dt * i, traj, turretVelocity, turretTranslation);
+    }
+    return out;
+  }
 }
