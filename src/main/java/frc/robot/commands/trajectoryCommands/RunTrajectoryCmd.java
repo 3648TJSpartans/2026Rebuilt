@@ -2,10 +2,13 @@ package frc.robot.commands.trajectoryCommands;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
+import frc.robot.util.trajectorySolver.TrajectoryCalc;
 
 public class RunTrajectoryCmd extends Command{
   private final Supplier<Trajectory> m_trajectorySupplier;
