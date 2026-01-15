@@ -63,5 +63,6 @@
     "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code",
     "editor.formatOnSave": true
   },
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true
 }
