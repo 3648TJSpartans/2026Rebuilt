@@ -34,8 +34,6 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
-import frc.robot.commands.ledCommands.AutoLEDCommand;
-import frc.robot.commands.ledCommands.TeleopLEDCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -180,6 +178,7 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+    configureLeds();
   }
 
   /**
@@ -219,7 +218,8 @@ public class RobotContainer {
   }
 
   private void configureAlerts() {
-    new Trigger(DriverStation::isEnabled).onTrue(new InstantCommand(() -> m_leds.setSingleLed(0,0,255,0)));
+    new Trigger(DriverStation::isEnabled)
+        .onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, 0)));
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -346,7 +346,7 @@ public class RobotContainer {
   }
 
   public void configureLeds() {
-
+    /*
     // This code changes LED patterns when the robot is in auto or teleop.
     // It can be manipulated for your desires
 
@@ -358,6 +358,9 @@ public class RobotContainer {
 
     autonomous.onTrue(AutoLED);
     teleop.onTrue(TeleopLED);
+    */
+    // m_leds.setGlobalPattern(LedConstants.rainbow);
+    m_leds.setSingleLed(255, 0, 0, 0);
   }
 
   public void configureDrive() {
