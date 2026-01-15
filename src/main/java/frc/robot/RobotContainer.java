@@ -204,7 +204,7 @@ public class RobotContainer {
     configureSimpleMotor();
     configureDrive();
     configureFlywheel();
-    configureClimb();
+    configureClimber();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
