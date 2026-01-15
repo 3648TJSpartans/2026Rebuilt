@@ -73,6 +73,11 @@ public class VisionIOLimelight implements VisionIO {
     return table.getDoubleTopic("tx").subscribe(0.0).getAsDouble();
   }
 
+  public double getTy() {
+    var table = NetworkTableInstance.getDefault().getTable(name);
+    return table.getDoubleTopic("tync").subscribe(0.0).getAsDouble();
+  }
+
   // If we're always gettign 0, the error is in here
   @Override
   public Pose2d getTagRelativePose() {

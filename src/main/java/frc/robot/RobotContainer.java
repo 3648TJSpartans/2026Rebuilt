@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveForwardTy;
 import frc.robot.commands.FFCharacterizationCmd;
 import frc.robot.commands.RotateTo;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
@@ -59,9 +60,7 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
-
 import java.util.Random;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -82,7 +81,7 @@ public class RobotContainer {
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
   private boolean endgameClosed = true;
-private final Turret m_turret;
+  private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -107,7 +106,7 @@ private final Turret m_turret;
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
-    
+
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -213,8 +212,10 @@ private final Turret m_turret;
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController.povUp().onTrue(new InstantCommand(()->LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
-    new Trigger(()-> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
+    m_testController
+        .povUp()
+        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
@@ -285,21 +286,34 @@ private final Turret m_turret;
             );
   }
 
-  private void configureTurret(){
-    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new Rotation2d())));
+  private void configureTurret() {
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new
+    // Rotation2d())));
     m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower",0.05);
-    m_testController.rightBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
-    m_testController.leftBumper().onTrue(Commands.runOnce(()-> m_turret.setPower(-turretPower.get()),m_turret)).onFalse(new InstantCommand(m_turret::stop,m_turret));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
+    m_testController
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose",0.0);
-    m_testController.rightTrigger().whileTrue(Commands.run(()-> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    m_testController
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
     Random rand = new Random();
-    TunableNumber targetX =  new TunableNumber("Subsystems/Turret/testTargeting/x",rand.nextDouble()*5);
-    TunableNumber targetY =  new TunableNumber("Subsystems/Turret/testTargeting/y",rand.nextDouble()*5);
+    TunableNumber targetX =
+        new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
+    TunableNumber targetY =
+        new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
 
-    m_testController.b()
-    .whileTrue(Commands.run(()-> m_turret.pointAt(new Translation2d(targetX.get(),targetY.get()))));
+    m_testController
+        .b()
+        .whileTrue(
+            Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
   }
 
   public void configureAutoChooser() {
@@ -422,6 +436,9 @@ private final Turret m_turret;
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
 
     m_driveController.leftBumper().whileTrue(new RotateTo(m_drive, () -> m_vision.getTx(0)));
+    m_driveController
+        .rightBumper()
+        .whileTrue(new DriveForwardTy(m_drive, () -> m_vision.getTync(0)));
   }
 
   public void configureExampleSubsystem() {

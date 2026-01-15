@@ -257,4 +257,8 @@ public class Vision extends SubsystemBase {
   public double getTx(int IOIndex) {
     return io[IOIndex].getTx();
   }
+
+  public double getTync(int IOIndex) {
+    return io[IOIndex].getTync();
+  }
 }
