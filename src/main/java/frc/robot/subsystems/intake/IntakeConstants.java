@@ -17,10 +17,12 @@ public class IntakeConstants {
           .positionTolerance(0.0);
 
   public static final SparkMax intakeRollerMotor = new SparkMax(17, MotorType.kBrushless);
-  public static final SparkMax hoppperRollerMotor = new SparkMax(18, MotorType.kBrushless);
-  public static final SparkMax indexerRollerMotor = new SparkMax(19, MotorType.kBrushless);
+  public static final SparkMax hopperMotor = new SparkMax(18, MotorType.kBrushless);
+  public static final SparkMax indexerMotor = new SparkMax(19, MotorType.kBrushless);
 
-  public static final double rollerSpeed = 0;
+  public static final double intakeRollerSpeed = 0.01;
+  public static final double hopperSpeed = 0.01;
+  public static final double indexerSpeed = 0.01;
 
   public static final double upPosition = 0;
   public static final double downPosition = 0;
