@@ -36,6 +36,7 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.AutoLEDCommand;
 import frc.robot.commands.ledCommands.TeleopLEDCommand;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -77,6 +78,7 @@ public class RobotContainer {
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final RelEncoderSparkMax m_exampleFlywheel;
+  private final Climber m_climber;
   private boolean override;
   private boolean endgameClosed = true;
   private final Turret m_turret;
@@ -103,6 +105,7 @@ public class RobotContainer {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
+    m_climber = new Climber();
     // CAN 10
 
     m_exampleFlywheel =
@@ -201,6 +204,7 @@ public class RobotContainer {
     configureSimpleMotor();
     configureDrive();
     configureFlywheel();
+    configureClimber();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -312,6 +316,11 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
+  }
+
+  private void configureClimber(){
+    m_testController.povUp().onTrue(Commands.runOnce(()-> m_climber.setPower(0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
+    m_testController.povDown().onTrue(Commands.runOnce(()->m_climber.setPower(-0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
   }
 
   public void configureAutoChooser() {
