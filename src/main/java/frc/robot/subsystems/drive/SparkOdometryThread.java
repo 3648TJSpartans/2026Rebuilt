@@ -99,7 +99,7 @@ public class SparkOdometryThread {
   }
 
   private void run() {
-    debugIterator+=1;
+    debugIterator += 1;
     Logger.recordOutput("Debug/SparkOdometry/iterator", debugIterator);
     // Save new data to queues
     Drive.odometryLock.lock();
@@ -141,11 +141,13 @@ public class SparkOdometryThread {
           genericQueues.get(i).offer(genericSignals.get(i).getAsDouble());
         }
         for (int i = 0; i < timestampQueues.size(); i++) {
-          
+
           boolean offer = timestampQueues.get(i).offer(timestamp);
-          Logger.recordOutput("Debug/SparkOdometry/offer/" + i+ "/timestamp",timestamp);
-          Logger.recordOutput("Debug/SparkOdometry/offer/" + i+ "/Accepted", offer);
-          Logger.recordOutput("Debug/SparkOdometry/" + i+ "/OdometryTimestampsSize", timestampQueues.get(i).stream().mapToDouble((Double value) -> value).toArray());
+          Logger.recordOutput("Debug/SparkOdometry/offer/" + i + "/timestamp", timestamp);
+          Logger.recordOutput("Debug/SparkOdometry/offer/" + i + "/Accepted", offer);
+          Logger.recordOutput(
+              "Debug/SparkOdometry/" + i + "/OdometryTimestampsSize",
+              timestampQueues.get(i).stream().mapToDouble((Double value) -> value).toArray());
         }
       }
     } finally {
