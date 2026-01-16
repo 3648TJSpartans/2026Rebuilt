@@ -1,5 +1,8 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.LimelightHelpers;
@@ -27,5 +30,15 @@ public class Neural extends SubsystemBase {
 
   public double getTargetRotation() {
     return txnc;
+  }
+
+  public Pose2d estimateTargetPose() {
+    // Get distance
+    double distanceToTargetCm =
+        (VisionConstants.nTargetHeight - VisionConstants.nCameraHeight)
+            / Math.tan(Math.toRadians(tync));
+
+    // Construct pose
+    return new Pose2d(new Translation2d(distanceToTargetCm / 100.0, 0), new Rotation2d(this.txnc));
   }
 }

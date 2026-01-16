@@ -115,7 +115,7 @@ public class DriveConstants {
   public static final double backRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 4.16;
+        case 1 -> 0.46;
         case 2 -> 0.0;
         case 3 -> 0.0;
         default -> 0.0;

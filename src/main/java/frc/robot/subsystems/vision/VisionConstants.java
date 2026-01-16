@@ -58,4 +58,10 @@ public class VisionConstants {
   // data
   // available
 
+
+  // Neural network values
+  public static double nTargetHeight = 6; // Height of the center of the NN target in cm
+  public static double nCameraHeight = 8.5; // Height of the limelight camera from the *ground* in cm
+  public static double nCameraAngle = 0; // Angle of the limelight camera from perfectly horizontal in degrees
+
 }
