@@ -370,13 +370,13 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(new InstantCommand(() -> m_leds.setPattern(m_leds.exampleView, LedConstants.red)));
 
-    new Trigger(() -> m_shiftTracker.timeLeft() <= 25.0)
+    new Trigger(() -> m_shiftTracker.timeLeft() <= 25.0 && m_shiftTracker.getOnShift())
         .whileTrue(
             new InstantCommand(
                 () ->
                     m_leds.setGlobalPattern(
                         LedConstants.red.mask(
-                            LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeUntil() / 25)))));
+                            LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeLeft() / 25)))));
 
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
@@ -385,6 +385,9 @@ public class RobotContainer {
     // teleop.onTrue(TeleopLED);
 
     // m_leds.setSingleLed(0, 0, 255, 0);
+    /* */
+    new Trigger(() -> m_shiftTracker.timeUntil() <= 25.0 && !m_shiftTracker.getOnShift())
+        .whileTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.blue)));
   }
 
   public void configureDrive() {
