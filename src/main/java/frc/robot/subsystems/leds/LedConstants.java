@@ -39,7 +39,7 @@ public final class LedConstants {
   public static LEDPattern white = LEDPattern.solid(Color.kWhite);
   public static LEDPattern noColor = LEDPattern.solid(Color.kBlack);
   // Gradients
- // public static LEDPattern rainbow = LEDPattern.rainbow(255, 128);
+  // public static LEDPattern rainbow = LEDPattern.rainbow(255, 128);
   public static LEDPattern purpleGradient =
       LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue);
   public static LEDPattern elevatorGradient =

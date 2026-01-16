@@ -2,6 +2,7 @@ package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -9,11 +10,14 @@ public class LedSubsystem extends SubsystemBase {
 
   public final AddressableLEDBuffer ledBuffer;
 
+  public final AddressableLEDBufferView exampleView;
+
   private final AddressableLED led;
 
   public LedSubsystem() {
     led = new AddressableLED(LedConstants.ledPWMID);
     ledBuffer = new AddressableLEDBuffer(LedConstants.ledLength);
+    exampleView = new AddressableLEDBufferView(ledBuffer, 0, 10);
 
     led.setLength(ledBuffer.getLength());
     led.setData(ledBuffer);
@@ -32,17 +36,21 @@ public class LedSubsystem extends SubsystemBase {
     led.setData(ledBuffer);
   }
 
+  public void setPattern(AddressableLEDBufferView buffer, LEDPattern pattern) {
+    pattern.applyTo(buffer);
+  }
+
   public void setSingleLed(int r, int g, int b, int i) {
     ledBuffer.setRGB(i, r, g, b);
     led.setData(ledBuffer);
   }
 
-  public void setSomeLeds(int r, int g, int b, int start, int end) {
+ /*  public void setSomeLeds(int r, int g, int b, int start, int end) {
     //ledBuffer.setRGB(start, end, r, g, b); 
     for(int i = end; i >= start; i--) {
       ledBuffer.setRGB(i, r, g, b);
       led.setData(ledBuffer);
     }
     
-  }
+  } */
 }

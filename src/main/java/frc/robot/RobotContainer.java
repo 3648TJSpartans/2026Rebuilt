@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -56,9 +57,6 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
-
-import java.awt.Color;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -260,10 +258,8 @@ public class RobotContainer {
                 DriverStation.isAutonomousEnabled()
                     && DriverStation.getMatchTime() > 0
                     && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
-            .whileTrue(
-                new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, ledIncrease))
-            );
-    
+        .whileTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, ledIncrease)));
+
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -355,7 +351,7 @@ public class RobotContainer {
   }
 
   public void configureLeds() {
-    
+
     // This code changes LED patterns when the robot is in auto or teleop.
     // It can be manipulated for your desires
 
@@ -364,37 +360,35 @@ public class RobotContainer {
     m_testController.x().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 1)));
     m_testController.a().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 2)));
     m_testController.b().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 3)));
-    m_testController.y().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
-    m_testController.rightBumper().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.noColor)));
+    m_testController
+        .y()
+        .onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
+    m_testController
+        .rightBumper()
+        .onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.noColor)));
+    m_testController
+        .leftBumper()
+        .onTrue(new InstantCommand(() -> m_leds.setPattern(m_leds.exampleView, LedConstants.red)));
 
-    new Trigger(
-        () -> 
-            m_shiftTracker.timeLeft() <= 25.0)
-            .whileTrue(
-                new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.blue)));
-                new InstantCommand(() -> m_leds.setSomeLeds(0, 0, 255, 0, (int)m_shiftTracker.timeLeft()));
-    m_testController.leftBumper().onTrue( new InstantCommand(() -> m_leds.setSomeLeds(0, 0, 255, 0, (int)m_shiftTracker.timeLeft())));
-
-
-        
-    
-
-
-
-
-
+    new Trigger(() -> m_shiftTracker.timeLeft() <= 25.0)
+        .whileTrue(
+            new InstantCommand(
+                () ->
+                    m_leds.setGlobalPattern(
+                        LedConstants.red.mask(
+                            LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeUntil() / 25)))));
 
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
     // autonomous.onTrue(AutoLED);
     // teleop.onTrue(TeleopLED);
-    
-   
+
     // m_leds.setSingleLed(0, 0, 255, 0);
   }
+
   public void configureDrive() {
-    // Default command, normal field-relative drive
+    // Default command, normal field-relative drive/
     m_drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             m_drive,
