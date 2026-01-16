@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.issueTracker.IssueTracker;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
@@ -73,6 +74,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
+  private final IssueTracker m_issueTracker;
   private final SimpleMotor m_simpleMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
@@ -106,6 +108,7 @@ public class RobotContainer {
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
+    m_issueTracker = new IssueTracker();
     // CAN 10
 
     m_exampleFlywheel =
@@ -185,7 +188,6 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
-    configureTurret();
   }
 
   /**
@@ -198,6 +200,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // configureAutos();
+    configureIssueTracker();
 
     configureLeds();
     configureAutoChooser();
@@ -205,6 +208,8 @@ public class RobotContainer {
     configureDrive();
     configureFlywheel();
     configureClimber();
+    configureTurret();
+
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -318,9 +323,15 @@ public class RobotContainer {
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
   }
 
-  private void configureClimber(){
-    m_testController.povUp().onTrue(Commands.runOnce(()-> m_climber.setPower(0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
-    m_testController.povDown().onTrue(Commands.runOnce(()->m_climber.setPower(-0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
+  private void configureClimber() {
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(-0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
   }
 
   public void configureAutoChooser() {
@@ -381,6 +392,12 @@ public class RobotContainer {
 
     autonomous.onTrue(AutoLED);
     teleop.onTrue(TeleopLED);
+  }
+
+  public void configureIssueTracker() {
+    IssueTracker.putRequirements("driverController", () -> m_driveController.isConnected());
+    IssueTracker.putRequirements("copilotController", () -> m_copilotController.isConnected());
+    // m_issueTracker.putRequirements("swerveModule0", () -> m_drive.);
   }
 
   public void configureDrive() {
