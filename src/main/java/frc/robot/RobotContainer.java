@@ -397,7 +397,6 @@ public class RobotContainer {
   public void configureIssueTracker() {
     IssueTracker.putRequirements("driverController", () -> m_driveController.isConnected());
     IssueTracker.putRequirements("copilotController", () -> m_copilotController.isConnected());
-    // m_issueTracker.putRequirements("swerveModule0", () -> m_drive.);
   }
 
   public void configureDrive() {

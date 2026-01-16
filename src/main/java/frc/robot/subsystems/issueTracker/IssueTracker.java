@@ -7,7 +7,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class IssueTracker extends SubsystemBase {
 
-  private static ArrayList<Requirement> requirements;
+  private static ArrayList<Requirement> requirements = new ArrayList<Requirement>();
+
+  public IssueTracker() {}
 
   public static void putRequirements(String name, BooleanSupplier check) {
     requirements.add(new Requirement(name, check));
