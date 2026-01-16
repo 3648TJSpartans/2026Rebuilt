@@ -56,6 +56,9 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+
+import java.awt.Color;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -219,7 +222,7 @@ public class RobotContainer {
 
   private void configureAlerts() {
     new Trigger(DriverStation::isEnabled)
-        .onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, 0)));
+        .onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 0)));
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -248,9 +251,17 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(4.75))
                 .repeatedly()
                 .withTimeout(15)
-                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.rainbow)))
+                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
+            );
+    new Trigger(
+            () ->
+                DriverStation.isAutonomousEnabled()
+                    && DriverStation.getMatchTime() > 0
+                    && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
+            .onTrue(
+                new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, 0))
             );
     new Trigger(
             () ->
@@ -263,7 +274,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.1))
                 .repeatedly()
                 .withTimeout(8)
-                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.rainbow)))
+                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -278,7 +289,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.3))
                 .repeatedly()
                 .withTimeout(10)
-                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.rainbow)))
+               
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -294,7 +305,7 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.2))
                 .repeatedly()
                 .withTimeout(5)
-                .andThen(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.rainbow)))
+                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -346,21 +357,29 @@ public class RobotContainer {
   }
 
   public void configureLeds() {
-    /*
+    
     // This code changes LED patterns when the robot is in auto or teleop.
     // It can be manipulated for your desires
 
-    Command AutoLED = new AutoLEDCommand(m_leds);
-    Command TeleopLED = new TeleopLEDCommand(m_leds);
+    // Command AutoLED = new AutoLEDCommand(m_leds);
+    // Command TeleopLED = new TeleopLEDCommand(m_leds);
+    m_testController.x().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 1)));
+    m_testController.a().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 2)));
+    m_testController.b().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 3)));
+    m_testController.y().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
 
-    Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
-    Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
-    autonomous.onTrue(AutoLED);
-    teleop.onTrue(TeleopLED);
-    */
-    // m_leds.setGlobalPattern(LedConstants.rainbow);
-    m_leds.setSingleLed(255, 0, 0, 0);
+
+
+
+    // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
+    // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
+
+    // autonomous.onTrue(AutoLED);
+    // teleop.onTrue(TeleopLED);
+    
+    m_leds.setGlobalPattern(LedConstants.rainbow);
+    m_leds.setSingleLed(0, 0, 255, 0);
   }
 
   public void configureDrive() {
