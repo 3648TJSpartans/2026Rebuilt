@@ -318,9 +318,15 @@ public class RobotContainer {
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
   }
 
-  private void configureClimber(){
-    m_testController.povUp().onTrue(Commands.runOnce(()-> m_climber.setPower(0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
-    m_testController.povDown().onTrue(Commands.runOnce(()->m_climber.setPower(-0.05),m_climber)).onFalse(Commands.runOnce(m_climber::stop,m_climber));
+  private void configureClimber() {
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(-0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
   }
 
   public void configureAutoChooser() {
