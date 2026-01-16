@@ -260,7 +260,7 @@ public class RobotContainer {
                 DriverStation.isAutonomousEnabled()
                     && DriverStation.getMatchTime() > 0
                     && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
-            .onTrue(
+            .whileTrue(
                 new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, ledIncrease))
             );
     
@@ -367,7 +367,18 @@ public class RobotContainer {
     m_testController.y().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
     m_testController.rightBumper().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.noColor)));
 
-    if(m_shiftTracker.timeLeft() == 24.0)
+    new Trigger(
+        () -> 
+            m_shiftTracker.timeLeft() <= 25.0)
+            .whileTrue(
+                new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.blue)));
+                new InstantCommand(() -> m_leds.setSomeLeds(0, 0, 255, 0, (int)m_shiftTracker.timeLeft()));
+    m_testController.leftBumper().onTrue( new InstantCommand(() -> m_leds.setSomeLeds(0, 0, 255, 0, (int)m_shiftTracker.timeLeft())));
+
+
+        
+    
+
 
 
 
@@ -380,7 +391,7 @@ public class RobotContainer {
     // teleop.onTrue(TeleopLED);
     
    
-    m_leds.setSingleLed(0, 0, 255, 0);
+    // m_leds.setSingleLed(0, 0, 255, 0);
   }
   public void configureDrive() {
     // Default command, normal field-relative drive
