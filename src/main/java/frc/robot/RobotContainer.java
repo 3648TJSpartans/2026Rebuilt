@@ -251,18 +251,19 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(4.75))
                 .repeatedly()
                 .withTimeout(15)
-                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+    int ledIncrease = 0;
     new Trigger(
             () ->
                 DriverStation.isAutonomousEnabled()
                     && DriverStation.getMatchTime() > 0
                     && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
             .onTrue(
-                new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, 0))
+                new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, ledIncrease))
             );
+    
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -274,7 +275,6 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.1))
                 .repeatedly()
                 .withTimeout(8)
-                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -289,7 +289,6 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.3))
                 .repeatedly()
                 .withTimeout(10)
-               
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -305,7 +304,6 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(0.2))
                 .repeatedly()
                 .withTimeout(5)
-                
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
@@ -367,6 +365,9 @@ public class RobotContainer {
     m_testController.a().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 2)));
     m_testController.b().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 3)));
     m_testController.y().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
+    m_testController.rightBumper().onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.noColor)));
+
+    if(m_shiftTracker.timeLeft() == 24.0)
 
 
 
@@ -378,10 +379,9 @@ public class RobotContainer {
     // autonomous.onTrue(AutoLED);
     // teleop.onTrue(TeleopLED);
     
-    m_leds.setGlobalPattern(LedConstants.rainbow);
+   
     m_leds.setSingleLed(0, 0, 255, 0);
   }
-
   public void configureDrive() {
     // Default command, normal field-relative drive
     m_drive.setDefaultCommand(
