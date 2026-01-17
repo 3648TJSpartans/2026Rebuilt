@@ -36,6 +36,9 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
+import frc.robot.commands.ledCommands.AutoLEDCommand;
+import frc.robot.commands.ledCommands.TeleopLEDCommand;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -50,14 +53,17 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import java.util.Random;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -77,9 +83,10 @@ public class RobotContainer {
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final ShiftTracker m_shiftTracker;
   private final RelEncoderSparkMax m_exampleFlywheel;
+  private final Climber m_climber;
   private boolean override;
   private boolean endgameClosed = true;
-
+  private final Turret m_turret;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -103,11 +110,12 @@ public class RobotContainer {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
-    m_shiftTracker = new ShiftTracker();
+    m_climber = new Climber();
     // CAN 10
+
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
-    Logger.recordOutput("Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
+    Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
     override = false;
     switch (Constants.currentMode) {
@@ -173,6 +181,8 @@ public class RobotContainer {
         break;
     }
 
+    m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
+
     configureAutos();
 
     // Set up auto routines
@@ -181,6 +191,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureLeds();
+    configureTurret();
   }
 
   /**
@@ -194,23 +205,27 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // configureAutos();
 
+    configureLeds();
     configureAutoChooser();
     configureSimpleMotor();
     configureDrive();
     configureFlywheel();
     configureAlerts();
+    configureClimber();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
                 () -> {
                   MotorIO.reconfigureMotors();
                   goToConstants.configurePID();
-                  LoggedAnalogEncoder.updateZeros();
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-
-    new Trigger(DriverStation::isEnabled).onTrue(updateCommand);
+    m_testController
+        .povUp()
+        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
+    m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
     /*
      * m_led.setLedPattern(LedConstants.elevatorHeight, m_led.elevatorBuffer);
@@ -248,11 +263,10 @@ public class RobotContainer {
                 .andThen(Commands.waitSeconds(4.75))
                 .repeatedly()
                 .withTimeout(15)
+
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
-    int ledIncrease = 0;
-
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -296,6 +310,47 @@ public class RobotContainer {
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+  }
+
+  private void configureTurret() {
+    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new
+    // Rotation2d())));
+    m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
+    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
+    m_testController
+        .rightBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    m_testController
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    Random rand = new Random();
+    TunableNumber targetX =
+        new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
+    TunableNumber targetY =
+        new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
+
+    m_testController
+        .b()
+        .whileTrue(
+            Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
+  }
+
+  private void configureClimber() {
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(-0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
   }
 
   public void configureAutoChooser() {
@@ -373,15 +428,34 @@ public class RobotContainer {
             () -> -m_driveController.getRightX(),
             m_driveController.leftBumper()));
 
-    // Lock to 0° when A button is held
-    // m_driveController
-    // .b()
-    // .whileTrue(
-    // DriveCommands.joystickDriveAtAngle(
-    // m_drive,
-    // () -> m_driveController.getLeftY(),
-    // () -> m_driveController.getLeftX(),
-    // () -> new Rotation2d()));
+    // Lock to nearest 45° when A button is held
+    Rotation2d[] lockpoints = {
+      new Rotation2d(Math.PI / 4),
+      new Rotation2d(3 * Math.PI / 4),
+      new Rotation2d(-3 * Math.PI / 4),
+      new Rotation2d(-Math.PI / 4),
+    };
+
+    m_driveController
+        .rightBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                m_drive,
+                () -> -m_driveController.getLeftY(),
+                () -> -m_driveController.getLeftX(),
+                () -> {
+                  Rotation2d driveRotation = m_drive.getRotation();
+                  double smallestDiff = Double.MAX_VALUE;
+                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  for (Rotation2d lockpoint : lockpoints) {
+                    double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
+                    if (diff < smallestDiff) {
+                      smallestDiff = diff;
+                      closestLockpoint = lockpoint;
+                    }
+                  }
+                  return closestLockpoint;
+                }));
 
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
