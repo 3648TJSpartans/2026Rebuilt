@@ -44,7 +44,7 @@ public abstract class MotorIO extends SubsystemBase {
   }
   ;
 
-  public final void updateValues() {
+  public void updateValues() {
     Logger.recordOutput(name + "/getPosition", getPosition());
     Logger.recordOutput(name + "/getSpeed", getSpeed());
     Logger.recordOutput(name + "/setPose", m_positionSetpoint);

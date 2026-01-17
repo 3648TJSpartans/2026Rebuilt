@@ -34,8 +34,8 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
-import frc.robot.commands.ledCommands.AutoLEDCommand;
-import frc.robot.commands.ledCommands.TeleopLEDCommand;
+import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
+import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -47,7 +47,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.issueTracker.IssueTracker;
+import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
 import frc.robot.subsystems.turret.Turret;
@@ -79,6 +81,7 @@ public class RobotContainer {
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
+  private final ShiftTracker m_shiftTracker;
   private final RelEncoderSparkMax m_exampleFlywheel;
   private final Climber m_climber;
   private boolean override;
@@ -106,6 +109,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
+    m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
     m_issueTracker = new IssueTracker();
@@ -188,6 +192,8 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+    configureLeds();
+    configureTurret();
   }
 
   /**
@@ -207,6 +213,7 @@ public class RobotContainer {
     configureSimpleMotor();
     configureDrive();
     configureFlywheel();
+    configureAlerts();
     configureClimber();
     configureTurret();
 
@@ -233,6 +240,23 @@ public class RobotContainer {
   }
 
   private void configureAlerts() {
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && DriverStation.getMatchTime() > 0
+                    && m_shiftTracker.timeUntil() < 5.0
+                    && m_shiftTracker.timeUntil() > 0.0)
+        .onTrue(
+            controllerRumbleCommand()
+                .withTimeout(0.75)
+                .andThen(Commands.waitSeconds(0.25))
+                .repeatedly()
+                .withTimeout(5)
+
+            // .beforeStarting(() -> leds.endgameAlert = true)
+            // .finallyDo(() -> leds.endgameAlert = false)
+            );
+
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -384,14 +408,18 @@ public class RobotContainer {
     // This code changes LED patterns when the robot is in auto or teleop.
     // It can be manipulated for your desires
 
-    Command AutoLED = new AutoLEDCommand(m_leds);
-    Command TeleopLED = new TeleopLEDCommand(m_leds);
+    // Command AutoLED = new AutoLEDCommand(m_leds);
+    // Command TeleopLED = new TeleopLEDCommand(m_leds);
 
-    Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
-    Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
+    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
+    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
+    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
-    autonomous.onTrue(AutoLED);
-    teleop.onTrue(TeleopLED);
+    // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
+    // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
+
+    // autonomous.onTrue(AutoLED);
+    // teleop.onTrue(TeleopLED);
   }
 
   public void configureIssueTracker() {
@@ -400,7 +428,7 @@ public class RobotContainer {
   }
 
   public void configureDrive() {
-    // Default command, normal field-relative drive
+    // Default command, normal field-relative drive/
     m_drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             m_drive,
