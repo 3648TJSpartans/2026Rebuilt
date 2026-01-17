@@ -55,6 +55,7 @@ import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vortexMotor.VortexMotor;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
@@ -76,6 +77,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
   private final SimpleMotor m_simpleMotor;
+  private final VortexMotor m_vortexMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
@@ -106,6 +108,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
+    m_vortexMotor = new VortexMotor();
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
@@ -206,7 +209,7 @@ public class RobotContainer {
 
     configureLeds();
     configureAutoChooser();
-    configureSimpleMotor();
+    configureVortexMotor();
     configureDrive();
     configureFlywheel();
     configureAlerts();
@@ -387,14 +390,8 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_exampleFlywheel.stop(), m_exampleFlywheel));
   }
 
-  public void configureSimpleMotor() {
-    // Command simpleForward =
-    // new SimpleMotorCmd(m_simpleMotor, SimpleMotorConstants.speed1);
-    // Command simpleBackward =
-    // new SimpleMotorCmd(m_simpleMotor, -SimpleMotorConstants.speed1);
-
-    // m_copilotController.leftBumper().whileTrue(simpleBackward);
-    // m_copilotController.rightBumper().whileTrue(simpleForward);
+  public void configureVortexMotor() {
+    m_copilotController.leftBumper().onTrue(new InstantCommand(() -> m_vortexMotor.setPower(0.5)));
   }
 
   public void configureLeds() {
