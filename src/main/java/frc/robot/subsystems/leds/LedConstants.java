@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public final class LedConstants {
 
   // Values //
-  public static int ledLength = 25;
+  public static int ledLength = 49;
   public static final int ledPWMID = 1;
   public static final int buffer1StartLeft = 0;
   public static final int buffer1EndLeft = 14;

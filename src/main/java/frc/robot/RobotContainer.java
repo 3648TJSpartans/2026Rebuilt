@@ -20,7 +20,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,6 +34,8 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
+import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
+import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -370,13 +371,9 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(new InstantCommand(() -> m_leds.setPattern(m_leds.exampleView, LedConstants.red)));
 
-    new Trigger(() -> m_shiftTracker.timeLeft() <= 25.0 && m_shiftTracker.getOnShift())
-        .whileTrue(
-            new InstantCommand(
-                () ->
-                    m_leds.setGlobalPattern(
-                        LedConstants.red.mask(
-                            LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeLeft() / 25)))));
+    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
+    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
+    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.blue));
 
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
@@ -386,8 +383,6 @@ public class RobotContainer {
 
     // m_leds.setSingleLed(0, 0, 255, 0);
     /* */
-    new Trigger(() -> m_shiftTracker.timeUntil() <= 25.0 && !m_shiftTracker.getOnShift())
-        .whileTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.blue)));
   }
 
   public void configureDrive() {
