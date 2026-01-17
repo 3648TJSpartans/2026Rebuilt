@@ -220,8 +220,6 @@ public class RobotContainer {
   }
 
   private void configureAlerts() {
-    new Trigger(DriverStation::isEnabled)
-        .onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 0)));
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -254,12 +252,6 @@ public class RobotContainer {
             // .finallyDo(() -> leds.endgameAlert = false)
             );
     int ledIncrease = 0;
-    new Trigger(
-            () ->
-                DriverStation.isAutonomousEnabled()
-                    && DriverStation.getMatchTime() > 0
-                    && DriverStation.getMatchTime() <= Math.round(endgameAlert1.get()))
-        .whileTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 0, 255, ledIncrease)));
 
     new Trigger(
             () ->
@@ -358,30 +350,16 @@ public class RobotContainer {
 
     // Command AutoLED = new AutoLEDCommand(m_leds);
     // Command TeleopLED = new TeleopLEDCommand(m_leds);
-    m_testController.x().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 1)));
-    m_testController.a().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 2)));
-    m_testController.b().onTrue(new InstantCommand(() -> m_leds.setSingleLed(0, 255, 0, 3)));
-    m_testController
-        .y()
-        .onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.green)));
-    m_testController
-        .rightBumper()
-        .onTrue(new InstantCommand(() -> m_leds.setGlobalPattern(LedConstants.noColor)));
-    m_testController
-        .leftBumper()
-        .onTrue(new InstantCommand(() -> m_leds.setPattern(m_leds.exampleView, LedConstants.red)));
 
     Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
-    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
-    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.blue));
+    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
+    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
     // autonomous.onTrue(AutoLED);
     // teleop.onTrue(TeleopLED);
-
-    // m_leds.setSingleLed(0, 0, 255, 0);
     /* */
   }
 

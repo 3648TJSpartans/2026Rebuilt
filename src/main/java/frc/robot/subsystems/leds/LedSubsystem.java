@@ -44,13 +44,4 @@ public class LedSubsystem extends SubsystemBase {
     ledBuffer.setRGB(i, r, g, b);
     led.setData(ledBuffer);
   }
-
- /*  public void setSomeLeds(int r, int g, int b, int start, int end) {
-    //ledBuffer.setRGB(start, end, r, g, b); 
-    for(int i = end; i >= start; i--) {
-      ledBuffer.setRGB(i, r, g, b);
-      led.setData(ledBuffer);
-    }
-    
-  } */
 }
