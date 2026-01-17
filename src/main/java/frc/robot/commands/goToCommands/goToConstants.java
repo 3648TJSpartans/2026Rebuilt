@@ -83,6 +83,8 @@ public class goToConstants {
   public static class PoseConstants {
     public static final Pose2d examplePose = new Pose2d(3.57, 2.75, Rotation2d.fromDegrees(60));
     public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+    public static final Pose2d towerAlignDemo = new Pose2d(1.74, 3.44, Rotation2d.fromDegrees(-173.5));
+    public static final Pose2d alignDemoTwoTags = new Pose2d(1.5, 4.05, Rotation2d.fromDegrees(180));
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.042;
 
