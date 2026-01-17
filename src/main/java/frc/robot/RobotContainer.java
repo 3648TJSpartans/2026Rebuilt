@@ -28,9 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveForwardTy;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.RotateTo;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
@@ -51,6 +49,7 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -77,6 +76,7 @@ public class RobotContainer {
   private final SimpleMotor m_simpleMotor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Neural m_neural;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final RelEncoderSparkMax m_exampleFlywheel;
   private boolean override;
@@ -104,6 +104,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
+    m_neural = new Neural();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     // CAN 10
 
@@ -135,7 +136,6 @@ public class RobotContainer {
                 // m_drive::getRotation),
                 new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation));
         break;
-
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
 
@@ -435,10 +435,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
 
-    m_driveController.leftBumper().whileTrue(new RotateTo(m_drive, () -> m_vision.getTx(0)));
-    m_driveController
-        .rightBumper()
-        .whileTrue(new DriveForwardTy(m_drive, () -> m_vision.getTync(0)));
+    m_driveController.y().whileTrue(new InstantCommand(() -> m_neural.estimateTargetPose(m_drive)));
   }
 
   public void configureExampleSubsystem() {
