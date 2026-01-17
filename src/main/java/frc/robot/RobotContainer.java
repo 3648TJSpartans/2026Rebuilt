@@ -425,6 +425,27 @@ public class RobotContainer {
   public void configureIssueTracker() {
     IssueTracker.putRequirements("driverController", () -> m_driveController.isConnected());
     IssueTracker.putRequirements("copilotController", () -> m_copilotController.isConnected());
+
+    // Logger.recordOutput("IssueTracker/testRequirement0", IssueTracker.getRequirement(0));
+    if (IssueTracker.getRequirement(0)) {
+      // Logger.recordOutput("IssueTracker/testIfRunsTrue", true);
+      m_leds.setSingleLed(0, 255, 0, 1);
+    } else {
+      // Logger.recordOutput("IssueTracker/testIfRunsFalse", true);
+      m_leds.setSingleLed(255, 0, 0, 1);
+    }
+
+    Logger.recordOutput("IssueTracker/testRequirement0", IssueTracker.getRequirement(1));
+    Logger.recordOutput("IssueTracker/isControllerConnected", m_copilotController.isConnected());
+
+    if (IssueTracker.getRequirement(1)) {
+      Logger.recordOutput("IssueTracker/testIfWorksTrue", true);
+      m_leds.setSingleLed(0, 255, 0, 0);
+    } else {
+      Logger.recordOutput("IssueTracker/testIfWorksFalse", true);
+
+      m_leds.setSingleLed(255, 0, 0, 0);
+    }
   }
 
   public void configureDrive() {
