@@ -84,14 +84,14 @@ public class ShiftTracker extends SubsystemBase {
     return time < ShiftTrackerConstants.endgameStart;
   }
 
-  private double timeLeft() {
+  public double timeLeft() {
     if (!onShift) {
       return 0.0;
     }
     return (time - 30.0) % 25.0;
   }
 
-  private double timeUntil() {
+  public double timeUntil() {
     if (onShift) {
       return 0.0;
     }
@@ -106,3 +106,4 @@ public class ShiftTracker extends SubsystemBase {
     return onShift;
   }
 }
+/*  make the controller vibrate evey second  */
