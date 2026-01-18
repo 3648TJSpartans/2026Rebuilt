@@ -34,8 +34,9 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
-import frc.robot.commands.ledCommands.AutoLEDCommand;
-import frc.robot.commands.ledCommands.TeleopLEDCommand;
+import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
+import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -45,7 +46,9 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.simpleMotor.SimpleMotor;
 import frc.robot.subsystems.simpleMotor.SimpleMotorSparkMax;
 import frc.robot.subsystems.turret.Turret;
@@ -78,7 +81,9 @@ public class RobotContainer {
   private final Vision m_vision;
   private final Neural m_neural;
   private final ExampleMotorSubsystem m_exampleMotorSubsystem;
+  private final ShiftTracker m_shiftTracker;
   private final RelEncoderSparkMax m_exampleFlywheel;
+  private final Climber m_climber;
   private boolean override;
   private boolean endgameClosed = true;
   private final Turret m_turret;
@@ -104,8 +109,10 @@ public class RobotContainer {
   public RobotContainer() {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
+    m_shiftTracker = new ShiftTracker();
     m_neural = new Neural();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
+    m_climber = new Climber();
     // CAN 10
 
     m_exampleFlywheel =
@@ -184,6 +191,7 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+    configureLeds();
     configureTurret();
   }
 
@@ -203,6 +211,8 @@ public class RobotContainer {
     configureSimpleMotor();
     configureDrive();
     configureFlywheel();
+    configureAlerts();
+    configureClimber();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -226,6 +236,23 @@ public class RobotContainer {
   }
 
   private void configureAlerts() {
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && DriverStation.getMatchTime() > 0
+                    && m_shiftTracker.timeUntil() < 5.0
+                    && m_shiftTracker.timeUntil() > 0.0)
+        .onTrue(
+            controllerRumbleCommand()
+                .withTimeout(0.75)
+                .andThen(Commands.waitSeconds(0.25))
+                .repeatedly()
+                .withTimeout(5)
+
+            // .beforeStarting(() -> leds.endgameAlert = true)
+            // .finallyDo(() -> leds.endgameAlert = false)
+            );
+
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -316,6 +343,17 @@ public class RobotContainer {
             Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
   }
 
+  private void configureClimber() {
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_climber.setPower(-0.05), m_climber))
+        .onFalse(Commands.runOnce(m_climber::stop, m_climber));
+  }
+
   public void configureAutoChooser() {
 
     autoChooser.addOption(
@@ -366,18 +404,23 @@ public class RobotContainer {
     // This code changes LED patterns when the robot is in auto or teleop.
     // It can be manipulated for your desires
 
-    Command AutoLED = new AutoLEDCommand(m_leds);
-    Command TeleopLED = new TeleopLEDCommand(m_leds);
+    // Command AutoLED = new AutoLEDCommand(m_leds);
+    // Command TeleopLED = new TeleopLEDCommand(m_leds);
 
-    Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
-    Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
+    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
+    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
+    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
-    autonomous.onTrue(AutoLED);
-    teleop.onTrue(TeleopLED);
+    // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
+    // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
+
+    // autonomous.onTrue(AutoLED);
+    // teleop.onTrue(TeleopLED);
+    /* */
   }
 
   public void configureDrive() {
-    // Default command, normal field-relative drive
+    // Default command, normal field-relative drive/
     m_drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             m_drive,
@@ -386,15 +429,34 @@ public class RobotContainer {
             () -> -m_driveController.getRightX(),
             m_driveController.leftBumper()));
 
-    // Lock to 0° when A button is held
-    // m_driveController
-    // .b()
-    // .whileTrue(
-    // DriveCommands.joystickDriveAtAngle(
-    // m_drive,
-    // () -> m_driveController.getLeftY(),
-    // () -> m_driveController.getLeftX(),
-    // () -> new Rotation2d()));
+    // Lock to nearest 45° when A button is held
+    Rotation2d[] lockpoints = {
+      new Rotation2d(Math.PI / 4),
+      new Rotation2d(3 * Math.PI / 4),
+      new Rotation2d(-3 * Math.PI / 4),
+      new Rotation2d(-Math.PI / 4),
+    };
+
+    m_driveController
+        .rightBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                m_drive,
+                () -> -m_driveController.getLeftY(),
+                () -> -m_driveController.getLeftX(),
+                () -> {
+                  Rotation2d driveRotation = m_drive.getRotation();
+                  double smallestDiff = Double.MAX_VALUE;
+                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  for (Rotation2d lockpoint : lockpoints) {
+                    double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
+                    if (diff < smallestDiff) {
+                      smallestDiff = diff;
+                      closestLockpoint = lockpoint;
+                    }
+                  }
+                  return closestLockpoint;
+                }));
 
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
