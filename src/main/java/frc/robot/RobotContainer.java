@@ -206,7 +206,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // configureAutos();
-
     configureLeds();
     configureAutoChooser();
     configureSimpleMotor();
@@ -404,10 +403,10 @@ public class RobotContainer {
   public void configurePneumatic() {
     m_testController
         .povRight()
-        .onTrue(Commands.runOnce(() -> m_pneumatic.setSolenoid(true), m_pneumatic));
+        .onTrue(Commands.runOnce(() -> m_pneumatic.setSolenoidForward(), m_pneumatic)).onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
     m_testController
-        .povRight()
-        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoid(false), m_pneumatic));
+        .povLeft()
+        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidReverse(), m_pneumatic)).onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
   }
 
   public void configureLeds() {

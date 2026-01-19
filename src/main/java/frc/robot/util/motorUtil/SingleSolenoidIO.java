@@ -6,15 +6,15 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-public class PneumaticIO extends SubsystemBase {
+public class SingleSolenoidIO extends SubsystemBase {
 
   private Solenoid m_solenoid;
   private Compressor m_compressor;
   private String name;
 
-  public PneumaticIO(int channel, String name) {
+  public SingleSolenoidIO(int channel, String name) {
     m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, channel);
-    m_compressor = new Compressor(channel, PneumaticsModuleType.REVPH);
+    m_compressor = new Compressor(PneumaticsModuleType.REVPH);
     this.name = name;
   }
 
