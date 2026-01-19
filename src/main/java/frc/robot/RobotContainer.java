@@ -457,7 +457,13 @@ public class RobotContainer {
                 }));
 
     // Switch to X pattern when X button is pressed
-    m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
+    // m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
+    m_driveController
+        .x()
+        .onTrue(
+            new DriveTo(m_drive, () -> PoseConstants.firstClimbPose)
+                .andThen(new DriveTo(m_drive, () -> PoseConstants.secondClimbPose))
+                .andThen(new DriveTo(m_drive, () -> PoseConstants.thirdClimbPose)));
 
     // Reset gyro to 0° when A button is pressed
     m_driveController

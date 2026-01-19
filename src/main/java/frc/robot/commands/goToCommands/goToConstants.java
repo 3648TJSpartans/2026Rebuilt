@@ -10,14 +10,14 @@ import frc.robot.util.TunableNumber;
 
 public class goToConstants {
 
-  public static final double drivekP = 6.0;
+  public static final double drivekP = 3.0; // was 6
   public static final double drivekI = 0.0;
   public static final double drivekD = 0.02;
   public static final double thetakP = 5.0;
   public static final double thetakI = 0.0;
   public static final double thetakD = 0.0;
-  public static final double driveMaxVelocity = 4.0;
-  public static final double driveMaxAcceleration = 4.0;
+  public static final double driveMaxVelocity = 0.25; // was 4
+  public static final double driveMaxAcceleration = .5; // was 4
   public static final double thetaMaxVelocity = 360;
   public static final double thetaMaxAcceleration = 720;
   public static final double driveTolerance = 0.005;
@@ -83,6 +83,12 @@ public class goToConstants {
   public static class PoseConstants {
     public static final Pose2d examplePose = new Pose2d(3.57, 2.75, Rotation2d.fromDegrees(60));
     public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+    public static final Pose2d firstClimbPose =
+        new Pose2d(1.066, 4.938, Rotation2d.fromDegrees(-146.28));
+    public static final Pose2d secondClimbPose =
+        new Pose2d(1.024, 4.811, Rotation2d.fromDegrees(180));
+    public static final Pose2d thirdClimbPose = new Pose2d(1.024, 4.7, Rotation2d.fromDegrees(180));
+
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.042;
 
