@@ -215,7 +215,7 @@ public class RobotContainer {
     configureDrive();
     configureShooter();
     configureAlerts();
-    configureClimber();
+    // configureClimber();
     configureTurret();
     configureHood();
     // configureExampleSubsystem();
