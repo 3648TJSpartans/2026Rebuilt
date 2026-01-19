@@ -12,9 +12,9 @@ public class PneumaticIO extends SubsystemBase {
   private Compressor m_compressor;
   private String name;
 
-  public PneumaticIO(int channel, String name) {
-    m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, channel);
-    m_compressor = new Compressor(channel, PneumaticsModuleType.REVPH);
+  public PneumaticIO(int solenoidChannel, int compressorChannel, String name) {
+    m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
+    m_compressor = new Compressor(compressorChannel, PneumaticsModuleType.REVPH);
     this.name = name;
   }
 
