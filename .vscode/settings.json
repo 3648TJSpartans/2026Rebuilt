@@ -60,9 +60,10 @@
     "edu.wpi.first.math.**.struct.*",
   ],
   "[java]": {
-    "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code",
-    "editor.formatOnSave": true
+    "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code"
   },
   "editor.tabSize": 2,
-  "editor.trimAutoWhitespace": true
+  "editor.trimAutoWhitespace": true,
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true
 }
