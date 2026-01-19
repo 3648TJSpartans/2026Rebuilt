@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.examplePneumatic.Pneumatic;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
@@ -85,6 +86,7 @@ public class RobotContainer {
   private boolean override;
   private boolean endgameClosed = true;
   private final Turret m_turret;
+  private final Pneumatic m_pneumatic;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -110,6 +112,7 @@ public class RobotContainer {
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
+    m_pneumatic = new Pneumatic();
     // CAN 10
 
     m_exampleFlywheel =
@@ -211,6 +214,7 @@ public class RobotContainer {
     configureFlywheel();
     configureAlerts();
     configureClimber();
+    configurePneumatic();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -395,6 +399,15 @@ public class RobotContainer {
 
     // m_copilotController.leftBumper().whileTrue(simpleBackward);
     // m_copilotController.rightBumper().whileTrue(simpleForward);
+  }
+
+  public void configurePneumatic() {
+    m_testController
+        .povRight()
+        .onTrue(Commands.runOnce(() -> m_pneumatic.setSolenoid(true), m_pneumatic));
+    m_testController
+        .povRight()
+        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoid(false), m_pneumatic));
   }
 
   public void configureLeds() {
