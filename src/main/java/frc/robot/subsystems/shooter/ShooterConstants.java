@@ -10,5 +10,5 @@ public class ShooterConstants {
    * Example: If revving the shooter to 5000 rpm results in a ball velocity of 15 m/s, then the factor will be 5000/15 = 333.33 RPM*s/m
    */
   public static final TunableNumber kShooterVelocityFactor =
-      new TunableNumber("Subsystems/Shooter/VelocityFactor", 400);
+      new TunableNumber("Subsystems/Shooter/VelocityFactor", 60/(2*Math.PI*0.0508));
 }

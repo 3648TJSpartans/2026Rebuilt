@@ -9,15 +9,27 @@ public class TrajectoryCalc {
   public static final int interpolationPoints = 20;
 
   public static void main(String[] args) {
-    System.out.println("\nMoving Trajectory:");
+    System.out.println("\nFar Trajectory");
     Trajectory results =
-        dynamicTrajectory(
-            new Translation3d(0, 0, 0),
-            new Translation3d(4.034536, 4.625594, 1.430425),
-            new double[] {-1, 2},
-            7.0 / 8,
-            2.1336);
+        stationaryTrajectory(
+            new Translation3d(0.1778, 0.1778, 0.381),
+            new Translation3d(8.255, 0.1778, 0),
+            1.0/2,
+            3.5);
     System.out.println(results);
+    System.out.println("\nFar Trajectory, Imperial");
+    System.out.println(results.toStringImperial());
+
+    System.out.println("\nClose Trajectory");
+    results =
+        stationaryTrajectory(
+            new Translation3d(3.55, 4.625594, 0.381),
+            new Translation3d(4.034536, 4.625594, 1.430425),
+            0.5,
+            1.6);
+      System.out.println(results);
+      System.out.println("\nClose Trajectory, Imperial");
+    System.out.println(results.toStringImperial());
   }
 
   /*

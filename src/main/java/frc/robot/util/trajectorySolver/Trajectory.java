@@ -1,6 +1,7 @@
 package frc.robot.util.trajectorySolver;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 public class Trajectory {
   private final double m_shooterAngle;
@@ -34,6 +35,10 @@ public class Trajectory {
   }
 
   public String toString(){
-    return "Shooter Angle: "+m_shooterAngle+"\nTurret Angle: "+m_turretAngle+"\nShooter Speed: "+m_shooterSpeed+"\nHang Time: "+m_hangTime;
+    return "Shooter Angle (rad): "+ m_shooterAngle +"\nTurret Angle (rad): "+m_turretAngle+"\nShooter Speed: "+m_shooterSpeed+"\nHang Time (s): "+m_hangTime;
+  }
+
+  public String toStringImperial(){
+    return "Shooter Angle (deg): "+Units.radiansToDegrees(m_shooterAngle)+"\nTurret Angle(deg): "+Units.radiansToDegrees(m_turretAngle)+"\nShooter Speed (mph): "+Units.metersToFeet(m_shooterSpeed)/5280.0*3600.0+"\nHang Time (s): "+m_hangTime;
   }
 }
