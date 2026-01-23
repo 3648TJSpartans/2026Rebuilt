@@ -1,11 +1,14 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer.Status;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
 
-  public Hopper() {}
+  public Hopper() {
+  }
 
   public void setHopperSpeed(double speed) {
     IntakeConstants.hopperMotor.set(speed);
@@ -41,5 +44,9 @@ public class Hopper extends SubsystemBase {
   @Override
   public void periodic() {
     updateValues();
+  }
+
+  public Status getStatus() {
+    return Status.OK;
   }
 }

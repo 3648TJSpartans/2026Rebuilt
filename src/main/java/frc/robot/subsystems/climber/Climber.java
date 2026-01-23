@@ -3,6 +3,7 @@ package frc.robot.subsystems.climber;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.RobotContainer.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,9 +19,8 @@ public class Climber extends RelEncoderSparkMax {
 
   @Override
   public void setPosition(double position) {
-    position =
-        MathUtil.clamp(
-            position, ClimberConstants.minPosition.get(), ClimberConstants.maxPosition.get());
+    position = MathUtil.clamp(
+        position, ClimberConstants.minPosition.get(), ClimberConstants.maxPosition.get());
     if (topSwitch.get()) {
       if (position > getPosition()) {
         super.setSpeed(0.0);
@@ -53,5 +53,9 @@ public class Climber extends RelEncoderSparkMax {
 
   public void updateInputs() {
     Logger.recordOutput("Subsystems/Climber/position", getTranslation());
+  }
+
+  public Status getStatus() {
+    return Status.OK;
   }
 }

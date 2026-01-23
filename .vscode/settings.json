@@ -60,7 +60,7 @@
     "edu.wpi.first.math.**.struct.*",
   ],
   "[java]": {
-    "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code",
+    "editor.defaultFormatter": "redhat.java",
     "editor.formatOnSave": true
   },
   "editor.tabSize": 2,
