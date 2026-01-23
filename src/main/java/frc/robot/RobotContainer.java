@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.RotateTo;
 import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
@@ -497,7 +498,13 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
 
-    m_driveController.y().whileTrue(new InstantCommand(() -> m_neural.estimateTargetPose(m_drive)));
+    m_driveController
+        .y()
+        .whileTrue(
+            new RotateTo(m_drive, () -> m_neural.getTargetRotation())
+                .andThen(
+                    Commands.runOnce(() -> m_neural.estimateTargetPose(m_drive))
+                        .alongWith(new DriveTo(m_drive, () -> m_neural.getTargetPose()))));
   }
 
   public void configureExampleSubsystem() {

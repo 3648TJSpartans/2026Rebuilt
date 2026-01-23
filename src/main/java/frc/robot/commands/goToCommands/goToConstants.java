@@ -10,14 +10,14 @@ import frc.robot.util.TunableNumber;
 
 public class goToConstants {
 
-  public static final double drivekP = 6.0;
+  public static final double drivekP = 1.0;
   public static final double drivekI = 0.0;
   public static final double drivekD = 0.02;
   public static final double thetakP = 5.0;
   public static final double thetakI = 0.0;
   public static final double thetakD = 0.0;
-  public static final double driveMaxVelocity = 4.0;
-  public static final double driveMaxAcceleration = 4.0;
+  public static final double driveMaxVelocity = 1.0;
+  public static final double driveMaxAcceleration = 1.0;
   public static final double thetaMaxVelocity = 360;
   public static final double thetaMaxAcceleration = 720;
   public static final double driveTolerance = 0.005;

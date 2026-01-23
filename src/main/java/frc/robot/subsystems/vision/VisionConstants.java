@@ -26,7 +26,7 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "limelight-fourone";
+  public static String camera0Name = "limelight-three";
   public static String camera1Name = "NA";
   public static int defualtPipeline = 0;
   // Robot to camera transforms
@@ -59,7 +59,7 @@ public class VisionConstants {
   // available
 
   // Neural network values
-  public static double nTargetHeight = 56; // Height of the center of the NN target in cm
+  public static double nTargetHeight = 7.5; // Height of the center of the NN target in cm
   public static double nCameraHeight =
       11.5; // Height of the limelight camera from the *ground* in cm
   public static double nCameraAngle =
