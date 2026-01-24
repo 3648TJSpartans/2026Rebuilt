@@ -49,8 +49,9 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
-import frc.robot.subsystems.examplePneumatic.Pneumatic;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.intake.Hopper;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
@@ -90,8 +91,9 @@ public class RobotContainer {
   private boolean endgameClosed = true;
   private final Shooter m_shooter;
   private final Turret m_turret;
-  private final Pneumatic m_pneumatic;
   private final Kicker m_kicker;
+  private final Intake m_intake;
+  private final Hopper m_hopper;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -116,11 +118,12 @@ public class RobotContainer {
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
-    m_pneumatic = new Pneumatic();
     // CAN 10
     m_hood = new Hood();
     m_shooter = new Shooter();
     m_kicker = new Kicker();
+    m_intake = new Intake();
+    m_hopper = new Hopper();
 
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
@@ -220,7 +223,8 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     // configureClimber();
-    configurePneumatic();
+    configureIntake();
+    configureHopper();
     configureTurret();
     configureHood();
     // configureExampleSubsystem();
@@ -326,7 +330,7 @@ public class RobotContainer {
   private void configureTurret() {
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1, new
     // Rotation2d())));
-    m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
+    // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
     TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
     m_testController
         .rightBumper()
@@ -412,15 +416,34 @@ public class RobotContainer {
     // m_copilotController.rightBumper().whileTrue(simpleForward);
   }
 
-  public void configurePneumatic() {
+  public void configureIntake() {
+
     m_testController
-        .povRight()
-        .onTrue(Commands.runOnce(() -> m_pneumatic.setSolenoidForward(), m_pneumatic))
-        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)))
+        .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
-        .povLeft()
-        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidReverse(), m_pneumatic))
-        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
+        .y()
+        .onTrue(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))
+        .onFalse(Commands.runOnce(() -> m_intake.setRollerSpeed(0)));
+    m_driveController
+        .b()
+        .whileTrue(
+            Commands.runOnce(() -> m_intake.setSolenoid(true))
+                .andThen(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))
+                .alongWith(Commands.runOnce(() -> m_hopper.setSpeed(0.1))))
+        .onFalse(
+            Commands.runOnce(() -> m_intake.setSolenoid(false))
+                .alongWith(Commands.runOnce(() -> m_intake.setRollerSpeed(0)))
+                .alongWith(Commands.runOnce(() -> m_hopper.stop())));
+  }
+
+  public void configureHopper() {
+
+    m_testController
+        .a()
+        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(0.1)))
+        .onFalse(Commands.runOnce(() -> m_hopper.stop()));
   }
 
   public void configureLeds() {
