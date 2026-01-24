@@ -118,7 +118,6 @@ public class RobotContainer {
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
-    // CAN 10
     m_hood = new Hood();
     m_shooter = new Shooter();
     m_kicker = new Kicker();
@@ -427,7 +426,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))
         .onFalse(Commands.runOnce(() -> m_intake.setRollerSpeed(0)));
     m_driveController
-        .b()
+        .y()
         .whileTrue(
             Commands.runOnce(() -> m_intake.setSolenoid(true))
                 .andThen(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))

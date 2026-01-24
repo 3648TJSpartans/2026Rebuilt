@@ -8,7 +8,7 @@ public class IntakeConstants {
 
   public static final MotorConfig hopperMotorConfig =
       new MotorConfig("Subsystems/Intake/MotorIO")
-          .motorCan(16)
+          .motorCan(15)
           .p(0)
           .i(0)
           .d(0)
@@ -16,7 +16,7 @@ public class IntakeConstants {
           .minPower(-.1)
           .positionTolerance(0.0);
 
-  public static final SparkMax intakeRollerMotor = new SparkMax(17, MotorType.kBrushless);
+  public static final SparkMax intakeRollerMotor = new SparkMax(16, MotorType.kBrushless);
 
   public static final double intakeRollerSpeed = 0.01;
   public static final double hopperSpeed = 0.01;

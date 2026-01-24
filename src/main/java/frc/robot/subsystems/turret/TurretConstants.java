@@ -8,7 +8,7 @@ public class TurretConstants {
 
   public static final MotorConfig kTurretMotorConfig =
       new MotorConfig("Subsystems/Turret/MotorIO/")
-          .motorCan(13)
+          .motorCan(14)
           .p(1.0)
           .d(0.0)
           .i(0.0)
