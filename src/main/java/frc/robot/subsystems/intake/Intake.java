@@ -13,6 +13,20 @@ public class Intake extends SingleSolenoidIO {
     IntakeConstants.intakeRollerMotor.set(speed);
   }
 
+  public void stopRoller() {
+    IntakeConstants.intakeRollerMotor.stopMotor();
+  }
+
+  public void setSolenoidAndRollerUp() {
+    setSolenoid(false);
+    stopRoller();
+  }
+
+  public void setSolenoidAndRollerDown() {
+    setSolenoid(true);
+    setRollerSpeed(IntakeConstants.intakeRollerSpeed.get());
+  }
+
   public double getRollerSpeed() {
     return IntakeConstants.intakeRollerMotor.get();
   }

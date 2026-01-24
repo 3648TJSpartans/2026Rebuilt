@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
 public class IntakeConstants {
@@ -18,12 +19,15 @@ public class IntakeConstants {
 
   public static final SparkMax intakeRollerMotor = new SparkMax(16, MotorType.kBrushless);
 
-  public static final double intakeRollerSpeed = 0.01;
-  public static final double hopperSpeed = 0.01;
-  public static final double indexerSpeed = 0.01;
-
-  public static final double upPosition = 0;
-  public static final double downPosition = 0;
+  public static final TunableNumber intakeRollerSpeed =
+      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", 0.1);
+  public static final TunableNumber hopperSpeed =
+      new TunableNumber("Subsystems/Intake/hopperSpeed", 0.1);
+  // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
+  // to push any balls in the hopper towards the shooter. It can't run fast or else
+  // it will shred the balls.
+  public static final TunableNumber hopperSlowSpeed =
+      new TunableNumber("Subsystems/Intake/hopperSlowSpeed", 0);
 
   public static final int solenoidChannel = 1;
 }

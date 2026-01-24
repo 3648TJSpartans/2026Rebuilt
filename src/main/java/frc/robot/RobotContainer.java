@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.exampleSubsystemCommands.ExampleMotorCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -47,16 +46,16 @@ import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
-import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -83,7 +82,6 @@ public class RobotContainer {
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final Hood m_hood;
-  private final ExampleMotorSubsystem m_exampleMotorSubsystem;
   private final ShiftTracker m_shiftTracker;
   private final RelEncoderSparkMax m_exampleFlywheel;
   private final Climber m_climber;
@@ -116,7 +114,6 @@ public class RobotContainer {
   public RobotContainer() {
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
-    m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
     m_hood = new Hood();
     m_shooter = new Shooter();
@@ -341,7 +338,7 @@ public class RobotContainer {
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
     m_testController
         .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(0.1)))
+        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_kicker.stop()));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
@@ -423,26 +420,30 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
         .y()
-        .onTrue(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))
-        .onFalse(Commands.runOnce(() -> m_intake.setRollerSpeed(0)));
+        .onTrue(
+            Commands.runOnce(
+                () -> m_intake.setRollerSpeed(IntakeConstants.intakeRollerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_intake.stopRoller()));
     m_driveController
         .y()
-        .whileTrue(
-            Commands.runOnce(() -> m_intake.setSolenoid(true))
-                .andThen(Commands.runOnce(() -> m_intake.setRollerSpeed(0.1)))
-                .alongWith(Commands.runOnce(() -> m_hopper.setSpeed(0.1))))
-        .onFalse(
-            Commands.runOnce(() -> m_intake.setSolenoid(false))
-                .alongWith(Commands.runOnce(() -> m_intake.setRollerSpeed(0)))
-                .alongWith(Commands.runOnce(() -> m_hopper.stop())));
+        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
   public void configureHopper() {
 
     m_testController
         .a()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(0.1)))
-        .onFalse(Commands.runOnce(() -> m_hopper.stop()));
+        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+    m_testController
+        .povLeft()
+        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+    m_testController
+        .povRight()
+        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
   }
 
   public void configureLeds() {
@@ -542,12 +543,6 @@ public class RobotContainer {
     m_driveController
         .leftTrigger()
         .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
-  }
-
-  public void configureExampleSubsystem() {
-    Command motorCommand =
-        new ExampleMotorCmd(m_exampleMotorSubsystem, ExampleMotorSubsystemConstants.power);
-    m_testController.leftBumper().whileTrue(motorCommand);
   }
 
   public Command getAutonomousCommand() {
