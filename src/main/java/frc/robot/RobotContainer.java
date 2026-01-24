@@ -334,10 +334,6 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
     m_testController
-        .rightTrigger()
-        .onTrue(Commands.runOnce(() -> m_shooter.setSpeed(0.1)))
-        .onFalse(Commands.runOnce(() -> m_shooter.stop()));
-    m_testController
         .leftTrigger()
         .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(0.1)))
         .onFalse(Commands.runOnce(() -> m_kicker.stop()));
