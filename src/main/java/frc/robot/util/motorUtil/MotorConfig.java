@@ -16,6 +16,7 @@ public class MotorConfig {
   private static final IdleMode DEFAULT_IDLE_MODE = IdleMode.kBrake;
   private static final double DEFAULT_Ks = 0.0;
   private static final double DEFAULT_Kv = 0.0;
+  private static final int DEFAULT_FOLLOW_CAN = 0;
 
   private String m_loggingName = "Subsystems/MotorIOs/defaultMotor";
   private int m_motorCan = 1;
@@ -33,6 +34,7 @@ public class MotorConfig {
   private IdleMode m_IdleMode = DEFAULT_IDLE_MODE;
   private double m_encoderOdometryFrequency = DEFAULT_ODOMETRY_FREQUENCY;
   private boolean m_isInverted = false;
+  private TunableNumber m_followCan;
 
   public MotorConfig(String name) {
     m_loggingName = name;
@@ -116,6 +118,11 @@ public class MotorConfig {
   // TODO change with Tunable Boolean if you want to.
   public MotorConfig isInverted(boolean isInverted) {
     m_isInverted = isInverted;
+    return this;
+  }
+
+  public MotorConfig follow(int followCan) {
+    m_followCan = new TunableNumber(m_loggingName + "/followCan", followCan);
     return this;
   }
 
@@ -207,5 +214,13 @@ public class MotorConfig {
 
   public boolean isInverted() {
     return m_isInverted;
+  }
+
+  public int followCan() {
+    if (m_followCan == null) {
+      return DEFAULT_FOLLOW_CAN;
+    } else {
+      return (int) m_followCan.get();
+    }
   }
 }

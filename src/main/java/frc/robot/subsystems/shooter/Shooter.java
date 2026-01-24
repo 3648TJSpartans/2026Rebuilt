@@ -4,8 +4,12 @@ import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends RelEncoderSparkMax {
+
+  private static RelEncoderSparkMax follower;
+
   public Shooter() {
-    super(ShooterConstants.kMotorConfig);
+    super(ShooterConstants.kLeaderMotorConfig);
+    follower = new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig);
   }
 
   public void shootVelocity(double velocity) {

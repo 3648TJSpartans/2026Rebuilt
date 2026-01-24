@@ -95,6 +95,9 @@ public class RelEncoderSparkMax extends MotorIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
+    if (m_motorConfig.followCan() != 0) {
+      config.follow(m_motorConfig.followCan(), m_motorConfig.isInverted());
+    }
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_positionTolerance = m_motorConfig.positionTolerance();
     m_speedTolerance = m_motorConfig.speedTolerance();
