@@ -46,4 +46,10 @@ public class RunTrajectoryCmd extends Command {
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance();
   }
+
+  @Override
+  public void end(boolean interrupted) {
+    m_shooter.stop();
+    m_kicker.stop();
+  }
 }

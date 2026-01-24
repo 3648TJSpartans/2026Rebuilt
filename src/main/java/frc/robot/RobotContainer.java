@@ -37,6 +37,7 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.RunStationaryTrajectory;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -64,7 +65,6 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
-import java.util.Random;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -333,26 +333,39 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .rightTrigger()
+        .onTrue(Commands.runOnce(() -> m_shooter.setSpeed(0.1)))
+        .onFalse(Commands.runOnce(() -> m_shooter.stop()));
+    m_testController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(0.1)))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
         .rightTrigger()
         .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
-    Random rand = new Random();
-    TunableNumber targetX =
-        new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
-    TunableNumber targetY =
-        new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
+    // Random rand = new Random();
+    // TunableNumber targetX =
+    //     new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() * 5);
+    // TunableNumber targetY =
+    //     new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() * 5);
 
     m_testController
         .b()
         .whileTrue(
-            Commands.run(() -> m_turret.pointAt(new Translation2d(targetX.get(), targetY.get()))));
+            Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
-    m_driveController
-        .rightBumper()
+    m_testController
+        .povLeft()
         .whileTrue(
             new RunDynamicTrajectory(
+                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
+    m_testController
+        .povRight()
+        .whileTrue(
+            new RunStationaryTrajectory(
                 m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
   }
 
