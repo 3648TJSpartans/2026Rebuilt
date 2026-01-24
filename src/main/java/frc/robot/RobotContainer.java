@@ -52,6 +52,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
+import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
@@ -88,6 +89,7 @@ public class RobotContainer {
   private boolean endgameClosed = true;
   private final Shooter m_shooter;
   private final Turret m_turret;
+  private final Kicker m_kicker;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -115,6 +117,7 @@ public class RobotContainer {
     // CAN 10
     m_hood = new Hood();
     m_shooter = new Shooter();
+    m_kicker = new Kicker();
 
     m_exampleFlywheel =
         new RelEncoderSparkMax(new MotorConfig("Flywheel").motorCan(10).Ks(0.0).Kv(0.0));
@@ -350,7 +353,7 @@ public class RobotContainer {
         .rightBumper()
         .whileTrue(
             new RunDynamicTrajectory(
-                m_turret, m_shooter, m_hood, () -> TrajectoryConstants.hubPose));
+                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
   }
 
   private void configureShooter() {
