@@ -49,6 +49,7 @@ import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystem;
 import frc.robot.subsystems.exampleMotorSubsystem.ExampleMotorSubsystemConstants;
+import frc.robot.subsystems.examplePneumatic.Pneumatic;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
@@ -89,6 +90,7 @@ public class RobotContainer {
   private boolean endgameClosed = true;
   private final Shooter m_shooter;
   private final Turret m_turret;
+  private final Pneumatic m_pneumatic;
   private final Kicker m_kicker;
   // Controller
   private final CommandXboxController m_driveController =
@@ -114,6 +116,7 @@ public class RobotContainer {
     m_shiftTracker = new ShiftTracker();
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
+    m_pneumatic = new Pneumatic();
     // CAN 10
     m_hood = new Hood();
     m_shooter = new Shooter();
@@ -210,7 +213,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // configureAutos();
-
     configureLeds();
     configureAutoChooser();
     configureSimpleMotor();
@@ -218,6 +220,7 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     // configureClimber();
+    configurePneumatic();
     configureTurret();
     configureHood();
     // configureExampleSubsystem();
@@ -407,6 +410,17 @@ public class RobotContainer {
 
     // m_copilotController.leftBumper().whileTrue(simpleBackward);
     // m_copilotController.rightBumper().whileTrue(simpleForward);
+  }
+
+  public void configurePneumatic() {
+    m_testController
+        .povRight()
+        .onTrue(Commands.runOnce(() -> m_pneumatic.setSolenoidForward(), m_pneumatic))
+        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
+    m_testController
+        .povLeft()
+        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidReverse(), m_pneumatic))
+        .onFalse(Commands.runOnce(() -> m_pneumatic.setSolenoidOff()));
   }
 
   public void configureLeds() {
