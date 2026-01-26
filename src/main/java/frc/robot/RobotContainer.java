@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -210,6 +211,27 @@ public class RobotContainer {
    */
   private void configureAutos() {}
 
+  private void configureClimber() {
+    m_climber.setDefaultCommand(
+        Commands.run(
+                () -> {
+                  m_climber.setPower(MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
+                },
+                m_climber)
+            .finallyDo(() -> m_climber.stop()));
+
+    TunableNumber testSetpoint = new TunableNumber("Subsystems/Climber/testSetpoint", 0.0);
+    m_testController
+        .rightBumper()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_climber.setPosition(testSetpoint.get());
+                    },
+                    m_climber)
+                .finallyDo(() -> m_climber.stop()));
+  }
+
   private void configureButtonBindings() {
     // configureAutos();
     configureLeds();
@@ -218,7 +240,7 @@ public class RobotContainer {
     configureDrive();
     configureShooter();
     configureAlerts();
-    // configureClimber();
+    configureClimber();
     configureIntake();
     configureHopper();
     configureTurret();
