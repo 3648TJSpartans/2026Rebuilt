@@ -6,8 +6,9 @@ import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Shooter{
+public class Shooter extends SubsystemBase{
   private final RelEncoderSparkMax leadMotor;
   private final RelEncoderSparkMax followMotor;
   public Shooter() {
@@ -22,6 +23,9 @@ public class Shooter{
     leadMotor.runFFVelocity(rpmSetpoint);
   }
 
-  
+  public void setPower(double power){
+    Logger.recordOutput("Subsystems/Shooter/shootVelocity/power", power);
+    leadMotor.setPower(power);
+  }
 
 }
