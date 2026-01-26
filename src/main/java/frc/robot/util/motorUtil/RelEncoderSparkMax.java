@@ -23,7 +23,7 @@ public class RelEncoderSparkMax extends MotorIO {
   private MotorConfig m_motorConfig;
   private double m_Ks;
   private double m_Kv;
-
+  private SparkMaxConfig m_sparkMaxConfig;
   public RelEncoderSparkMax(MotorConfig motorConfig) {
     super(motorConfig.name());
     m_motorConfig = motorConfig;
@@ -76,17 +76,17 @@ public class RelEncoderSparkMax extends MotorIO {
 
   @Override
   public void configureMotor() {
-    var config = new SparkMaxConfig();
-    config
+    m_sparkMaxConfig= new SparkMaxConfig();
+    m_sparkMaxConfig
         .inverted(m_motorConfig.isInverted())
         .idleMode(m_motorConfig.idleMode())
         .voltageCompensation(12.0);
-    config
+        m_sparkMaxConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(m_motorConfig.p(), m_motorConfig.i(), m_motorConfig.d(), m_motorConfig.ff())
         .outputRange(m_motorConfig.minPower(), m_motorConfig.maxPower());
-    config
+        m_sparkMaxConfig
         .signals
         .absoluteEncoderPositionAlwaysOn(true)
         .absoluteEncoderPositionPeriodMs((int) (1000.0 / m_motorConfig.encoderOdometryFrequency()))
@@ -95,7 +95,7 @@ public class RelEncoderSparkMax extends MotorIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
-    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(m_sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_positionTolerance = m_motorConfig.positionTolerance();
     m_speedTolerance = m_motorConfig.speedTolerance();
     m_Ks = m_motorConfig.Ks();
@@ -126,5 +126,17 @@ public class RelEncoderSparkMax extends MotorIO {
   // Runs specified voltage.
   public void runCharacterization(double output) {
     motor.setVoltage(output);
+  }
+
+  public MotorConfig getMotorConfig(){
+    return m_motorConfig;
+  }
+
+  public SparkMaxConfig getSparMaxConfig(){
+    return m_sparkMaxConfig;
+  }
+
+  public SparkMax getSparkMax(){
+    return motor;
   }
 }
