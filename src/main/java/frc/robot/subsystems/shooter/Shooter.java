@@ -28,4 +28,12 @@ public class Shooter extends SubsystemBase{
     leadMotor.setPower(power);
   }
 
+  public void runCharacterization(double output){
+    leadMotor.runCharacterization(output);
+  }
+
+  public double getFFCharacterizationVelocity(){
+    return leadMotor.getFFCharacterizationVelocity();
+  }
+
 }
