@@ -14,7 +14,7 @@ public class TrajectoryCalc {
         stationaryTrajectory(
             new Translation3d(0.1778, 0.1778, 0.381),
             new Translation3d(8.255, 0.1778, 0),
-            1.0/2,
+            1.0 / 2,
             3.5);
     System.out.println(results);
     System.out.println("\nFar Trajectory, Imperial");
@@ -27,8 +27,8 @@ public class TrajectoryCalc {
             new Translation3d(4.034536, 4.625594, 1.430425),
             0.5,
             1.6);
-      System.out.println(results);
-      System.out.println("\nClose Trajectory, Imperial");
+    System.out.println(results);
+    System.out.println("\nClose Trajectory, Imperial");
     System.out.println(results.toStringImperial());
   }
 
@@ -55,6 +55,24 @@ public class TrajectoryCalc {
     double c1 = zpo / xpo - c2 * xpo;
     double thetaShooter = Math.atan(c1);
     double shooterSpeed = Math.sqrt(-g / (2 * c2)) / Math.cos(thetaShooter);
+    double hangTime = xpt / (shooterSpeed * Math.cos(thetaShooter));
+    return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
+  }
+
+  public static Trajectory stastationaryTrajectory(
+      Translation3d current, Translation3d target, double shooterAngle) {
+    target = target.minus(current);
+    // overhang = overhang;
+    Logger.recordOutput(
+        "Utils/TrajectoryCalc/Path", new Translation3d[] {current, target.plus(current)});
+    double thetaTurret = Math.atan2(target.getY(), target.getX());
+    double xpt = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    double zpt = target.getZ();
+    double det = 2 * g * (Math.tan(shooterAngle) * xpt - ypt);
+    if (det < 0) {
+      return new Trajectory(0.0, 0.0, 0.0, 0.0);
+    }
+    double shooterSpeed = g * xpt / (Math.cos(shooterAngle) * Math.sqrt(det));
     double hangTime = xpt / (shooterSpeed * Math.cos(thetaShooter));
     return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
   }
