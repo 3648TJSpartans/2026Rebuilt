@@ -25,14 +25,14 @@ public class Climber extends RelEncoderSparkMax {
             position, ClimberConstants.minPosition.get(), ClimberConstants.maxPosition.get());
     if (topSwitch.get()) {
       if (position > getPosition()) {
-        super.setSpeed(0.0);
+        super.setPower(0.0);
         return;
       }
     }
 
     if (bottomSwitch.get()) {
       if (position < getPosition()) {
-        super.setSpeed(0.0);
+        super.setPower(0.0);
         return;
       }
     }
