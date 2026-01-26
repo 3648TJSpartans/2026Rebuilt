@@ -35,13 +35,13 @@ public class AbsEncoderSparkMax extends MotorIO {
   @Override
   public void setPosition(double setpoint) {
     super.setPosition(setpoint);
-    motorController.setReference(setpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    motorController.setSetpoint(setpoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   @Override
   public void setSpeed(double speed) {
     super.setSpeed(speed);
-    motorController.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+    motorController.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
   @Override
