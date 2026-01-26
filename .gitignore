@@ -183,11 +183,8 @@ ctre_sim/
 /.cache
 compile_commands.json
 
-# Eclipse generated file for annotation processors
-.factorypath
-
-#Advantage Scope
+#
 src/main/java/frc/robot/BuildConstants.java
 
-# AdvantageScope logs
-*.wpilog
+# Eclipse generated file for annotation processors
+.factorypath
