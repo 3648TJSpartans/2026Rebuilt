@@ -16,4 +16,5 @@ public class TurretConstants {
   public static final TunableNumber kTurretMaxRotation = new TunableNumber("Subsystems/Turret/maxRotation",3*Math.PI/4);
   public static double encoderPositionFactor = 2*Math.PI/5.23;
   
+  public static final int zeroSwitchPort = 0;
 }

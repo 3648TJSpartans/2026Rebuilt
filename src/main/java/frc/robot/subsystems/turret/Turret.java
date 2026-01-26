@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 
 public class Turret extends RelEncoderSparkMax{
@@ -21,6 +22,9 @@ public class Turret extends RelEncoderSparkMax{
   private final Supplier<double[]> m_robotVelocitySupplier;
   private Pose3d turretPose;
   private double[] turretTranslationalVelocity;
+
+  private final DigitalInput m_zeroSwitch;
+
   public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
     m_turretOffset = TurretConstants.kTurretOffset;
@@ -28,6 +32,7 @@ public class Turret extends RelEncoderSparkMax{
     m_robotVelocitySupplier = robotVelocitySupplier;
     turretPose = new Pose3d();
     turretTranslationalVelocity = new double[2];
+    m_zeroSwitch = new DigitalInput(TurretConstants.zeroSwitchPort);
   }
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
@@ -39,6 +44,7 @@ public class Turret extends RelEncoderSparkMax{
   public void periodic(){
     super.periodic();
     updateInputs();
+    checkHeading();
   }
 
   public void updateInputs(){
@@ -56,6 +62,15 @@ public class Turret extends RelEncoderSparkMax{
     turretTranslationalVelocity[1] = (xt - xr)*robotVelocity[2] + robotVelocity[1];
     Logger.recordOutput("Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
   }
+
+  public void checkHeading(){
+    boolean zeroSwitchState = m_zeroSwitch.get();
+    Logger.recordOutput("Subsystems/Turret/ZeroSwitch", zeroSwitchState);
+    if(zeroSwitchState){
+      setZeroHeading();
+    }
+  }
+
 
   public Transform3d getTransformToPose(Pose3d target){
     Transform3d out = target.minus(turretPose);
@@ -87,6 +102,5 @@ public class Turret extends RelEncoderSparkMax{
     Rotation2d targetAngle = target.minus(turretTranslation).getAngle().minus(m_robotPoseSupplier.get().getRotation());
     Logger.recordOutput("Subsystems/Turret/pointAt/targetAngle", targetAngle);
     setRotation(targetAngle);
-  
   }
 }
