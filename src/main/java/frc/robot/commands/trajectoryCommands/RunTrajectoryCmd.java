@@ -40,6 +40,9 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void execute() {
     Trajectory trajectory = m_trajectorySupplier.get();
+    if (!trajectory.isValid()) {
+      return;
+    }
     // Use the trajectory to control subsystems
     m_turret.setFieldRotation(new Rotation2d(trajectory.getTurretAngle()));
     m_shooter.shootVelocity(trajectory.getShooterSpeed());

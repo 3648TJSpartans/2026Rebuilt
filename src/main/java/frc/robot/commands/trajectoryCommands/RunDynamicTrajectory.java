@@ -16,6 +16,11 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
    * Runs a dynamic trajectory, given a turret, shooter, hood, and kicker. Requires knoweldge of the target, if the robot is in range, and how much the robot is tilting.
    * @param turret - Turret Subsystem
    * @param shooter - Shooter Subsystem
+   * @param hood - Hood Subsystem
+   * @param kicker - Kicker Subsystem
+   * @param targetsupplier - Translation3d Supplier for the target (field space)
+   * @param inRangeSupplier - Boolean suppleir asking if the robot is in a valid field spot to shoot.
+   * @param robotTiltSupplier - Supplys robot tilt... if tilt is too much, don't shoot.
    */
   public RunDynamicTrajectory(
       Turret turret,
