@@ -371,11 +371,7 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Subsystems/Drive/Velocity (x,y,w)")
-  public double[] getVelocity(){
-    double[] out = new double[3];
-    out[0] = gyroInputs.translationalVelocity[0];
-    out[1] = gyroInputs.translationalVelocity[1];
-    out[2] = gyroInputs.yawVelocityRadPerSec;
-    return out;
+  public ChassisSpeeds getVelocity(){
+    return new ChassisSpeeds(gyroInputs.translationalVelocity[0],gyroInputs.translationalVelocity[1],gyroInputs.yawVelocityRadPerSec);
   }
 }

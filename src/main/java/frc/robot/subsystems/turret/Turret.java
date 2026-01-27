@@ -13,15 +13,16 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 
 public class Turret extends RelEncoderSparkMax{
   private final Translation3d m_turretOffset;
   private final Supplier<Pose2d> m_robotPoseSupplier;
-  private final Supplier<double[]> m_robotVelocitySupplier;
+  private final Supplier<ChassisSpeeds> m_robotVelocitySupplier;
   private Pose3d turretPose;
   private double[] turretTranslationalVelocity;
-  public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
+  public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
     m_turretOffset = TurretConstants.kTurretOffset;
     m_robotPoseSupplier = robotPoseSupplier;
@@ -51,9 +52,9 @@ public class Turret extends RelEncoderSparkMax{
     Rotation2d absoluteTurretRotation = getTurretRotation().plus(robotPose.getRotation());
     turretPose = new Pose3d(xt,yt,m_turretOffset.getZ(), new Rotation3d(absoluteTurretRotation));
     Logger.recordOutput("Subsystems/Turret/TurretPose", turretPose);
-    double[] robotVelocity = m_robotVelocitySupplier.get();
-    turretTranslationalVelocity[0] = (yr-yt)*robotVelocity[2] + robotVelocity[0];
-    turretTranslationalVelocity[1] = (xt - xr)*robotVelocity[2] + robotVelocity[1];
+    ChassisSpeeds robotVelocity = m_robotVelocitySupplier.get();
+    turretTranslationalVelocity[0] = (yr-yt)*robotVelocity.omegaRadiansPerSecond + robotVelocity.vxMetersPerSecond;
+    turretTranslationalVelocity[1] = (xt - xr)*robotVelocity.omegaRadiansPerSecond + robotVelocity.vyMetersPerSecond;
     Logger.recordOutput("Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
   }
 
