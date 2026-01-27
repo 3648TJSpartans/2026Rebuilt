@@ -50,6 +50,4 @@ public class GyroIONavX implements GyroIO {
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
   }
-
-  }
 }
