@@ -10,6 +10,7 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class RunTrajectoryCmd extends Command {
   private final Supplier<Trajectory> m_trajectorySupplier;
@@ -44,7 +45,9 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void execute() {
     Trajectory trajectory = m_trajectorySupplier.get();
+    Logger.recordOutput("Commands/RunTrajectoryCmd/validTrajectory", !trajectory.isValid());
     if (!trajectory.isValid()) {
+
       return;
     }
     // Use the trajectory to control subsystems
@@ -68,12 +71,24 @@ public class RunTrajectoryCmd extends Command {
      * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
      */
     boolean timeGood = offShiftGood || m_shiftTracker.getOnShift();
+    Logger.recordOutput("Commands/RunTrajectoryCmd/ready/timeGood", timeGood);
+    Logger.recordOutput(
+        "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.positionInTolerance());
+    Logger.recordOutput(
+        "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.positionInTolerance());
+    Logger.recordOutput(
+        "Commands/RunTrajectoryCmd/ready/shooterSpeed", m_shooter.speedInTolerance());
+    boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
 
+    Logger.recordOutput("Commands/RunTrajectoryCmd/ready/tiltInRange", goodTilt);
+
+    boolean robotInRange = m_inRangeSupplier.get();
+    Logger.recordOutput("Commands/RunTrajectoryCmd/ready/robotInRange", robotInRange);
     return m_turret.positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance()
-        && m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt
-        && m_inRangeSupplier.get()
+        && goodTilt
+        && robotInRange
         && timeGood;
   }
 
