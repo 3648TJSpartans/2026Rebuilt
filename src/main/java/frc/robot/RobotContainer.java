@@ -36,6 +36,7 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -199,7 +200,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureLeds();
-    configureTurret();
   }
 
   /**
@@ -336,10 +336,6 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
@@ -356,7 +352,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
-    Command dynamicTrajectory =
+    RunTrajectoryCmd dynamicTrajectory =
         new RunDynamicTrajectory(
             m_turret,
             m_shooter,
@@ -367,6 +363,15 @@ public class RobotContainer {
             m_shiftTracker);
     m_testController.povLeft().whileTrue(dynamicTrajectory);
     m_driveController.povLeft().whileTrue(dynamicTrajectory);
+
+    m_testController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+    m_kicker.setDefaultCommand(
+        Commands.run(() -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get())));
+    new Trigger(() -> dynamicTrajectory.ready())
+        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())));
   }
 
   private void configureShooter() {

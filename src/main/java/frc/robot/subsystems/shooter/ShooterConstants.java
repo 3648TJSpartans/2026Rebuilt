@@ -26,6 +26,8 @@ public class ShooterConstants {
           .Kv(0)
           .speedTolerance(0.0);
 
+  public static int kickerIRSensorChannel = 3;
+
   /*Used to convert from RPM to m/s the ball is shot. RPM*s/m
    * Example: If revving the shooter to 5000 rpm results in a ball velocity of 15 m/s, then the factor will be 5000/15 = 333.33 RPM*s/m
    */
