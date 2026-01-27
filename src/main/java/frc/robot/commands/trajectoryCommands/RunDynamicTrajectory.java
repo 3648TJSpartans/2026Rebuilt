@@ -2,6 +2,7 @@ package frc.robot.commands.trajectoryCommands;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
@@ -29,7 +30,8 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
       Kicker kicker,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
-      Supplier<Double> robotTiltSupplier) {
+      Supplier<Double> robotTiltSupplier,
+      ShiftTracker shiftTracker) {
     super(
         turret,
         shooter,
@@ -37,6 +39,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
         kicker,
         inRangeSupplier,
         robotTiltSupplier,
+        shiftTracker,
         () -> {
           Translation3d target = targetSupplier.get();
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();

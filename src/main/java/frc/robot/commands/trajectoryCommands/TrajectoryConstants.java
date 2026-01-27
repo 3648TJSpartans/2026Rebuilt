@@ -10,4 +10,5 @@ public class TrajectoryConstants {
   public static final double overHangAspect = 7.0 / 8;
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);
   public static final double maxTilt = Units.degreesToRadians(7.5);
+  public static final double preshotDelay = 0.0;
 }

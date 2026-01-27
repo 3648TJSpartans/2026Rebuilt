@@ -3,6 +3,7 @@ package frc.robot.commands.trajectoryCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
@@ -18,6 +19,7 @@ public class RunTrajectoryCmd extends Command {
   private final Kicker m_kicker;
   private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
+  private final ShiftTracker m_shiftTracker;
 
   public RunTrajectoryCmd(
       Turret turret,
@@ -26,6 +28,7 @@ public class RunTrajectoryCmd extends Command {
       Kicker kicker,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
+      ShiftTracker shiftTracker,
       Supplier<Trajectory> trajectorySupplier) { // TODO include shooter and shooter angle.
     m_trajectorySupplier = trajectorySupplier;
     m_turret = turret;
@@ -34,6 +37,7 @@ public class RunTrajectoryCmd extends Command {
     m_kicker = kicker;
     m_inRangeSupplier = inRangeSupplier;
     m_robotTiltSupplier = robotTiltSupplier;
+    m_shiftTracker = shiftTracker;
     addRequirements(turret, shooter, hood);
   }
 
@@ -55,11 +59,22 @@ public class RunTrajectoryCmd extends Command {
   }
 
   public boolean ready() {
+    boolean offShiftGood =
+        !m_shiftTracker.getOnShift()
+            && m_trajectorySupplier.get().getHangTime() + TrajectoryConstants.preshotDelay
+                < m_shiftTracker.timeUntil();
+    /*
+     * TODO
+     * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
+     */
+    boolean timeGood = offShiftGood || m_shiftTracker.getOnShift();
+
     return m_turret.positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance()
         && m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt
-        && m_inRangeSupplier.get();
+        && m_inRangeSupplier.get()
+        && timeGood;
   }
 
   @Override
