@@ -71,6 +71,10 @@ public class RunTrajectoryCmd extends Command {
      * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
      */
     boolean timeGood = offShiftGood || m_shiftTracker.getOnShift();
+    boolean robotInRange = m_inRangeSupplier.get();
+    boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
+    boolean turretTransSpeedGood =
+        m_turret.getTurretTranslationalSpeed() < TrajectoryConstants.translationalSpeedThreshold;
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/timeGood", timeGood);
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.positionInTolerance());
@@ -78,18 +82,16 @@ public class RunTrajectoryCmd extends Command {
         "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.positionInTolerance());
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/shooterSpeed", m_shooter.speedInTolerance());
-    boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
-
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/tiltInRange", goodTilt);
-
-    boolean robotInRange = m_inRangeSupplier.get();
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/robotInRange", robotInRange);
+    Logger.recordOutput("Commands/RunTrajectoryCmd/ready/translationalSpeed", turretTransSpeedGood);
     return m_turret.positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance()
         && goodTilt
         && robotInRange
-        && timeGood;
+        && timeGood
+        && turretTransSpeedGood;
   }
 
   @Override
