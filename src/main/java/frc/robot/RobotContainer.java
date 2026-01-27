@@ -364,7 +364,8 @@ public class RobotContainer {
             m_kicker,
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt());
+            () -> m_drive.getTilt(),
+            m_shiftTracker);
     m_testController.povLeft().whileTrue(dynamicTrajectory);
     m_driveController.povLeft().whileTrue(dynamicTrajectory);
   }
