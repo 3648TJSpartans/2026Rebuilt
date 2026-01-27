@@ -537,12 +537,6 @@ public class RobotContainer {
         new DriveToTag(m_drive, m_drive::getTargetSpacePose, () -> alignOffsetRight);
     Command alignToTagLeft =
         new DriveToTag(m_drive, m_drive::getTargetSpacePose, () -> alignOffsetLeft);
-    m_driveController
-        .rightTrigger()
-        .whileTrue(new DriveTo(m_drive, () -> new Pose2d(1.5, 4.0, new Rotation2d(Math.PI))));
-    m_driveController
-        .leftTrigger()
-        .whileTrue(new DriveTo(m_drive, () -> new Pose2d(0.0, 0.0, new Rotation2d())));
   }
 
   public Command getAutonomousCommand() {
