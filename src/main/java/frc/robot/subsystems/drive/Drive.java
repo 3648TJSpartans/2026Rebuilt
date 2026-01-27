@@ -370,7 +370,7 @@ public class Drive extends SubsystemBase {
     return maxSpeedMetersPerSec / driveBaseRadius;
   }
 
-  @AutoLogOutput(key = "Subsystems/Drive/Velocity (x,y,w)")
+  @AutoLogOutput(key = "Subsystems/Drive/Velocity")
   public ChassisSpeeds getVelocity(){
     return new ChassisSpeeds(gyroInputs.translationalVelocity[0],gyroInputs.translationalVelocity[1],gyroInputs.yawVelocityRadPerSec);
   }
