@@ -1,6 +1,5 @@
 package frc.robot.commands.trajectoryCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shooter.Kicker;
@@ -12,20 +11,26 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class RunDynamicTrajectory extends RunTrajectoryCmd {
+
+  /*
+   * Runs a dynamic trajectory, given a turret, shooter, hood, and kicker. Requires knoweldge of the target, if the robot is in range, and how much the robot is tilting.
+   * @param turret - Turret Subsystem
+   * @param shooter - Shooter Subsystem
+   */
   public RunDynamicTrajectory(
       Turret turret,
       Shooter shooter,
       Hood hood,
       Kicker kicker,
       Supplier<Translation3d> targetSupplier,
-      Supplier<Pose2d> robotPoseSupplier,
+      Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier) {
     super(
         turret,
         shooter,
         hood,
         kicker,
-        robotPoseSupplier,
+        inRangeSupplier,
         robotTiltSupplier,
         () -> {
           Translation3d target = targetSupplier.get();

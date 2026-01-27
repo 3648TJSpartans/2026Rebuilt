@@ -86,6 +86,8 @@ public class goToConstants {
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.042;
 
+    public static final double shootXCutoff = 4.282694;
+
     private static Pose2d[] examplePoseListBlue =
         new Pose2d[] {
           new Pose2d(2, 2, Rotation2d.fromDegrees(180)),

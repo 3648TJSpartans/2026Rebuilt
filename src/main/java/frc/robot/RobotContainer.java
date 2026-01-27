@@ -36,7 +36,6 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
-import frc.robot.commands.trajectoryCommands.RunStationaryTrajectory;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -61,6 +60,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorConfig;
@@ -356,26 +356,17 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
-    m_testController
-        .povLeft()
-        .whileTrue(
-            new RunDynamicTrajectory(
-                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
-    m_testController
-        .povRight()
-        .whileTrue(
-            new RunStationaryTrajectory(
-                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
-    m_driveController
-        .povLeft()
-        .whileTrue(
-            new RunDynamicTrajectory(
-                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
-    m_driveController
-        .povRight()
-        .whileTrue(
-            new RunStationaryTrajectory(
-                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
+    Command dynamicTrajectory =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            m_kicker,
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
+    m_testController.povLeft().whileTrue(dynamicTrajectory);
+    m_driveController.povLeft().whileTrue(dynamicTrajectory);
   }
 
   private void configureShooter() {

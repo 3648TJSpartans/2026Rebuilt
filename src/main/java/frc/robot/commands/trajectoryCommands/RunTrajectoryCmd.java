@@ -1,6 +1,5 @@
 package frc.robot.commands.trajectoryCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
@@ -17,7 +16,7 @@ public class RunTrajectoryCmd extends Command {
   private final Shooter m_shooter;
   private final Hood m_hood;
   private final Kicker m_kicker;
-  private final Supplier<Pose2d> m_robotPoseSupplier;
+  private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
 
   public RunTrajectoryCmd(
@@ -25,7 +24,7 @@ public class RunTrajectoryCmd extends Command {
       Shooter shooter,
       Hood hood,
       Kicker kicker,
-      Supplier<Pose2d> robotPoseSupplier,
+      Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
       Supplier<Trajectory> trajectorySupplier) { // TODO include shooter and shooter angle.
     m_trajectorySupplier = trajectorySupplier;
@@ -33,7 +32,7 @@ public class RunTrajectoryCmd extends Command {
     m_shooter = shooter;
     m_hood = hood;
     m_kicker = kicker;
-    m_robotPoseSupplier = robotPoseSupplier;
+    m_inRangeSupplier = inRangeSupplier;
     m_robotTiltSupplier = robotTiltSupplier;
     addRequirements(turret, shooter, hood);
   }
@@ -56,7 +55,8 @@ public class RunTrajectoryCmd extends Command {
     return m_turret.positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance()
-        && m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
+        && m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt
+        && m_inRangeSupplier.get();
   }
 
   @Override

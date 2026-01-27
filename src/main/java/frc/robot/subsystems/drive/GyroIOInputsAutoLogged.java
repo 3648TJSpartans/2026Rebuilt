@@ -34,6 +34,8 @@ public class GyroIOInputsAutoLogged extends GyroIO.GyroIOInputs
     copy.yawVelocityRadPerSec = this.yawVelocityRadPerSec;
     copy.odometryYawTimestamps = this.odometryYawTimestamps.clone();
     copy.odometryYawPositions = this.odometryYawPositions.clone();
+    copy.pitch = this.pitch;
+    copy.roll = this.roll;
     return copy;
   }
 }
