@@ -59,7 +59,7 @@ public class TrajectoryCalc {
     return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
   }
 
-  public static Trajectory stastationaryTrajectory(
+  public static Trajectory stationaryTrajectory(
       Translation3d current, Translation3d target, double shooterAngle) {
     target = target.minus(current);
     // overhang = overhang;
@@ -68,13 +68,13 @@ public class TrajectoryCalc {
     double thetaTurret = Math.atan2(target.getY(), target.getX());
     double xpt = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     double zpt = target.getZ();
-    double det = 2 * g * (Math.tan(shooterAngle) * xpt - ypt);
+    double det = 2 * g * (Math.tan(shooterAngle) * xpt - zpt);
     if (det < 0) {
       return new Trajectory(0.0, 0.0, 0.0, 0.0);
     }
     double shooterSpeed = g * xpt / (Math.cos(shooterAngle) * Math.sqrt(det));
-    double hangTime = xpt / (shooterSpeed * Math.cos(thetaShooter));
-    return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
+    double hangTime = xpt / (shooterSpeed * Math.cos(shooterAngle));
+    return new Trajectory(shooterAngle, thetaTurret, shooterSpeed, hangTime);
   }
 
   public static Trajectory dynamicTrajectory(
@@ -92,6 +92,21 @@ public class TrajectoryCalc {
                   robotVelocity[1] * trajectory.getHangTime(),
                   0));
       trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
+    }
+    return trajectory;
+  }
+
+  public static Trajectory dynamicTrajectory(
+      Translation3d current, Translation3d target, double[] robotVelocity, double shooterAngle) {
+    Trajectory trajectory = stationaryTrajectory(current, target, shooterAngle);
+    for (int i = 0; i < movingtargetIts; i++) {
+      Translation3d newTarget =
+          target.minus(
+              new Translation3d(
+                  robotVelocity[0] * trajectory.getHangTime(),
+                  robotVelocity[1] * trajectory.getHangTime(),
+                  0));
+      trajectory = stationaryTrajectory(current, newTarget, shooterAngle);
     }
     return trajectory;
   }
