@@ -371,7 +371,8 @@ public class RobotContainer {
     m_kicker.setDefaultCommand(
         Commands.run(() -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get())));
     new Trigger(() -> dynamicTrajectory.ready())
-        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())));
+        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+        .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
@@ -450,6 +451,9 @@ public class RobotContainer {
         .povRight()
         .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+
+    m_hopper.setDefaultCommand(
+        Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
   }
 
   public void configureLeds() {
