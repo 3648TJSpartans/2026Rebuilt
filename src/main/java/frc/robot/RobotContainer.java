@@ -361,7 +361,6 @@ public class RobotContainer {
             m_turret,
             m_shooter,
             m_hood,
-            m_kicker,
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),

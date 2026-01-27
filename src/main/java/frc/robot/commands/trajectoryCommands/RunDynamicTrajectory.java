@@ -3,7 +3,6 @@ package frc.robot.commands.trajectoryCommands;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
-import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
@@ -27,7 +26,6 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
       Turret turret,
       Shooter shooter,
       Hood hood,
-      Kicker kicker,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
@@ -36,7 +34,6 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
         turret,
         shooter,
         hood,
-        kicker,
         inRangeSupplier,
         robotTiltSupplier,
         shiftTracker,

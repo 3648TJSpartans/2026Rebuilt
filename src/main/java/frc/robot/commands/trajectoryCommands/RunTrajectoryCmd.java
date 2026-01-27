@@ -4,9 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
-import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
 import java.util.function.Supplier;
@@ -17,7 +15,6 @@ public class RunTrajectoryCmd extends Command {
   private final Turret m_turret;
   private final Shooter m_shooter;
   private final Hood m_hood;
-  private final Kicker m_kicker;
   private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
   private final ShiftTracker m_shiftTracker;
@@ -26,7 +23,6 @@ public class RunTrajectoryCmd extends Command {
       Turret turret,
       Shooter shooter,
       Hood hood,
-      Kicker kicker,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
       ShiftTracker shiftTracker,
@@ -35,7 +31,6 @@ public class RunTrajectoryCmd extends Command {
     m_turret = turret;
     m_shooter = shooter;
     m_hood = hood;
-    m_kicker = kicker;
     m_inRangeSupplier = inRangeSupplier;
     m_robotTiltSupplier = robotTiltSupplier;
     m_shiftTracker = shiftTracker;
@@ -54,11 +49,6 @@ public class RunTrajectoryCmd extends Command {
     m_turret.setFieldRotation(new Rotation2d(trajectory.getTurretAngle()));
     m_shooter.shootVelocity(trajectory.getShooterSpeed());
     m_hood.setAngle(new Rotation2d(trajectory.getShooterAngle()));
-    if (ready()) {
-      m_kicker.setSpeed(ShooterConstants.kickerSpeed.get());
-    } else {
-      m_kicker.setSpeed(ShooterConstants.kickerSlowSpeed.get());
-    }
   }
 
   public boolean ready() {
@@ -97,6 +87,5 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stop();
-    m_kicker.stop();
   }
 }
