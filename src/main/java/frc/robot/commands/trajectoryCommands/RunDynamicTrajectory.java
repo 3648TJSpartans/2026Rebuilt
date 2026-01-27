@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
 public class RunDynamicTrajectory extends RunTrajectoryCmd {
 
   /*
-   * Runs a dynamic trajectory, given a turret, shooter, hood, and kicker. Requires knoweldge of the target, if the robot is in range, and how much the robot is tilting.
+   * Runs a dynamic trajectory, given a turret, shooter, hood, and kicker. Requires knowledge of the target, if the robot is in range, and how much the robot is tilting.
    * @param turret - Turret Subsystem
    * @param shooter - Shooter Subsystem
    * @param hood - Hood Subsystem
