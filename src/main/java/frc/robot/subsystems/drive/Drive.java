@@ -371,13 +371,20 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Subsystems/Drive/Velocity (x,y,w)")
-  public double[] getVelocity(){
+  public double[] getVelocity() {
     double[] out = new double[3];
     ChassisSpeeds speeds = getChassisSpeeds();
     double theta = getRotation().getRadians();
-    out[0] = Math.cos(theta)*speeds.vxMetersPerSecond - Math.sin(theta)*speeds.vyMetersPerSecond;
-    out[1] = Math.sin(theta)*speeds.vxMetersPerSecond + Math.cos(theta)* speeds.vyMetersPerSecond;
+    out[0] =
+        Math.cos(theta) * speeds.vxMetersPerSecond - Math.sin(theta) * speeds.vyMetersPerSecond;
+    out[1] =
+        Math.sin(theta) * speeds.vxMetersPerSecond + Math.cos(theta) * speeds.vyMetersPerSecond;
     out[2] = speeds.omegaRadiansPerSecond;
     return out;
+  }
+
+  @AutoLogOutput(key = "Subsystems/Drive/Tilt")
+  public double getTilt() {
+    return Math.acos(Math.cos(gyroInputs.pitch) * Math.cos(gyroInputs.roll));
   }
 }
