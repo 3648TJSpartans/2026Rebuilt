@@ -366,6 +366,16 @@ public class RobotContainer {
         .whileTrue(
             new RunStationaryTrajectory(
                 m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
+    m_driveController
+        .povLeft()
+        .whileTrue(
+            new RunDynamicTrajectory(
+                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
+    m_driveController
+        .povRight()
+        .whileTrue(
+            new RunStationaryTrajectory(
+                m_turret, m_shooter, m_hood, m_kicker, () -> TrajectoryConstants.hubPose));
   }
 
   private void configureShooter() {

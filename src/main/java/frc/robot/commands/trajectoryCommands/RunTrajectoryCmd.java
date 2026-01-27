@@ -38,7 +38,11 @@ public class RunTrajectoryCmd extends Command {
     m_turret.setFieldRotation(new Rotation2d(trajectory.getTurretAngle()));
     m_shooter.shootVelocity(trajectory.getShooterSpeed());
     m_hood.setAngle(new Rotation2d(trajectory.getShooterAngle()));
-    m_kicker.setSpeed(ShooterConstants.kickerSpeed.get());
+    if (ready()) {
+      m_kicker.setSpeed(ShooterConstants.kickerSpeed.get());
+    } else {
+      m_kicker.setSpeed(ShooterConstants.kickerSlowSpeed.get());
+    }
   }
 
   public boolean ready() {
