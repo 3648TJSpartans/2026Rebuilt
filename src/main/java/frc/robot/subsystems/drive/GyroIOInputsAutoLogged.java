@@ -12,6 +12,7 @@ public class GyroIOInputsAutoLogged extends GyroIO.GyroIOInputs
     table.put("YawVelocityRadPerSec", yawVelocityRadPerSec);
     table.put("OdometryYawTimestamps", odometryYawTimestamps);
     table.put("OdometryYawPositions", odometryYawPositions);
+    table.put("TranslationalVelocity", translationalVelocity);
   }
 
   @Override
@@ -21,6 +22,7 @@ public class GyroIOInputsAutoLogged extends GyroIO.GyroIOInputs
     yawVelocityRadPerSec = table.get("YawVelocityRadPerSec", yawVelocityRadPerSec);
     odometryYawTimestamps = table.get("OdometryYawTimestamps", odometryYawTimestamps);
     odometryYawPositions = table.get("OdometryYawPositions", odometryYawPositions);
+    translationalVelocity = table.get("TranslationalVelocity", translationalVelocity);
   }
 
   public GyroIOInputsAutoLogged clone() {
@@ -30,6 +32,7 @@ public class GyroIOInputsAutoLogged extends GyroIO.GyroIOInputs
     copy.yawVelocityRadPerSec = this.yawVelocityRadPerSec;
     copy.odometryYawTimestamps = this.odometryYawTimestamps.clone();
     copy.odometryYawPositions = this.odometryYawPositions.clone();
+    copy.translationalVelocity = this.translationalVelocity.clone();
     return copy;
   }
 }

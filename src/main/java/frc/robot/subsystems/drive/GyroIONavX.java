@@ -36,6 +36,8 @@ public class GyroIONavX implements GyroIO {
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
+
+    inputs.translationalVelocity = new double[] {navX.getRobotCentricVelocityX(), navX.getRobotCentricVelocityY()};
     inputs.connected = navX.isConnected();
     inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
@@ -47,5 +49,7 @@ public class GyroIONavX implements GyroIO {
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+  }
+
   }
 }
