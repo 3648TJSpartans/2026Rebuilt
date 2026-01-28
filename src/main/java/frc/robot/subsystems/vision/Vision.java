@@ -253,4 +253,12 @@ public class Vision extends SubsystemBase {
         ? new Pose2d()
         : new Pose2d(translation2d.div(validTags), new Rotation2d(rotation / validTags)));
   }
+
+  public double getTx(int IOIndex) {
+    return io[IOIndex].getTx();
+  }
+
+  public double getTync(int IOIndex) {
+    return io[IOIndex].getTync();
+  }
 }

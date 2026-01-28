@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.RotateTo;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -57,6 +58,7 @@ import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -85,6 +87,7 @@ public class RobotContainer {
     private final Drive m_drive;
     private final LedSubsystem m_leds;
     private final Vision m_vision;
+    private final Neural m_neural;
     private final Hood m_hood;
     private final ShiftTracker m_shiftTracker;
     private final Climber m_climber;
@@ -114,6 +117,7 @@ public class RobotContainer {
     public RobotContainer() {
         m_leds = new LedSubsystem();
         m_shiftTracker = new ShiftTracker();
+        m_neural = new Neural();
         m_climber = new Climber();
         m_hood = new Hood();
         m_shooter = new Shooter();
