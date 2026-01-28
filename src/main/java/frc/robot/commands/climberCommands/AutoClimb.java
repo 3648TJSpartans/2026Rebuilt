@@ -31,18 +31,21 @@ public class AutoClimb extends Command {
     m_tolerance = ClimberConstants.tunablAutoTolerance.get();
     m_goal = ClimberConstants.tunableGoal.get();
 
-    Logger.recordOutput("Commands/Climber/AutoClimb/maxPower", m_maxPower);
-    Logger.recordOutput("Commands/Climber/AutoClimb/minPower", m_minPower);
-    Logger.recordOutput("Commands/Climber/AutoClimb/tolerance", m_tolerance);
-    Logger.recordOutput("Commands/Climber/AutoClimb/goal", m_goal);
+    Logger.recordOutput("Commands/Climber/AutoClimb/inputs/maxPower", m_maxPower);
+    Logger.recordOutput("Commands/Climber/AutoClimb/inputs/minPower", m_minPower);
+    Logger.recordOutput("Commands/Climber/AutoClimb/inputs/tolerance", m_tolerance);
+    Logger.recordOutput("Commands/Climber/AutoClimb/inputs/goal", m_goal);
   }
 
   @Override
   public void execute() {
     double angle = m_angleSupplier.get();
+    Logger.recordOutput("Commands/Climber/AutoClimb/outputs/angle", angle);
     double offset =
         m_goal - angle; // TODO if it spins the wrong way when testign, reverse these values.
+    Logger.recordOutput("Commands/Climber/AutoClimb/outputs/offset", offset);
     double power = MathUtil.clamp(m_pidController.calculate(offset), m_minPower, m_maxPower);
+    Logger.recordOutput("Commands/Climber/AutoClimb/outputs/power", power);
     m_climber.setPower(power);
   }
 
