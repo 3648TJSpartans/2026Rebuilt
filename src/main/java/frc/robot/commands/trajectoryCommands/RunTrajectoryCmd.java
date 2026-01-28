@@ -57,14 +57,14 @@ public class RunTrajectoryCmd extends Command {
     double timeTill = m_timeTill.get();
     double timeLeft = m_timeLeft.get();
     boolean offShiftGood =
-        timeTill != 0
+        timeTill > 0
             && m_trajectorySupplier.get().getHangTime() + TrajectoryConstants.preshotDelay
                 < timeTill;
     /*
      * TODO
      * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
      */
-    boolean timeGood = offShiftGood || timeLeft != 0;
+    boolean timeGood = offShiftGood || timeLeft > 0;
     boolean robotInRange = m_inRangeSupplier.get();
     boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
     boolean turretTransSpeedGood =

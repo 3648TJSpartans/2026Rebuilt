@@ -3,6 +3,7 @@ package frc.robot.commands.goToCommands;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.AllianceFlipUtil;
@@ -86,7 +87,13 @@ public class goToConstants {
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.042;
 
-    public static final double shootXCutoff = 4.282694;
+    public static final double shootYCutoff = 4.282694;
+
+    public static final double zone1Y = 3;
+    public static final double zone2Y = 5.042;
+    public static final Translation3d feedRight = new Translation3d(1.0, 1.5, 0.0);
+    public static final Translation3d feedMiddle = new Translation3d(1.0, 4.021, 0.0);
+    public static final Translation3d feedLeft = new Translation3d(1.0, 6.542, 0.0);
 
     private static Pose2d[] examplePoseListBlue =
         new Pose2d[] {
