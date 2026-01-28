@@ -25,6 +25,8 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
       Turret turret,
       Shooter shooter,
       Hood hood,
+      Supplier<Double> overhangHeight,
+      Supplier<Double> overhangAspect,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
@@ -44,11 +46,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           double[] turretVelocity = turret.getTurretTranslationalVelocity();
           Trajectory traj =
               TrajectoryCalc.dynamicTrajectory(
-                  turretPose,
-                  target,
-                  turretVelocity,
-                  TrajectoryConstants.overHangAspect,
-                  TrajectoryConstants.overhangHeight);
+                  turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/interpolatedTrajectory",
               TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));

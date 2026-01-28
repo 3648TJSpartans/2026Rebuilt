@@ -12,6 +12,8 @@ public class RunStationaryTrajectory extends RunTrajectoryCmd {
       Turret turret,
       Shooter shooter,
       Hood hood,
+      Supplier<Double> overhangHeight,
+      Supplier<Double> overhangAspect,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
@@ -29,10 +31,7 @@ public class RunStationaryTrajectory extends RunTrajectoryCmd {
           Translation3d target = targetSupplier.get();
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
           return TrajectoryCalc.stationaryTrajectory(
-              turretPose,
-              target,
-              TrajectoryConstants.overHangAspect,
-              TrajectoryConstants.overhangHeight);
+              turretPose, target, overhangAspect.get(), overhangHeight.get());
         });
   }
 }

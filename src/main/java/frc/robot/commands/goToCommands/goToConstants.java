@@ -94,6 +94,8 @@ public class goToConstants {
     public static final Translation3d feedRight = new Translation3d(1.0, 1.5, 0.0);
     public static final Translation3d feedMiddle = new Translation3d(1.0, 4.021, 0.0);
     public static final Translation3d feedLeft = new Translation3d(1.0, 6.542, 0.0);
+    public static final double overhangMiddle = 3.5;
+    public static final double overhangSide = 1.5;
 
     private static Pose2d[] examplePoseListBlue =
         new Pose2d[] {

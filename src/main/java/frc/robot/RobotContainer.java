@@ -357,6 +357,8 @@ public class RobotContainer {
             m_turret,
             m_shooter,
             m_hood,
+            () -> TrajectoryConstants.overhangHeight,
+            () -> TrajectoryConstants.overhangAspect,
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -371,14 +373,20 @@ public class RobotContainer {
             m_shooter,
             m_hood,
             () ->
-                switch (RangeCalc.inShootingRange(m_drive.getPose())) {
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
+                  case 1 -> PoseConstants.overhangMiddle;
+                  default -> PoseConstants.overhangSide;
+                },
+            () -> .5,
+            () ->
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> PoseConstants.feedRight;
                   case 1 -> PoseConstants.feedMiddle;
                   case 2 -> PoseConstants.feedLeft;
                   default -> PoseConstants.feedMiddle;
                 },
-            null,
-            null,
+            () -> !RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 

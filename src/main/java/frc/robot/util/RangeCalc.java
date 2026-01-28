@@ -13,7 +13,7 @@ public class RangeCalc {
    * zone 1 middle,
    * zone 2 left
    */
-  public int zoneCalc(Pose2d robotPose) {
+  public static int zoneCalc(Pose2d robotPose) {
     double y = robotPose.getY();
     if (y < PoseConstants.zone1Y) {
       return 0;
