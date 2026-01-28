@@ -6,6 +6,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TrajectoryCalc",
+      "request": "launch",
+      "mainClass": "frc.robot.util.trajectorySolver.TrajectoryCalc",
+      "projectName": "2026Rebuilt"
+    },
+    {
+      "type": "java",
+      "name": "TrajectoryCalc",
+      "request": "launch",
+      "mainClass": "frc.robot.util.TrajectoryCalc",
+      "projectName": "2026Rebuilt"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "frc.robot.Main",
@@ -15,13 +29,13 @@
       "type": "wpilib",
       "name": "WPILib Desktop Debug",
       "request": "launch",
-      "desktop": true
+      "desktop": true,
     },
     {
       "type": "wpilib",
       "name": "WPILib roboRIO Debug",
       "request": "launch",
-      "desktop": false
+      "desktop": false,
     }
   ]
 }

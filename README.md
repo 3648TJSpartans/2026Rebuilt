@@ -49,4 +49,3 @@ public ShiftTracker() {
   m_time = 0.0;
 }
 ```
-
