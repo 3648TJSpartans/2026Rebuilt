@@ -43,9 +43,9 @@ public class ClimberConstants {
   public static final TunableNumber tunableAutoMinPower =
       new TunableNumber("Subsystems/Climber/Auto/PID/MinPower", autoMinPower);
   public static final TunableNumber tunablAutoTolerance =
-      new TunableNumber("Subsystems/Climber/Auto/PID/tolerance", autoTolerance);
+      new TunableNumber("Subsystems/Climber/Auto/PID/tolerance (rad)", autoTolerance);
   public static final TunableNumber tunableGoal =
-      new TunableNumber("Subsystems/Climber/Auto/PID/setAngle", autoSetAngle);
+      new TunableNumber("Subsystems/Climber/Auto/PID/setAngle (rad)", autoSetAngle);
 
   public static PIDController getPidController() {
     return new PIDController(
