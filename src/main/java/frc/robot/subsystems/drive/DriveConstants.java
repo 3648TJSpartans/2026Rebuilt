@@ -39,13 +39,12 @@ public class DriveConstants {
   public static final double trackWidth = Units.inchesToMeters(24.8); // TODO Update;
   public static final double wheelBase = Units.inchesToMeters(24.8);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
-  public static final Translation2d[] moduleTranslations =
-      new Translation2d[] {
-        new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
-        new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
-        new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-        new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
-      };
+  public static final Translation2d[] moduleTranslations = new Translation2d[] {
+      new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
+      new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
+  };
 
   // Zeroed rotation values for each module, see setup instructions
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.PI / 4);
@@ -61,136 +60,131 @@ public class DriveConstants {
    *
    */
 
-  //Encoder Offsets
+  // Encoder Offsets
 
-  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 2).get();
-  public static final double frontLeftExpectedZero =
-      switch (chasNum) {
-        case 0 -> 0.0;
-        case 1 -> 1.757;
-        case 2 -> 0.141;
-        case 3 -> 0.0;
-        default -> 0.0;
-      };
-  public static final double backLeftExpectedZero =
-      switch (chasNum) {
-        case 0 -> 0.0;
-        case 1 -> 4.21;
-        case 2 -> 2.957;
-        case 3 -> 0.0;
-        default -> 0.0;
-      };
-  public static final double frontRightExpectedZero =
-      switch (chasNum) {
-        case 0 -> 0.0;
-        case 1 -> 4.08;
-        case 2 -> 5.61;
-        case 3 -> 0.0;
-        default -> 0.0;
-      };
-  public static final double backRightExpectedZero =
-      switch (chasNum) {
-        case 0 -> 0.0;
-        case 1 -> 4.16;
-        case 2 -> 5.14;
-        case 3 -> 0.0;
-        default -> 0.0;
-      };
+  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 1).get();
+  public static final double frontLeftExpectedZero = switch (chasNum) {
+    case 0 -> 0.0;
+    case 1 -> 1.757;
+    case 2 -> 0.141;
+    case 3 -> 0.0;
+    default -> 0.0;
+  };
+  public static final double backLeftExpectedZero = switch (chasNum) {
+    case 0 -> 0.0;
+    case 1 -> 4.21;
+    case 2 -> 2.957;
+    case 3 -> 0.0;
+    default -> 0.0;
+  };
+  public static final double frontRightExpectedZero = switch (chasNum) {
+    case 0 -> 0.0;
+    case 1 -> 4.08;
+    case 2 -> 5.61;
+    case 3 -> 0.0;
+    default -> 0.0;
+  };
+  public static final double backRightExpectedZero = switch (chasNum) {
+    case 0 -> 0.0;
+    case 1 -> 4.16;
+    case 2 -> 5.14;
+    case 3 -> 0.0;
+    default -> 0.0;
+  };
 
-  //Drive CAN IDs
+  // Drive CAN IDs
 
-  public static final int frontLeftDriveCanId =  switch(chasNum) {
+  public static final int frontLeftDriveCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 8;
     case 2 -> 1;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int backLeftDriveCanId =  switch(chasNum) {
+  };
+  public static final int backLeftDriveCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 6;
     case 2 -> 3;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int frontRightDriveCanId =  switch(chasNum) {
+  };
+  public static final int frontRightDriveCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 2;
     case 2 -> 7;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int backRightDriveCanId =  switch(chasNum) {
+  };
+  public static final int backRightDriveCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 4;
     case 2 -> 5;
     case 3 -> 0;
     default -> 0;
-    };
+  };
 
-  //Turn CAN IDs
-  
-  public static final int frontLeftTurnCanId =  switch(chasNum) {
+  // Turn CAN IDs
+
+  public static final int frontLeftTurnCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 7;
     case 2 -> 2;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int backLeftTurnCanId =  switch(chasNum) {
+  };
+  public static final int backLeftTurnCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 5;
     case 2 -> 4;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int frontRightTurnCanId =  switch(chasNum) {
+  };
+  public static final int frontRightTurnCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 1;
     case 2 -> 8;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int backRightTurnCanId =  switch(chasNum) {
+  };
+  public static final int backRightTurnCanId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 3;
     case 2 -> 6;
     case 3 -> 0;
     default -> 0;
-    };
-  
-  public static final int frontLeftTurnEncoderId =  switch(chasNum) {
+  };
+
+  public static final int frontLeftTurnEncoderId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 3;
     case 2 -> 2;
     case 3 -> 0;
     default -> 0;
-    };
+  };
 
-  //Encoder CAN IDs
+  // Encoder CAN IDs
 
-  public static final int backLeftTurnEncoderId =  switch(chasNum) {
+  public static final int backLeftTurnEncoderId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 2;
     case 2 -> 1;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int frontRightTurnEncoderId =  switch(chasNum) {
+  };
+  public static final int frontRightTurnEncoderId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 0;
     case 2 -> 3;
     case 3 -> 0;
     default -> 0;
-    };
-  public static final int backRightTurnEncoderId =  switch(chasNum) {
+  };
+  public static final int backRightTurnEncoderId = switch (chasNum) {
     case 0 -> 0;
     case 1 -> 1;
     case 2 -> 0;
     case 3 -> 0;
     default -> 0;
-    };
-
+  };
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
@@ -199,14 +193,12 @@ public class DriveConstants {
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
   // Drive encoder configuration
-  public static final double driveEncoderPositionFactor =
-      2 * Math.PI / driveMotorReduction; // Rotor
+  public static final double driveEncoderPositionFactor = 2 * Math.PI / driveMotorReduction; // Rotor
   // Rotations
   // ->
   // Wheel
   // Radians
-  public static final double driveEncoderVelocityFactor =
-      (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM
+  public static final double driveEncoderVelocityFactor = (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM
   // ->
   // Wheel
   // Rad/Sec
@@ -247,16 +239,15 @@ public class DriveConstants {
   public static final double robotMOI = 6.883;
   public static final double wheelCOF = 1.2;
   public static final double ppMaxSpeed = 4.2;
-  public static final RobotConfig ppConfig =
-      new RobotConfig(
-          robotMassKg,
-          robotMOI,
-          new ModuleConfig(
-              wheelRadiusMeters,
-              ppMaxSpeed,
-              wheelCOF,
-              driveGearbox.withReduction(driveMotorReduction),
-              driveMotorCurrentLimit,
-              1),
-          moduleTranslations);
+  public static final RobotConfig ppConfig = new RobotConfig(
+      robotMassKg,
+      robotMOI,
+      new ModuleConfig(
+          wheelRadiusMeters,
+          ppMaxSpeed,
+          wheelCOF,
+          driveGearbox.withReduction(driveMotorReduction),
+          driveMotorCurrentLimit,
+          1),
+      moduleTranslations);
 }
