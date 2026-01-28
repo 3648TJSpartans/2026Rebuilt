@@ -128,4 +128,12 @@ public class Turret extends RelEncoderSparkMax {
   public boolean isHomed() {
     return isHomed;
   }
+
+  @Override
+  public void setPosition(double setpoint) {
+    if (!isHomed) {
+      return;
+    }
+    super.setPosition(setpoint);
+  }
 }
