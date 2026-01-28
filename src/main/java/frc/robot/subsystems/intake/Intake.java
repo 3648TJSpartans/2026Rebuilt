@@ -1,16 +1,30 @@
 package frc.robot.subsystems.intake;
 
-import frc.robot.util.motorUtil.AbsEncoderSparkMax;
+import frc.robot.util.motorUtil.SingleSolenoidIO;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends AbsEncoderSparkMax {
+public class Intake extends SingleSolenoidIO {
 
   public Intake() {
-    super(IntakeConstants.motorConfig);
+    super(IntakeConstants.solenoidChannel, "Intake");
   }
 
   public void setRollerSpeed(double speed) {
     IntakeConstants.intakeRollerMotor.set(speed);
+  }
+
+  public void stopRoller() {
+    IntakeConstants.intakeRollerMotor.stopMotor();
+  }
+
+  public void setSolenoidAndRollerUp() {
+    setSolenoid(false);
+    stopRoller();
+  }
+
+  public void setSolenoidAndRollerDown() {
+    setSolenoid(true);
+    setRollerSpeed(IntakeConstants.intakeRollerSpeed.get());
   }
 
   public double getRollerSpeed() {
@@ -20,7 +34,6 @@ public class Intake extends AbsEncoderSparkMax {
   @Override
   public void updateValues() {
     super.updateValues();
-    Logger.recordOutput(
-        IntakeConstants.motorConfig.name() + "/intakeRollerSpeed", getRollerSpeed());
+    Logger.recordOutput("Intake" + "/intakeRollerSpeed", getRollerSpeed());
   }
 }
