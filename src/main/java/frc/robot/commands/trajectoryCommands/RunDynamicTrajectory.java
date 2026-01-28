@@ -1,5 +1,6 @@
 package frc.robot.commands.trajectoryCommands;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.hood.Hood;
@@ -62,8 +63,8 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/shooterSpeed", traj.getShooterSpeed());
           Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/shooterAngle", traj.getShooterAngle());
           Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/turretRotation", traj.getTurretRotation());
-          Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/shooterRotaiton",
-              new Rotation3d(0, traj.getShooterAngle(), traj.getTurretAngle()));
+          Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/shooterPose",
+              new Pose3d(turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/interpolatedTrajectory",
               TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));
