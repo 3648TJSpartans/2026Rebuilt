@@ -2,13 +2,13 @@ package frc.robot.commands.climberCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.util.LoggedCommand;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-public class AutoClimb extends Command {
+public class AutoClimb extends LoggedCommand {
   private final Climber m_climber;
   private final Supplier<Double> m_angleSupplier;
   private PIDController m_pidController;
@@ -18,6 +18,7 @@ public class AutoClimb extends Command {
   private double m_goal;
 
   public AutoClimb(Climber climber, Supplier<Double> angleSupplier) {
+    super("Commands/Climber/AutoClimb/outputs");
     m_climber = climber;
     m_angleSupplier = angleSupplier;
     addRequirements(climber);
@@ -25,6 +26,7 @@ public class AutoClimb extends Command {
 
   @Override
   public void initialize() {
+    super.initialize();
     m_pidController = ClimberConstants.getPidController();
     m_maxPower = ClimberConstants.tunableAutoMaxPower.get();
     m_minPower = ClimberConstants.tunableAutoMinPower.get();
@@ -51,6 +53,7 @@ public class AutoClimb extends Command {
 
   @Override
   public void end(boolean interupted) {
+    super.end(interupted);
     m_climber.stop();
   }
 
