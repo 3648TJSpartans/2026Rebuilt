@@ -5,7 +5,7 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 
 public class RangeCalc {
   public static boolean inShootingRange(Pose2d robotPose) {
-    return AllianceFlipUtil.apply(robotPose).getY() < PoseConstants.shootYCutoff;
+    return AllianceFlipUtil.apply(robotPose).getX() < PoseConstants.shootCutoff;
   }
 
   /*
@@ -14,11 +14,11 @@ public class RangeCalc {
    * zone 2 left
    */
   public static int zoneCalc(Pose2d robotPose) {
-    double y = robotPose.getY();
-    if (y < PoseConstants.zone1Y) {
+    double x = robotPose.getX();
+    if (x < PoseConstants.zone1) {
       return 0;
     }
-    if (y < PoseConstants.zone2Y) {
+    if (x < PoseConstants.zone2) {
       return 1;
     }
     return 2;
