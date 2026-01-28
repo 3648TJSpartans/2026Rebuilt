@@ -473,7 +473,7 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
 
         m_hopper.setDefaultCommand(
-                Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+                Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
     }
 
     public void configureLeds() {
