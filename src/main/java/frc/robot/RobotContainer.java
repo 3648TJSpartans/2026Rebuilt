@@ -453,7 +453,7 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(() -> m_intake.setRollers(0)));
         m_driveController
                 .y()
-                .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+                .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
                 .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
     }
 
