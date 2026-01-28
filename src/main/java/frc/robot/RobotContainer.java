@@ -389,7 +389,7 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(() -> m_kicker.stop()));
         new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
         m_kicker.setDefaultCommand(
-                Commands.run(() -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get())));
+                Commands.run(() -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
         new Trigger(() -> dynamicTrajectory.ready())
                 .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
                 .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
