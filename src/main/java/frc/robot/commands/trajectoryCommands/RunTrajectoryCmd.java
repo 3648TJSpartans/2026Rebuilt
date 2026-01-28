@@ -3,7 +3,6 @@ package frc.robot.commands.trajectoryCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
@@ -17,7 +16,8 @@ public class RunTrajectoryCmd extends Command {
   private final Hood m_hood;
   private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
-  private final ShiftTracker m_shiftTracker;
+  private final Supplier<Double> m_timeLeft;
+  private final Supplier<Double> m_timeTill;
 
   public RunTrajectoryCmd(
       Turret turret,
@@ -25,7 +25,8 @@ public class RunTrajectoryCmd extends Command {
       Hood hood,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
-      ShiftTracker shiftTracker,
+      Supplier<Double> timeLeft,
+      Supplier<Double> timeTill,
       Supplier<Trajectory> trajectorySupplier) { // TODO include shooter and shooter angle.
     m_trajectorySupplier = trajectorySupplier;
     m_turret = turret;
@@ -33,7 +34,8 @@ public class RunTrajectoryCmd extends Command {
     m_hood = hood;
     m_inRangeSupplier = inRangeSupplier;
     m_robotTiltSupplier = robotTiltSupplier;
-    m_shiftTracker = shiftTracker;
+    m_timeLeft = timeLeft;
+    m_timeTill = timeTill;
     addRequirements(turret, shooter, hood);
   }
 
@@ -52,15 +54,17 @@ public class RunTrajectoryCmd extends Command {
   }
 
   public boolean ready() {
+    double timeTill = m_timeTill.get();
+    double timeLeft = m_timeLeft.get();
     boolean offShiftGood =
-        !m_shiftTracker.getOnShift()
+        timeTill != 0
             && m_trajectorySupplier.get().getHangTime() + TrajectoryConstants.preshotDelay
-                < m_shiftTracker.timeUntil();
+                < timeTill;
     /*
      * TODO
      * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
      */
-    boolean timeGood = offShiftGood || m_shiftTracker.getOnShift();
+    boolean timeGood = offShiftGood || timeLeft != 0;
     boolean robotInRange = m_inRangeSupplier.get();
     boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
     boolean turretTransSpeedGood =

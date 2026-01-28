@@ -360,9 +360,21 @@ public class RobotContainer {
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
-            m_shiftTracker);
+            () -> m_shiftTracker.timeLeft(),
+            () -> m_shiftTracker.timeUntil());
     m_testController.povLeft().whileTrue(dynamicTrajectory);
     m_driveController.povLeft().whileTrue(dynamicTrajectory);
+
+    RunTrajectoryCmd feedAlliance =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            null,
+            null,
+            null,
+            m_shiftTracker.timeUntil(),
+            m_shiftTracker.timeLeft());
 
     m_testController
         .leftTrigger()
