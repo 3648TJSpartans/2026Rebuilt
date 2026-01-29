@@ -34,7 +34,7 @@ public class ClimberConstants {
   public static final int bottomSwitchPort = 6;
   public static final int topSwitchPort = 5;
 
-  public static final double autoClimbP = 0.31;
+  public static final double autoClimbP = 0.62;
   public static final double autoClimbI = 0.0;
   public static final double autoClimbD = 0.0;
   public static final double autoMaxPower = .5;
