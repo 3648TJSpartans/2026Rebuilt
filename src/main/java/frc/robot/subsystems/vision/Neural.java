@@ -15,8 +15,10 @@ public class Neural extends SubsystemBase {
   private double txnc;
   private double tync;
   private Pose2d targetPose;
+  private final String m_cameraName;
 
-  public Neural() {
+  public Neural(String cameraName) {
+    m_cameraName = cameraName;
     tx = 0;
     ty = 0;
     txnc = 0;
@@ -25,15 +27,16 @@ public class Neural extends SubsystemBase {
 
   @Override
   public void periodic() {
-    tx = -LimelightHelpers.getTX(VisionConstants.camera0Name);
-    ty = -LimelightHelpers.getTY(VisionConstants.camera0Name);
-    txnc = -LimelightHelpers.getTXNC(VisionConstants.camera0Name);
-    tync = -LimelightHelpers.getTYNC(VisionConstants.camera0Name);
-    Logger.recordOutput("Subsystems/Vision/Neural/tx", tx);
-    Logger.recordOutput("Subsystems/Vision/Neural/ty", ty);
-    Logger.recordOutput("Subsystems/Vision/Neural/txnc", txnc);
-    Logger.recordOutput("Subsystems/Vision/Neural/tync", tync);
-    Logger.recordOutput("Subsystems/Vision/Neural/targetDetected", tx != 0 && ty != 0);
+    tx = -LimelightHelpers.getTX(m_cameraName);
+    ty = -LimelightHelpers.getTY(m_cameraName);
+    txnc = -LimelightHelpers.getTXNC(m_cameraName);
+    tync = -LimelightHelpers.getTYNC(m_cameraName);
+    Logger.recordOutput("Subsystems/Vision/Neural/" + m_cameraName + "/tx", tx);
+    Logger.recordOutput("Subsystems/Vision/Neural/" + m_cameraName + "/ty", ty);
+    Logger.recordOutput("Subsystems/Vision/Neural/" + m_cameraName + "/txnc", txnc);
+    Logger.recordOutput("Subsystems/Vision/Neural/" + m_cameraName + "/tync", tync);
+    Logger.recordOutput(
+        "Subsystems/Vision/Neural/" + m_cameraName + "/targetDetected", tx != 0 && ty != 0);
   }
 
   // We already have a method to switch pipelines, but I'm not sure how to integrate the limelight

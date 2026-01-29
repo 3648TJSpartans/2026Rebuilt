@@ -111,7 +111,7 @@ public class RobotContainer {
     m_simpleMotor = new SimpleMotor(new SimpleMotorSparkMax());
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
-    m_neural = new Neural();
+    m_neural = new Neural(VisionConstants.camera0Name);
     m_exampleMotorSubsystem = new ExampleMotorSubsystem();
     m_climber = new Climber();
     // CAN 10
