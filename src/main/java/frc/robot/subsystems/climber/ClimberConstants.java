@@ -12,23 +12,20 @@ public class ClimberConstants {
 
   public static final MotorConfig leadMotorConfig =
       new MotorConfig("Subsystems/Climber/MotorIOs/Leads")
-          .motorCan(2)
-          .p(0)
-          .i(0)
-          .d(0)
+          .motorCan(3)
+          .Ks(0.18117)
+          .Kv(0.00212)
           .maxPower(.1)
           .minPower(-.1)
           .positionTolerance(0.0);
   public static final MotorConfig followMotorConfig =
       new MotorConfig("Subsystems/Climber/MotorIOs/Follow")
-          .motorCan(3)
-          .p(0)
-          .i(0)
-          .d(0)
+          .motorCan(2)
+          .Ks(0.17194)
+          .Kv(0.00214)
           .maxPower(.1)
           .minPower(-.1)
-          .positionTolerance(0.0)
-          .follow(2);
+          .positionTolerance(0.0);
   public static final double encoderPositionFactor = 1.0;
 
   public static final int bottomSwitchPort = 6;

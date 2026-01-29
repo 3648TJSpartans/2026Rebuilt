@@ -9,13 +9,14 @@ import org.littletonrobotics.junction.Logger;
 public class Climber extends RelEncoderSparkMax {
   private final DigitalOutput bottomSwitch;
   private final DigitalOutput topSwitch;
-  private final RelEncoderSparkMax follower;
+
+  // private final RelEncoderSparkMax follower;
 
   public Climber() {
     super(ClimberConstants.leadMotorConfig);
     bottomSwitch = new DigitalOutput(ClimberConstants.bottomSwitchPort);
     topSwitch = new DigitalOutput(ClimberConstants.topSwitchPort);
-    follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
+    // follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
   }
 
   @Override

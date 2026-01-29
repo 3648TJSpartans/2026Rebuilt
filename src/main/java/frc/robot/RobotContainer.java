@@ -444,6 +444,12 @@ public class RobotContainer {
             m_shooter,
             speed -> m_shooter.runCharacterization(speed),
             m_shooter::getFFCharacterizationVelocity));
+    autoChooser.addOption(
+        "Climber Lead FF Identification",
+        FFCharacterizationCmd.characterizeSystem(
+            m_climber,
+            speed -> m_climber.runCharacterization(speed),
+            m_climber::getFFCharacterizationVelocity));
   }
 
   public void configureSimpleMotor() {
