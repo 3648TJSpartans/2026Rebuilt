@@ -41,8 +41,8 @@ public class Neural extends SubsystemBase {
 
   // We already have a method to switch pipelines, but I'm not sure how to integrate the limelight
   // index system with this code.
-  public void namedSwitchPipeline(String cameraName, int pipeline) {
-    LimelightHelpers.setPipelineIndex(cameraName, pipeline);
+  public void namedSwitchPipeline(int pipeline) {
+    LimelightHelpers.setPipelineIndex(m_cameraName, pipeline);
   }
 
   public Pose2d getTargetPose() {
