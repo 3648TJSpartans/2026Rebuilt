@@ -10,16 +10,25 @@ public class ClimberConstants {
   public static final TunableNumber minPosition =
       new TunableNumber("Subsystems/Climber/Limits/minPosiiton", 0.0);
 
-  public static final MotorConfig motorConfig =
-      new MotorConfig("Subsystems/Climber/MotorIO")
-          .motorCan(18)
+  public static final MotorConfig leadMotorConfig =
+      new MotorConfig("Subsystems/Climber/MotorIOs/Leads")
+          .motorCan(2)
           .p(0)
           .i(0)
           .d(0)
           .maxPower(.1)
           .minPower(-.1)
           .positionTolerance(0.0);
-
+  public static final MotorConfig followMotorConfig =
+      new MotorConfig("Subsystems/Climber/MotorIOs/Follow")
+          .motorCan(3)
+          .p(0)
+          .i(0)
+          .d(0)
+          .maxPower(.1)
+          .minPower(-.1)
+          .positionTolerance(0.0)
+          .follow(2);
   public static final double encoderPositionFactor = 1.0;
 
   public static final int bottomSwitchPort = 6;
