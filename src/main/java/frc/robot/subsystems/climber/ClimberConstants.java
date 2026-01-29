@@ -57,7 +57,11 @@ public class ClimberConstants {
       new TunableNumber("Subsystems/Climber/Auto/PID/setAngle (rad)", autoSetAngle);
 
   public static PIDController getPidController() {
-    return new PIDController(
-        tunableAutoClimbP.get(), tunableAutoClimbI.get(), tunableAutoClimbD.get());
+    PIDController out =
+        new PIDController(
+            tunableAutoClimbP.get(), tunableAutoClimbI.get(), tunableAutoClimbD.get());
+    // Stops violent jumps
+    out.enableContinuousInput(-Math.PI, Math.PI);
+    return out;
   }
 }

@@ -44,7 +44,7 @@ public class AutoClimb extends LoggedCommand {
     double angle = m_angleSupplier.get();
     Logger.recordOutput("Commands/Climber/AutoClimb/outputs/angle", angle);
     double offset =
-        m_goal - angle; // TODO if it spins the wrong way when testign, reverse these values.
+        angle - m_goal; // TODO if it spins the wrong way when testign, reverse these values.
     Logger.recordOutput("Commands/Climber/AutoClimb/outputs/offset", offset);
     double power = MathUtil.clamp(m_pidController.calculate(offset), m_minPower, m_maxPower);
     Logger.recordOutput("Commands/Climber/AutoClimb/outputs/power", power);

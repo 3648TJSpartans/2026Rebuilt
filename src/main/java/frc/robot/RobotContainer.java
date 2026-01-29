@@ -45,7 +45,6 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
@@ -126,14 +125,20 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        // m_drive =
+        //     new Drive(
+        //         new GyroIONavX(),
+        //         new ModuleIOMK4Spark(0),
+        //         new ModuleIOMK4Spark(1),
+        //         new ModuleIOMK4Spark(2),
+        //         new ModuleIOMK4Spark(3));
         m_drive =
             new Drive(
                 new GyroIONavX(),
-                new ModuleIOMK4Spark(0),
-                new ModuleIOMK4Spark(1),
-                new ModuleIOMK4Spark(2),
-                new ModuleIOMK4Spark(3));
-
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         // To change number of limelights, just add or delete IOs in the
         // parameters
         // Make sure camera name match in the coprocessor!
@@ -320,7 +325,7 @@ public class RobotContainer {
   }
 
   private void configureClimber() {
-    Command autoFlip = new AutoClimb(m_climber, m_drive::getTilt);
+    Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     m_testController.leftBumper().whileTrue(autoFlip);
   }
 
