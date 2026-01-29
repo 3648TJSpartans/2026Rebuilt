@@ -60,7 +60,7 @@ public abstract class MotorIO extends SubsystemBase {
     setEncoder(0.0);
   }
 
-  public final void stop() {
+  public void stop() {
     setPower(0.0);
     m_speedSetpoint = 0.0;
   }

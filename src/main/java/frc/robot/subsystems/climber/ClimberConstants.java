@@ -15,6 +15,9 @@ public class ClimberConstants {
           .motorCan(3)
           .Ks(0.18117)
           .Kv(0.00212)
+          .p(0.0)
+          .i(0.0)
+          .d(0.0)
           .maxPower(.1)
           .minPower(-.1)
           .positionTolerance(0.0);
@@ -23,6 +26,9 @@ public class ClimberConstants {
           .motorCan(2)
           .Ks(0.17194)
           .Kv(0.00214)
+          .p(0.0)
+          .i(0.0)
+          .d(0.0)
           .maxPower(.1)
           .minPower(-.1)
           .positionTolerance(0.0);
@@ -52,6 +58,9 @@ public class ClimberConstants {
       new TunableNumber("Subsystems/Climber/Auto/PID/tolerance (rad)", autoTolerance);
   public static final TunableNumber tunableGoal =
       new TunableNumber("Subsystems/Climber/Auto/PID/setAngle (rad)", autoSetAngle);
+
+  public static final TunableNumber maxSpeed =
+      new TunableNumber("Subsystems/Climber/Auto/PID/maxSpeed", 6000);
 
   public static PIDController getPidController() {
     PIDController out =

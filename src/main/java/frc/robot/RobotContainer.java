@@ -325,8 +325,15 @@ public class RobotContainer {
   }
 
   private void configureClimber() {
+
     Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     m_testController.leftBumper().whileTrue(autoFlip);
+    TunableNumber testSpeed = new TunableNumber("Subsystems/Climber/test/testSpeed", .8);
+    m_testController
+        .rightBumper()
+        .whileTrue(
+            Commands.run(() -> m_climber.setPower(testSpeed.get()), m_climber)
+                .finallyDo(() -> m_climber.stop()));
   }
 
   private void configureTurret() {

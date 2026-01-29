@@ -10,13 +10,13 @@ public class Climber extends RelEncoderSparkMax {
   private final DigitalOutput bottomSwitch;
   private final DigitalOutput topSwitch;
 
-  // private final RelEncoderSparkMax follower;
+  private final RelEncoderSparkMax follower;
 
   public Climber() {
     super(ClimberConstants.leadMotorConfig);
     bottomSwitch = new DigitalOutput(ClimberConstants.bottomSwitchPort);
     topSwitch = new DigitalOutput(ClimberConstants.topSwitchPort);
-    // follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
+    follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
   }
 
   @Override
@@ -38,6 +38,26 @@ public class Climber extends RelEncoderSparkMax {
       }
     }
     super.setPosition(position);
+    follower.setPosition(position);
+  }
+
+  @Override
+  public void setSpeed(double speed) {
+    speed = speed * ClimberConstants.maxSpeed.get();
+    super.setSpeed(speed);
+    follower.setSpeed(speed);
+  }
+
+  @Override
+  public void setPower(double power) {
+    super.setPower(power);
+    follower.setPower(power);
+  }
+
+  @Override
+  public void stop() {
+    super.stop();
+    follower.stop();
   }
 
   public Translation3d getTranslation() {
