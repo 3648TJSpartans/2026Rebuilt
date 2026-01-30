@@ -15,8 +15,7 @@ public class TrajectoryCalc {
             new Translation3d(0, 0, 0),
             new Translation3d(4.034536, 4.625594, 1.430425),
             new double[] {-1, 2},
-            7.0 / 8,
-            2.1336);
+            2);
     System.out.println(results);
   }
 
