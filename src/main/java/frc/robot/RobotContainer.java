@@ -63,7 +63,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
-import frc.robot.util.Statusable;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
@@ -497,11 +496,8 @@ public class RobotContainer {
     new Trigger(() -> DriverStation.isDisabled())
         .whileTrue(
             new StatusCheckLEDCommand(
-                    m_leds,
-                    new Statusable[] {
-                      m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood, m_hopper,
-                      m_intake
-                    })
+                    m_leds, m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood,
+                    m_hopper, m_intake)
                 .ignoringDisable(true));
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
