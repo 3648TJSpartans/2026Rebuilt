@@ -45,14 +45,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.Constants.Status;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.Statusable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive extends SubsystemBase implements Statusable {
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -386,5 +388,10 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Subsystems/Drive/Tilt")
   public double getTilt() {
     return Math.acos(Math.cos(gyroInputs.pitch) * Math.cos(gyroInputs.roll));
+  }
+
+  @Override
+  public Status getStatus() {
+    return Status.OK;
   }
 }

@@ -33,13 +33,15 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.util.Statusable;
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements Statusable {
   private final VisionConsumer consumer;
   private final TimelessVisionConsumer targetSpaceConsumer;
   private final VisionIO[] io;
@@ -252,5 +254,10 @@ public class Vision extends SubsystemBase {
     return (validTags == 0
         ? new Pose2d()
         : new Pose2d(translation2d.div(validTags), new Rotation2d(rotation / validTags)));
+  }
+
+  @Override
+  public Status getStatus() {
+    return Status.OK;
   }
 }

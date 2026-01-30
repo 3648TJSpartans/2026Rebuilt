@@ -1,10 +1,12 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Constants.Status;
+import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
-public class Kicker extends RelEncoderSparkMax {
+public class Kicker extends RelEncoderSparkMax implements Statusable {
 
   private final DigitalOutput irSensor;
 
@@ -27,5 +29,10 @@ public class Kicker extends RelEncoderSparkMax {
   public void updateValues() {
     super.updateValues();
     Logger.recordOutput("Subsystems/Climber/irSensor", irSensor.get());
+  }
+
+  @Override
+  public Status getStatus() {
+    return Status.OK;
   }
 }

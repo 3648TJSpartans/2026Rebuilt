@@ -24,6 +24,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.LimelightHelpers;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -48,9 +49,8 @@ public class VisionIOLimelight implements VisionIO {
   /**
    * Creates a new VisionIOLimelight.
    *
-   * @param name             The configured name of the Limelight.
-   * @param rotationSupplier Supplier for the current estimated rotation, used for
-   *                         MegaTag 2.
+   * @param name The configured name of the Limelight.
+   * @param rotationSupplier Supplier for the current estimated rotation, used for MegaTag 2.
    */
   public VisionIOLimelight(String name, Supplier<Rotation2d> rotationSupplier) {
     this.name = name;
@@ -61,9 +61,11 @@ public class VisionIOLimelight implements VisionIO {
     latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
     txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
     tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
-    botpose_targetSpaceSubscriber = table.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[6]);
+    botpose_targetSpaceSubscriber =
+        table.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[6]);
     megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    megatag2Subscriber = table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
+    megatag2Subscriber =
+        table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
   }
 
   @Override
@@ -84,6 +86,8 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last
     // 250ms
+    inputs.connected =
+        ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
     inputs.cameraName = name;
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();

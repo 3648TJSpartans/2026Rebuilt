@@ -494,7 +494,12 @@ public class RobotContainer {
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
     new Trigger(() -> DriverStation.isDisabled())
         .onTrue(
-            new StatusCheckLEDCommand(m_leds, new Statusable[] {m_turret, m_climber})
+            new StatusCheckLEDCommand(
+                    m_leds,
+                    new Statusable[] {
+                      m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood, m_hopper,
+                      m_intake
+                    })
                 .ignoringDisable(true));
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
