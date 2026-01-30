@@ -43,4 +43,17 @@ public final class Constants {
     WARNING,
     ERROR
   }
+
+  public static Status leastCommonStatus(Status a, Status b) {
+    if (a == Status.OK && b == Status.WARNING) {
+      return Status.WARNING;
+    }
+    if (a == Status.WARNING && b == Status.ERROR) {
+      return Status.ERROR;
+    }
+    if (a == Status.OK && b == Status.ERROR) {
+      return Status.ERROR;
+    }
+    return a;
+  }
 }
