@@ -26,13 +26,15 @@ public class StatusCheckLEDCommand extends Command {
       if (m_statuses[i].getStatus() == Status.OK) {
         m_leds.setSingleLed(0, 255, 0, i);
         Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "OK");
-      } else if (m_statuses[i].getStatus() == Status.WARNING) {
+        continue;
+      }
+      if (m_statuses[i].getStatus() == Status.WARNING) {
         m_leds.setSingleLed(255, 255, 0, i);
         Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "WARNING");
-      } else {
-        m_leds.setSingleLed(255, 0, 0, i);
-        Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "ERROR");
+        continue;
       }
+      m_leds.setSingleLed(255, 0, 0, i);
+      Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "ERROR");
     }
   }
 
