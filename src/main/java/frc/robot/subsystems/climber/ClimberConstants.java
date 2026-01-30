@@ -27,8 +27,7 @@ public class ClimberConstants {
           .d(0)
           .maxPower(.1)
           .minPower(-.1)
-          .positionTolerance(0.0)
-          .follow(2);
+          .positionTolerance(0.0);
   public static final double encoderPositionFactor = 1.0;
 
   public static final int bottomSwitchPort = 6;

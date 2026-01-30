@@ -56,4 +56,16 @@ public class Climber extends RelEncoderSparkMax {
   public void updateInputs() {
     Logger.recordOutput("Subsystems/Climber/position", getTranslation());
   }
+
+  @Override
+  public void setPower(double power) {
+    super.setPower(power);
+    follower.setPower(power);
+  }
+
+  @Override
+  public void stop() {
+    super.setPower(0.0);
+    follower.setPower(0.0);
+  }
 }

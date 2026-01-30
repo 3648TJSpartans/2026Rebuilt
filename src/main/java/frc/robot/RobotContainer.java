@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -327,6 +328,12 @@ public class RobotContainer {
   private void configureClimber() {
     Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     m_testController.leftBumper().whileTrue(autoFlip);
+
+    m_climber.setDefaultCommand(
+        Commands.run(
+                () -> m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1)),
+                m_climber)
+            .finallyDo(() -> m_climber.stop()));
   }
 
   private void configureTurret() {
