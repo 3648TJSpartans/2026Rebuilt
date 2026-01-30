@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Arrays;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -55,5 +56,11 @@ public final class Constants {
       return Status.ERROR;
     }
     return a;
+  }
+
+  public static Status leastCommonStatus(Status... statuses) {
+
+    return leastCommonStatus(
+        statuses[0], leastCommonStatus(Arrays.copyOfRange(statuses, 1, statuses.length)));
   }
 }
