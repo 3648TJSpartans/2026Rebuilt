@@ -13,6 +13,7 @@ public class StatusCheckLEDCommand extends Command {
   public StatusCheckLEDCommand(LedSubsystem leds, Statusable... statuses) {
     m_statuses = statuses;
     m_leds = leds;
+    addRequirements(leds);
   }
 
   @Override

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -492,12 +493,15 @@ public class RobotContainer {
     Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
-    new Trigger(() -> DriverStation.isDisabled())
-        .whileTrue(
-            new StatusCheckLEDCommand(
-                    m_leds, m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood,
-                    m_hopper, m_intake)
-                .ignoringDisable(true));
+
+    WrapperCommand statusCheck =
+        new StatusCheckLEDCommand(
+                m_leds, m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood,
+                m_hopper, m_intake)
+            .ignoringDisable(true);
+
+    m_leds.setDefaultCommand(statusCheck);
+    // new Trigger(() -> DriverStation.isDisabled()).whileTrue();
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
