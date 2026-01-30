@@ -195,7 +195,6 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
-    configureLeds();
   }
 
   /**

@@ -53,7 +53,7 @@ public class Vision extends SubsystemBase implements Statusable {
     this.consumer = consumer;
     this.targetSpaceConsumer = targetSpaceConsumer;
     this.io = io;
-
+    setName("Subsystems/Vision");
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {

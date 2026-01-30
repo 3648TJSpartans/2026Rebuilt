@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.motorUtil.SingleSolenoidIO;
 
@@ -10,7 +9,7 @@ public class Intake extends SingleSolenoidIO {
   private RelEncoderSparkMax roller;
 
   public Intake() {
-    super(IntakeConstants.solenoidChannel, "Intake");
+    super(IntakeConstants.solenoidChannel, "Subsystems/Intake");
     roller = new RelEncoderSparkMax(IntakeConstants.intakeRollerConfig);
   }
 
