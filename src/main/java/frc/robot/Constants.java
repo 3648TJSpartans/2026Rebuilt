@@ -37,4 +37,10 @@ public final class Constants {
   }
 
   public static class OperatorConstants {}
+
+  public static enum Status {
+    OK,
+    WARNING,
+    ERROR
+  }
 }

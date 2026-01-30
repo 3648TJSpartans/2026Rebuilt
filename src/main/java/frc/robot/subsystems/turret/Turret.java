@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -111,5 +112,9 @@ public class Turret extends RelEncoderSparkMax {
     return Math.sqrt(
         turretTranslationalVelocity[0] * turretTranslationalVelocity[0]
             + turretTranslationalVelocity[1] * turretTranslationalVelocity[1]);
+  }
+
+  public Status getStatus() {
+    return Status.ERROR;
   }
 }
