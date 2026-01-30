@@ -6,7 +6,7 @@ import frc.robot.Constants.Status;
 import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 
-public class Hood extends AbsEncoderSparkMax implements Statusable {
+public class Hood extends AbsEncoderSparkMax {
   public Hood() {
     super(HoodConstants.motorConfig);
   }

@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import frc.robot.Constants.Status;
 
 public class RelEncoderSparkMax extends MotorIO {
 
@@ -81,11 +82,13 @@ public class RelEncoderSparkMax extends MotorIO {
         .inverted(m_motorConfig.isInverted())
         .idleMode(m_motorConfig.idleMode())
         .voltageCompensation(12.0);
-    config.closedLoop
+    config
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(m_motorConfig.p(), m_motorConfig.i(), m_motorConfig.d(), m_motorConfig.ff())
         .outputRange(m_motorConfig.minPower(), m_motorConfig.maxPower());
-    config.signals
+    config
+        .signals
         .absoluteEncoderPositionAlwaysOn(true)
         .absoluteEncoderPositionPeriodMs((int) (1000.0 / m_motorConfig.encoderOdometryFrequency()))
         .absoluteEncoderVelocityAlwaysOn(true)
@@ -127,5 +130,10 @@ public class RelEncoderSparkMax extends MotorIO {
   // Runs specified voltage.
   public void runCharacterization(double output) {
     motor.setVoltage(output);
+  }
+
+  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
+  public Status getStatus() {
+    return Status.WARNING;
   }
 }

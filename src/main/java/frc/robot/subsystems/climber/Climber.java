@@ -4,11 +4,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
-public class Climber extends RelEncoderSparkMax implements Statusable {
+public class Climber extends RelEncoderSparkMax {
   private final DigitalOutput bottomSwitch;
   private final DigitalOutput topSwitch;
 

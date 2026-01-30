@@ -5,7 +5,7 @@ import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.motorUtil.SingleSolenoidIO;
 
-public class Intake extends SingleSolenoidIO implements Statusable {
+public class Intake extends SingleSolenoidIO {
 
   private RelEncoderSparkMax roller;
 

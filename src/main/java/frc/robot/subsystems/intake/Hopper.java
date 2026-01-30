@@ -4,7 +4,7 @@ import frc.robot.Constants.Status;
 import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 
-public class Hopper extends RelEncoderSparkMax implements Statusable {
+public class Hopper extends RelEncoderSparkMax {
 
   public Hopper() {
     super(IntakeConstants.hopperMotorConfig);

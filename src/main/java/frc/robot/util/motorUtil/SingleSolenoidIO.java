@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
+import frc.robot.util.Statusable;
+
 import org.littletonrobotics.junction.Logger;
 
-public class SingleSolenoidIO extends SubsystemBase {
+public class SingleSolenoidIO extends SubsystemBase implements Statusable {
 
   private Solenoid m_solenoid;
   private Compressor m_compressor;
@@ -16,6 +19,11 @@ public class SingleSolenoidIO extends SubsystemBase {
     m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, channel);
     m_compressor = new Compressor(PneumaticsModuleType.REVPH);
     this.name = name;
+  }
+
+  @Override
+  public final String getName() {
+    return name;
   }
 
   public void setSolenoid(boolean on) {
@@ -67,5 +75,10 @@ public class SingleSolenoidIO extends SubsystemBase {
   @Override
   public void periodic() {
     updateValues();
+  }
+
+  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
+  public Status getStatus() {
+    return Status.WARNING;
   }
 }

@@ -5,7 +5,7 @@ import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends RelEncoderSparkMax implements Statusable {
+public class Shooter extends RelEncoderSparkMax {
 
   private static RelEncoderSparkMax follower;
 

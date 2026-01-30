@@ -145,7 +145,9 @@ public class RobotContainer {
                 // new
                 // VisionIOLimelight(VisionConstants.camera1Name,
                 // m_drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation));
+                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourtwo", m_drive::getRotation));
         break;
 
       case SIM:
@@ -493,7 +495,7 @@ public class RobotContainer {
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
     new Trigger(() -> DriverStation.isDisabled())
-        .onTrue(
+        .whileTrue(
             new StatusCheckLEDCommand(
                     m_leds,
                     new Statusable[] {

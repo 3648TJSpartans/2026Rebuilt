@@ -256,8 +256,21 @@ public class Vision extends SubsystemBase implements Statusable {
         : new Pose2d(translation2d.div(validTags), new Rotation2d(rotation / validTags)));
   }
 
+  // If any of the cameras are disconnected, returns ERROR. If all of the cameras
+  // are connected and at least one sees an AprilTag, returns OK. If all are connected
+  // but none see an AprilTag, returns WARNING.
   @Override
   public Status getStatus() {
-    return Status.OK;
+    for (VisionIOInputsAutoLogged camera : inputs) {
+      if (!camera.connected) {
+        return Status.ERROR;
+      }
+    }
+    for (VisionIOInputsAutoLogged camera : inputs) {
+      if (camera.poseObservations.length > 0) {
+        return Status.OK;
+      }
+    }
+    return Status.WARNING;
   }
 }

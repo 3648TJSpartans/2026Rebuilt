@@ -6,7 +6,7 @@ import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
-public class Kicker extends RelEncoderSparkMax implements Statusable {
+public class Kicker extends RelEncoderSparkMax {
 
   private final DigitalOutput irSensor;
 

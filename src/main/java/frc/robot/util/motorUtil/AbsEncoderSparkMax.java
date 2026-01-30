@@ -11,6 +11,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants.Status;
+
 public class AbsEncoderSparkMax extends MotorIO {
 
   private MotorConfig m_motorConfig;
@@ -105,5 +107,10 @@ public class AbsEncoderSparkMax extends MotorIO {
   public void configureMotor(MotorConfig motorConfig) {
     m_motorConfig = motorConfig;
     configureMotor();
+  }
+
+  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
+  public Status getStatus() {
+    return Status.WARNING;
   }
 }

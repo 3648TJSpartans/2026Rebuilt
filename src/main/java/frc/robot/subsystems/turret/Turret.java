@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Turret extends RelEncoderSparkMax implements Statusable {
+public class Turret extends RelEncoderSparkMax {
   private final Translation3d m_turretOffset;
   private final Supplier<Pose2d> m_robotPoseSupplier;
   private final Supplier<double[]> m_robotVelocitySupplier;

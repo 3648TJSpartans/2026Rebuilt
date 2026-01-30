@@ -3,11 +3,12 @@ package frc.robot.util.motorUtil;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
+import frc.robot.util.Statusable;
 import org.littletonrobotics.junction.Logger;
 
-public class DoubleSolenoidIO extends SubsystemBase {
+public class DoubleSolenoidIO extends SubsystemBase implements Statusable {
 
   private DoubleSolenoid m_solenoid;
   private Compressor m_compressor;
@@ -17,6 +18,11 @@ public class DoubleSolenoidIO extends SubsystemBase {
     m_solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, solenoidChannel1, solenoidChannel2);
     m_compressor = new Compressor(PneumaticsModuleType.REVPH);
     this.name = name;
+  }
+
+  @Override
+  public final String getName() {
+    return name;
   }
 
   public void setSolenoidForward() {
@@ -76,5 +82,10 @@ public class DoubleSolenoidIO extends SubsystemBase {
   @Override
   public void periodic() {
     updateValues();
+  }
+
+  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
+  public Status getStatus() {
+    return Status.WARNING;
   }
 }
