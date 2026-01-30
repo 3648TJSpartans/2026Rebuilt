@@ -9,12 +9,13 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants.Status;
+import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Turret extends RelEncoderSparkMax {
+public class Turret extends RelEncoderSparkMax implements Statusable {
   private final Translation3d m_turretOffset;
   private final Supplier<Pose2d> m_robotPoseSupplier;
   private final Supplier<double[]> m_robotVelocitySupplier;

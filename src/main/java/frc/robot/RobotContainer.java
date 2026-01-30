@@ -35,6 +35,7 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
+import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -62,6 +63,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
+import frc.robot.util.Statusable;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
@@ -186,8 +188,6 @@ public class RobotContainer {
     }
 
     m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
-
-    configureAutos();
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -492,7 +492,10 @@ public class RobotContainer {
     Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
-
+    new Trigger(() -> DriverStation.isDisabled())
+        .onTrue(
+            new StatusCheckLEDCommand(m_leds, new Statusable[] {m_turret, m_climber})
+                .ignoringDisable(true));
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
