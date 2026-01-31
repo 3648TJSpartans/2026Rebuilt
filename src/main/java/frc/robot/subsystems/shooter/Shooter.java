@@ -18,4 +18,11 @@ public class Shooter extends RelEncoderSparkMax {
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", rpmSetpoint);
     runFFVelocity(rpmSetpoint);
   }
+
+  public void stop(){
+    super.stop();
+    Logger.recordOutput("Subsystems/Shooter/shootVelocity/velocity", 0.0);
+    Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", 0.0);
+    follower.stop();
+  }
 }

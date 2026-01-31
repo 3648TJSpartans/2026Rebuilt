@@ -432,7 +432,7 @@ public class RobotContainer {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
     m_testController
         .x()
-        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
+        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter).finallyDo(m_shooter::stop));
 
     m_shooter.setDefaultCommand(
         Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
