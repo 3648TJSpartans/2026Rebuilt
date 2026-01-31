@@ -12,10 +12,30 @@ public class Shooter extends RelEncoderSparkMax {
     follower = new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig);
   }
 
+  @Override
+  public void setPower(double power) {
+    super.setPower(power);
+    follower.setPower(-power);
+  }
+
   public void shootVelocity(double velocity) {
     double rpmSetpoint = velocity * ShooterConstants.kShooterVelocityFactor.get();
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/velocity", velocity);
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", rpmSetpoint);
     runFFVelocity(rpmSetpoint);
   }
+
+  public void runCharacterization(double output){
+    super.runCharacterization(output);
+    follower.runCharacterization(-output);
+  }
+
+  @Override
+  public void runFFVelocity(double speed){
+    super.runFFVelocity(speed);
+    follower.runFFVelocity(-speed);
+  }
+
+
 }
+

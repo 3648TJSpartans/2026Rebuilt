@@ -45,7 +45,6 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -220,7 +219,7 @@ public class RobotContainer {
     configureClimber();
     //     configureIntake();
     //     configureHopper();
-    //     configureTurret();
+    configureTurret();
     //     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
@@ -233,7 +232,8 @@ public class RobotContainer {
     m_copilotController.rightTrigger().onTrue(updateCommand);
     // m_testController
     //     .povUp()
-    //     .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    //     .onTrue(new InstantCommand(() ->
+    // LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
@@ -329,9 +329,11 @@ public class RobotContainer {
     m_climber.setDefaultCommand(
         Commands.run(
                 () -> {
-                    m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
-                    m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));},
-                m_climber,m_drive)
+                  m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
+                  m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));
+                },
+                m_climber,
+                m_drive)
             .finallyDo(() -> m_climber.stop()));
   }
 
@@ -356,14 +358,13 @@ public class RobotContainer {
                 () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
                 () -> m_hood.stop(),
                 m_hood));
-                m_copilotController
+    m_copilotController
         .povDown()
         .whileTrue(
             Commands.startEnd(
                 () -> m_hood.setPower(-HoodConstants.hoodTestSpeed.get()),
                 () -> m_hood.stop(),
                 m_hood));
-
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
@@ -394,7 +395,7 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeLeft(),
             () -> m_shiftTracker.timeUntil());
-    m_testController.povLeft().whileTrue(dynamicTrajectory);
+    // m_testController.povLeft().whileTrue(dynamicTrajectory);
     m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
     RunTrajectoryCmd feedAlliance =
@@ -421,14 +422,9 @@ public class RobotContainer {
             () -> m_shiftTracker.timeLeft());
 
     m_testController
-        .leftTrigger()
-        .whileTrue(
-            Commands.startEnd(
-                () -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get()),
-                () -> m_kicker.stop(),
-                m_kicker));
-    // .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-    // .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+        .povLeft()
+        .whileTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     // new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
     // m_kicker.setDefaultCommand(
     //     Commands.run(
@@ -445,7 +441,7 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
 
     m_shooter.setDefaultCommand(
-        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
+        Commands.run(() -> m_shooter.setPower(-MathUtil.applyDeadband(m_testController.getRightY(),0.0)), m_shooter));
   }
 
   public void configureAutoChooser() {
