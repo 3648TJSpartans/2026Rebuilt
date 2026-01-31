@@ -30,6 +30,8 @@ public class ClimberConstants {
           .positionTolerance(0.0);
   public static final double encoderPositionFactor = 1.0;
 
+public static final TunableNumber powerToSpeedThreshold = new TunableNumber("Subsystems/Climber/powerToSpeedThreshold",0.015);
+
   public static final int bottomSwitchPort = 6;
   public static final int topSwitchPort = 5;
 
