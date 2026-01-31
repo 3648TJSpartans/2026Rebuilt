@@ -57,13 +57,13 @@ public class DriveConstants {
   public static final int pigeonCanId = 9;
 
   /*
-   * Chassis Numbers 0- Tuning 1-Walter 2- Jebediah 3-
+   * Chassis Numbers 0- Tuning 1-Walter 2- Jebediah 3- Charles
    *
    */
 
   // Encoder Offsets
 
-  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 1).get();
+  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 3).get();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
@@ -104,7 +104,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 4;
         case 2 -> 1;
-        case 3 -> 0;
+        case 3 -> 4;
         default -> 0;
       };
   public static final int backLeftDriveCanId =
@@ -112,7 +112,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 2;
         case 2 -> 3;
-        case 3 -> 0;
+        case 3 -> 2;
         default -> 0;
       };
   public static final int frontRightDriveCanId =
@@ -120,7 +120,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 6;
         case 2 -> 7;
-        case 3 -> 0;
+        case 3 -> 6;
         default -> 0;
       };
   public static final int backRightDriveCanId =
@@ -128,7 +128,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 8;
         case 2 -> 5;
-        case 3 -> 0;
+        case 3 -> 8;
         default -> 0;
       };
 
@@ -139,7 +139,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 3;
         case 2 -> 2;
-        case 3 -> 0;
+        case 3 -> 3;
         default -> 0;
       };
   public static final int backLeftTurnCanId =
@@ -147,7 +147,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 1;
         case 2 -> 4;
-        case 3 -> 0;
+        case 3 -> 1;
         default -> 0;
       };
   public static final int frontRightTurnCanId =
@@ -155,7 +155,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 5;
         case 2 -> 8;
-        case 3 -> 0;
+        case 3 -> 5;
         default -> 0;
       };
   public static final int backRightTurnCanId =
@@ -163,7 +163,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 7;
         case 2 -> 6;
-        case 3 -> 0;
+        case 3 -> 7;
         default -> 0;
       };
 
@@ -172,7 +172,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 0;
         case 2 -> 2;
-        case 3 -> 0;
+        case 3 -> 2;
         default -> 0;
       };
 
@@ -183,7 +183,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 1;
         case 2 -> 1;
-        case 3 -> 0;
+        case 3 -> 3;
         default -> 0;
       };
   public static final int frontRightTurnEncoderId =
@@ -191,7 +191,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 3;
         case 2 -> 3;
-        case 3 -> 0;
+        case 3 -> 1;
         default -> 0;
       };
   public static final int backRightTurnEncoderId =
