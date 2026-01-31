@@ -14,9 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.climberCommands.AutoClimb;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -44,7 +47,6 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
@@ -213,11 +215,11 @@ public class RobotContainer {
     configureDrive();
     configureShooter();
     configureAlerts();
-    // configureClimber();
-    configureIntake();
-    configureHopper();
-    configureTurret();
-    configureHood();
+    configureClimber();
+    //     configureIntake();
+    //     configureHopper();
+    //     configureTurret();
+    //     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -316,6 +318,19 @@ public class RobotContainer {
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+  }
+
+  private void configureClimber() {
+    Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
+    m_testController.leftBumper().whileTrue(autoFlip);
+
+    m_climber.setDefaultCommand(
+        Commands.run(
+                () -> {
+                    m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
+                    m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));},
+                m_climber,m_drive)
+            .finallyDo(() -> m_climber.stop()));
   }
 
   private void configureTurret() {
