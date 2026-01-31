@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
 import frc.robot.util.Statusable;
-
 import org.littletonrobotics.junction.Logger;
 
 public class SingleSolenoidIO extends SubsystemBase implements Statusable {
@@ -77,8 +76,7 @@ public class SingleSolenoidIO extends SubsystemBase implements Statusable {
     updateValues();
   }
 
-  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
   public Status getStatus() {
-    return Status.WARNING;
+    return getSolenoidEnabled() ? Status.OK : Status.WARNING;
   }
 }

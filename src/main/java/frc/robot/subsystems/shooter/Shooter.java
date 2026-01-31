@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
@@ -19,10 +17,5 @@ public class Shooter extends RelEncoderSparkMax {
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/velocity", velocity);
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", rpmSetpoint);
     runFFVelocity(rpmSetpoint);
-  }
-
-  @Override
-  public Status getStatus() {
-    return Status.OK;
   }
 }
