@@ -47,6 +47,7 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
@@ -324,13 +325,13 @@ public class RobotContainer {
     Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     m_testController.leftBumper().whileTrue(autoFlip);
 
-    m_climber.setDefaultCommand(
+    new Trigger(()-> Math.abs(m_testController.getLeftY())>0.1).whileTrue(
         Commands.run(
                 () -> {
                     m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
                     m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));},
                 m_climber,m_drive)
-            .finallyDo(() -> m_climber.stop()));
+            .finallyDo(() -> {m_climber.stop(); m_drive.stop();}));
   }
 
   private void configureTurret() {

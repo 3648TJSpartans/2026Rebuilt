@@ -63,7 +63,7 @@ public class DriveConstants {
 
   // Encoder Offsets
 
-  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 3).get();
+  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 1).get();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
@@ -199,7 +199,7 @@ public class DriveConstants {
         case 0 -> 0;
         case 1 -> 2;
         case 2 -> 0;
-        case 3 -> 1;
+        case 3 -> 0;
         default -> 0;
       };
 

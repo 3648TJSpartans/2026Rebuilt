@@ -12,7 +12,7 @@ public class ClimberConstants {
 
   public static final MotorConfig leadMotorConfig =
       new MotorConfig("Subsystems/Climber/MotorIOs/Leads")
-          .motorCan(2)
+          .motorCan(23)
           .p(0)
           .i(0)
           .d(0)
@@ -21,7 +21,7 @@ public class ClimberConstants {
           .positionTolerance(0.0);
   public static final MotorConfig followMotorConfig =
       new MotorConfig("Subsystems/Climber/MotorIOs/Follow")
-          .motorCan(3)
+          .motorCan(22)
           .p(0)
           .i(0)
           .d(0)
