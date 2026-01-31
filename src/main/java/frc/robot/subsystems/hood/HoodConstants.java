@@ -13,6 +13,9 @@ public class HoodConstants {
           .i(0)
           .d(0)
           .positionTolerance(0.01);
+  public static final TunableNumber hoodTestSpeed =
+      new TunableNumber("Subsystems/Hood/testSpeed", .05);
+
   public static final TunableNumber minAngle =
       new TunableNumber("Subsystems/Hood/limits/minAngle", 0.0);
   public static final TunableNumber maxAngle =

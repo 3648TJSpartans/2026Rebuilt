@@ -383,8 +383,18 @@ public class Drive extends SubsystemBase {
     return out;
   }
 
-  @AutoLogOutput(key = "Subsystems/Drive/Tilt")
+  @AutoLogOutput(key = "Subsystems/Drive/Lean/Tilt")
   public double getTilt() {
     return Math.acos(Math.cos(gyroInputs.pitch) * Math.cos(gyroInputs.roll));
+  }
+
+  @AutoLogOutput(key = "Subsystems/Drive/Lean/Roll")
+  public double getRoll() {
+    return gyroInputs.roll;
+  }
+
+  @AutoLogOutput(key = "Subsystems/Drive/Lean/Pitch")
+  public double getPitch() {
+    return gyroInputs.pitch;
   }
 }

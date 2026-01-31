@@ -14,9 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.climberCommands.AutoClimb;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -47,6 +50,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -213,11 +217,11 @@ public class RobotContainer {
     configureDrive();
     configureShooter();
     configureAlerts();
-    // configureClimber();
-    configureIntake();
-    configureHopper();
-    configureTurret();
-    configureHood();
+    configureClimber();
+    //     configureIntake();
+    //     configureHopper();
+    //     configureTurret();
+    //     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -227,9 +231,9 @@ public class RobotContainer {
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController
-        .povUp()
-        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    // m_testController
+    //     .povUp()
+    //     .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
@@ -318,6 +322,19 @@ public class RobotContainer {
             );
   }
 
+  private void configureClimber() {
+    Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
+    m_testController.leftBumper().whileTrue(autoFlip);
+
+    m_climber.setDefaultCommand(
+        Commands.run(
+                () -> {
+                    m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
+                    m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));},
+                m_climber,m_drive)
+            .finallyDo(() -> m_climber.stop()));
+  }
+
   private void configureTurret() {
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1,
     // new
@@ -332,6 +349,21 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_testController
+        .povUp()
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.stop(),
+                m_hood));
+                m_copilotController
+        .povDown()
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_hood.setPower(-HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.stop(),
+                m_hood));
+
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
@@ -390,15 +422,20 @@ public class RobotContainer {
 
     m_testController
         .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
-    new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
-    m_kicker.setDefaultCommand(
-        Commands.run(
-            () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    new Trigger(() -> dynamicTrajectory.ready())
-        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get()),
+                () -> m_kicker.stop(),
+                m_kicker));
+    // .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    // .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+    // new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+    // m_kicker.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
+    // new Trigger(() -> dynamicTrajectory.ready())
+    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {

@@ -9,11 +9,13 @@ import org.littletonrobotics.junction.Logger;
 public class Climber extends RelEncoderSparkMax {
   private final DigitalOutput bottomSwitch;
   private final DigitalOutput topSwitch;
+  private final RelEncoderSparkMax follower;
 
   public Climber() {
-    super(ClimberConstants.motorConfig);
+    super(ClimberConstants.leadMotorConfig);
     bottomSwitch = new DigitalOutput(ClimberConstants.bottomSwitchPort);
     topSwitch = new DigitalOutput(ClimberConstants.topSwitchPort);
+    follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
   }
 
   @Override
@@ -23,14 +25,14 @@ public class Climber extends RelEncoderSparkMax {
             position, ClimberConstants.minPosition.get(), ClimberConstants.maxPosition.get());
     if (topSwitch.get()) {
       if (position > getPosition()) {
-        super.setSpeed(0.0);
+        super.setPower(0.0);
         return;
       }
     }
 
     if (bottomSwitch.get()) {
       if (position < getPosition()) {
-        super.setSpeed(0.0);
+        super.setPower(0.0);
         return;
       }
     }
@@ -53,5 +55,17 @@ public class Climber extends RelEncoderSparkMax {
 
   public void updateInputs() {
     Logger.recordOutput("Subsystems/Climber/position", getTranslation());
+  }
+
+  @Override
+  public void setPower(double power) {
+    super.setPower(power);
+    follower.setPower(power);
+  }
+
+  @Override
+  public void stop() {
+    super.setPower(0.0);
+    follower.setPower(0.0);
   }
 }
