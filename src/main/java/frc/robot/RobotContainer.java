@@ -78,6 +78,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
+  private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final Hood m_hood;
@@ -118,6 +119,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
+    m_compressor = new CompressorIO();
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
