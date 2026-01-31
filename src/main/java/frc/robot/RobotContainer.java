@@ -215,7 +215,7 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     // configureClimber();
-    configureIntake();
+    // configureIntake();
     configureHopper();
     configureTurret();
     configureHood();
@@ -228,9 +228,9 @@ public class RobotContainer {
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController
-        .povUp()
-        .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
+    // m_testController
+    //     .povUp()
+    //     .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
 
@@ -333,13 +333,21 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
-    m_copilotController
-        .leftBumper()
+    m_testController
+        .povUp()
         .whileTrue(
             Commands.startEnd(
                 () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
-                () -> m_hood.setPower(-HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.stop(),
                 m_hood));
+                m_copilotController
+        .povDown()
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.stop(),
+                m_hood));
+
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
