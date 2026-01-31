@@ -16,7 +16,7 @@ public class ShooterConstants {
           .Ks(0)
           .Kv(0)
           .speedTolerance(0.0)
-          .follow(12)
+          .follow(10)
           .isInverted(true);
 
   public static MotorConfig kKickerMotorConfig =
