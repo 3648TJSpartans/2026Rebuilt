@@ -329,15 +329,20 @@ public class RobotContainer {
 
   private void configureClimber() {
     Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
-    m_testController.leftBumper().whileTrue(autoFlip);
+    // m_testController.leftBumper().whileTrue(autoFlip);
 
     new Trigger(()-> Math.abs(m_testController.getLeftY())>0.1).whileTrue(
         Commands.run(
                 () -> {
                     m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
-                    m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));},
-                m_climber,m_drive)
-            .finallyDo(() -> {m_climber.stop(); m_drive.stop();}));
+                    //m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));
+                },
+                m_climber
+               // ,m_drive
+                )
+            .finallyDo(() -> {m_climber.stop();
+                // m_drive.stop();
+                }));
   }
 
   private void configureTurret() {
