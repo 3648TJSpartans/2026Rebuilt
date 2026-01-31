@@ -344,7 +344,7 @@ public class RobotContainer {
         .povDown()
         .whileTrue(
             Commands.startEnd(
-                () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.setPower(-HoodConstants.hoodTestSpeed.get()),
                 () -> m_hood.stop(),
                 m_hood));
 
