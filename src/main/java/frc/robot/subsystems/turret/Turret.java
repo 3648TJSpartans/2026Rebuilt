@@ -8,8 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -29,6 +28,7 @@ public class Turret extends RelEncoderSparkMax {
     m_robotVelocitySupplier = robotVelocitySupplier;
     turretPose = new Pose3d();
     turretTranslationalVelocity = new double[2];
+    m_zeroSwitch = new DigitalInput(TurretConstants.zeroSwitchPort);
   }
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
@@ -40,6 +40,7 @@ public class Turret extends RelEncoderSparkMax {
   public void periodic() {
     super.periodic();
     updateInputs();
+    checkHeading();
   }
 
   public void updateInputs() {
@@ -59,6 +60,18 @@ public class Turret extends RelEncoderSparkMax {
     turretTranslationalVelocity[1] = (xt - xr) * robotVelocity[2] + robotVelocity[1];
     Logger.recordOutput(
         "Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
+  }
+
+  public void checkHeading() {
+    boolean zeroSwitchState = m_zeroSwitch.get();
+    Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
+    // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
+    // If we go that direction, update code. Use floor function as fix.
+    if (zeroSwitchState) {
+      // Allows us to rotate turret 360 degrees and get our encoder offset value.
+      Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", getPosition());
+      setZeroHeading();
+    }
   }
 
   public Transform3d getTransformToPose(Pose3d target) {
@@ -106,16 +119,5 @@ public class Turret extends RelEncoderSparkMax {
         target.minus(turretTranslation).getAngle().minus(m_robotPoseSupplier.get().getRotation());
     Logger.recordOutput("Subsystems/Turret/pointAt/targetAngle", targetAngle);
     setRotation(targetAngle);
-  }
-
-  public double getTurretTranslationalSpeed() {
-    double[] turretTranslationalVelocity = getTurretTranslationalVelocity();
-    return Math.sqrt(
-        turretTranslationalVelocity[0] * turretTranslationalVelocity[0]
-            + turretTranslationalVelocity[1] * turretTranslationalVelocity[1]);
-  }
-
-  public Status getStatus() {
-    return Status.ERROR;
   }
 }
