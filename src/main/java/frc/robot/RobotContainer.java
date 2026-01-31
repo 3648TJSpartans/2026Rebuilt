@@ -47,6 +47,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -332,6 +333,13 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_copilotController
+        .leftBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_hood.setPower(HoodConstants.hoodTestSpeed.get()),
+                () -> m_hood.setPower(-HoodConstants.hoodTestSpeed.get()),
+                m_hood));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_testController
@@ -390,15 +398,20 @@ public class RobotContainer {
 
     m_testController
         .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
-    new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
-    m_kicker.setDefaultCommand(
-        Commands.run(
-            () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    new Trigger(() -> dynamicTrajectory.ready())
-        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
+        .whileTrue(
+            Commands.startEnd(
+                () -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get()),
+                () -> m_kicker.stop(),
+                m_kicker));
+    // .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    // .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+    // new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+    // m_kicker.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
+    // new Trigger(() -> dynamicTrajectory.ready())
+    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
