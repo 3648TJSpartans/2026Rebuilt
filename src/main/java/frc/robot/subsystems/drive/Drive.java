@@ -394,6 +394,14 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
+    for (Module module : modules) {
+      if (module.getDisconnected()) {
+        return Status.ERROR;
+      }
+    }
+    if (gyroDisconnectedAlert.get()) {
+      return Status.ERROR;
+    }
     return Status.OK;
   }
 }

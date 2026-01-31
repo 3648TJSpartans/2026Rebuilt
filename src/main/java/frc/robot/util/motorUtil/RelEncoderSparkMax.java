@@ -1,5 +1,6 @@
 package frc.robot.util.motorUtil;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
@@ -12,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.Status;
+import org.littletonrobotics.junction.Logger;
 
 public class RelEncoderSparkMax extends MotorIO {
 
@@ -132,8 +134,11 @@ public class RelEncoderSparkMax extends MotorIO {
     motor.setVoltage(output);
   }
 
-  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
   public Status getStatus() {
-    return Status.WARNING;
+    if (motor.getLastError() == REVLibError.kOk) {
+      return Status.OK;
+    }
+    Logger.recordOutput("Debug/" + name + "/revError", motor.getLastError().toString());
+    return Status.ERROR;
   }
 }

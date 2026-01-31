@@ -1,17 +1,18 @@
 package frc.robot.util.motorUtil;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import frc.robot.Constants.Status;
+import org.littletonrobotics.junction.Logger;
 
 public class AbsEncoderSparkMax extends MotorIO {
 
@@ -83,11 +84,13 @@ public class AbsEncoderSparkMax extends MotorIO {
         .inverted(m_motorConfig.isInverted())
         .idleMode(m_motorConfig.idleMode())
         .voltageCompensation(12.0);
-    config.closedLoop
+    config
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .pidf(m_motorConfig.p(), m_motorConfig.i(), m_motorConfig.d(), m_motorConfig.ff())
         .outputRange(m_motorConfig.minPower(), m_motorConfig.maxPower());
-    config.signals
+    config
+        .signals
         .absoluteEncoderPositionAlwaysOn(true)
         .absoluteEncoderPositionPeriodMs((int) (1000.0 / m_motorConfig.encoderOdometryFrequency()))
         .absoluteEncoderVelocityAlwaysOn(true)
@@ -109,8 +112,11 @@ public class AbsEncoderSparkMax extends MotorIO {
     configureMotor();
   }
 
-  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
   public Status getStatus() {
-    return Status.WARNING;
+    if (motor.getLastError() == REVLibError.kOk) {
+      return Status.OK;
+    }
+    Logger.recordOutput("Debug/" + name + "/revError", motor.getLastError().toString());
+    return Status.ERROR;
   }
 }
