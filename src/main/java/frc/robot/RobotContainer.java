@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -410,7 +411,9 @@ public class RobotContainer {
                 .finallyDo(m_shooter::stop));
 
     m_shooter.setDefaultCommand(
-        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
+        Commands.run(
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_shooter));
   }
 
   public void configureAutoChooser() {

@@ -38,7 +38,7 @@ public class Shooter extends RelEncoderSparkMax {
 
   @Override
   public void stop() {
-    this.stop();
+    super.stop();
     follower.stop();
   }
 }
