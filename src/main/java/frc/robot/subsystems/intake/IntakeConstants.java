@@ -8,7 +8,7 @@ import frc.robot.util.motorUtil.MotorConfig;
 public class IntakeConstants {
 
   public static final MotorConfig hopperMotorConfig =
-      new MotorConfig("Subsystems/Intake/MotorIO")
+      new MotorConfig("Subsystems/Intake/HopperMotorIO")
           .motorCan(15)
           .p(0)
           .i(0)
@@ -17,7 +17,14 @@ public class IntakeConstants {
           .minPower(-.1)
           .positionTolerance(0.0);
 
-  public static final SparkMax intakeRollerMotor = new SparkMax(16, MotorType.kBrushless);
+  public static final MotorConfig intakeRollerConfig = new MotorConfig("Subsystems/Intake/MotorIO")
+          .motorCan(16)
+          .p(0)
+          .i(0)
+          .d(0)
+          .maxPower(.1)
+          .minPower(-.1)
+          .positionTolerance(0.0);
 
   public static final TunableNumber intakeRollerSpeed =
       new TunableNumber("Subsystems/Intake/intakeRollerSpeed", 0.1);

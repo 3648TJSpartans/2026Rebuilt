@@ -57,5 +57,13 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
   ],
+  "[java]": {
+    "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code"
+  },
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true
+}
   "java.dependency.enableDependencyCheckup": false
 }
