@@ -18,6 +18,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -66,6 +67,7 @@ import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -91,6 +93,7 @@ public class RobotContainer {
   private final Kicker m_kicker;
   private final Intake m_intake;
   private final Hopper m_hopper;
+  private final TrajectoryLogger m_trajectoryLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -187,6 +190,15 @@ public class RobotContainer {
     }
 
     m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
+    // TODO update as subsystems are made
+    m_trajectoryLogger =
+        new TrajectoryLogger(
+            () -> Units.degreesToRadians(80),
+            () -> m_turret.getTurretRotation().getRadians(),
+            m_shooter::getVelocity,
+            () -> 2.0,
+            () -> m_turret.getTurretFieldPose().getTranslation(),
+            m_turret::getTurretTranslationalVelocity);
 
     configureAutos();
 

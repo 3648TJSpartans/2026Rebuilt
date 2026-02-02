@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends RelEncoderSparkMax {
@@ -23,6 +24,11 @@ public class Shooter extends RelEncoderSparkMax {
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/velocity", velocity);
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", rpmSetpoint);
     runFFVelocity(rpmSetpoint);
+  }
+
+  @AutoLogOutput(key = "Subsystems/Shooter/getVelocity")
+  public double getVelocity() {
+    return getSpeed() / ShooterConstants.kShooterVelocityFactor.get();
   }
 
   public void runCharacterization(double output) {
