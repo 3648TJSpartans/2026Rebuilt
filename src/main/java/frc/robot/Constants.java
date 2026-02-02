@@ -42,7 +42,8 @@ public final class Constants {
   public static enum Status {
     OK,
     WARNING,
-    ERROR
+    ERROR,
+    UNKNOWN
   }
 
   public static Status leastCommonStatus(Status a, Status b) {

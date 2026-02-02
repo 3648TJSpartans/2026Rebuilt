@@ -261,16 +261,17 @@ public class Vision extends SubsystemBase implements Statusable {
   // but none see an AprilTag, returns WARNING.
   @Override
   public Status getStatus() {
-    for (VisionIOInputsAutoLogged camera : inputs) {
-      if (!camera.connected) {
-        return Status.ERROR;
-      }
-    }
-    for (VisionIOInputsAutoLogged camera : inputs) {
-      if (camera.poseObservations.length > 0) {
-        return Status.OK;
-      }
-    }
-    return Status.WARNING;
+    return Status.UNKNOWN;
+    // for (VisionIOInputsAutoLogged camera : inputs) {
+    //   if (!camera.connected) {
+    //     return Status.ERROR;
+    //   }
+    // }
+    // for (VisionIOInputsAutoLogged camera : inputs) {
+    //   if (camera.poseObservations.length > 0) {
+    //     return Status.OK;
+    //   }
+    // }
+    // return Status.WARNING;
   }
 }

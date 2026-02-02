@@ -34,6 +34,11 @@ public class StatusCheckLEDCommand extends Command {
         Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "WARNING");
         continue;
       }
+      if (m_statuses[i].getStatus() == Status.UNKNOWN) {
+        m_leds.setSingleLed(200, 0, 255, i);
+        Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "UNKNOWN");
+        continue;
+      }
       m_leds.setSingleLed(255, 0, 0, i);
       Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "ERROR");
     }
