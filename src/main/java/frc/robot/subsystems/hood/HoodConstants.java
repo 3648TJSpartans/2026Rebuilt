@@ -5,7 +5,7 @@ import frc.robot.util.motorUtil.MotorConfig;
 
 public class HoodConstants {
   public static final TunableNumber hoodEncoderFactor =
-      new TunableNumber("Subsystems/Hood/turretRotationFactor", 1.0);
+      new TunableNumber("Subsystems/Hood/rotationFactor", 1.0);
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Hood/MotorIO")
           .motorCan(17)
@@ -15,6 +15,9 @@ public class HoodConstants {
           .positionTolerance(0.01);
   public static final TunableNumber hoodTestSpeed =
       new TunableNumber("Subsystems/Hood/testSpeed", .05);
+
+  public static final TunableNumber hoodAngleOffset =
+      new TunableNumber("Subsystems/Hood/angleOffset", Math.PI / 2);
 
   public static final TunableNumber minAngle =
       new TunableNumber("Subsystems/Hood/limits/minAngle", 0.0);
