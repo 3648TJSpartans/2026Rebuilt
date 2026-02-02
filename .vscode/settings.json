@@ -66,5 +66,5 @@
   "editor.trimAutoWhitespace": true,
   "files.autoSave": "onFocusChange",
   "editor.formatOnSave": true,
-  "java.dependency.enableDependencyCheckup": false
+  "java.dependency.enableDependencyCheckup": true
 }
