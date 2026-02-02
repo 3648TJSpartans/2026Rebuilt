@@ -405,7 +405,9 @@ public class RobotContainer {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
     m_testController
         .x()
-        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
+        .whileTrue(
+            Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter)
+                .finallyDo(m_shooter::stop));
 
     m_shooter.setDefaultCommand(
         Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
@@ -430,9 +432,10 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_shooter,
-            speed -> m_shooter.runCharacterization(speed),
-            m_shooter::getFFCharacterizationVelocity));
+                m_shooter,
+                speed -> m_shooter.runCharacterization(speed),
+                m_shooter::getFFCharacterizationVelocity)
+            .finallyDo(m_shooter::stop));
   }
 
   public void configureSimpleMotor() {
@@ -454,9 +457,8 @@ public class RobotContainer {
     m_testController
         .y()
         .onTrue(
-            Commands.runOnce(
-                () -> m_intake.setRollerSpeed(IntakeConstants.intakeRollerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_intake.stopRoller()));
+            Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
     m_driveController
         .y()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))

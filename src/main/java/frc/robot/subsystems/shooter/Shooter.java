@@ -25,17 +25,20 @@ public class Shooter extends RelEncoderSparkMax {
     runFFVelocity(rpmSetpoint);
   }
 
-  public void runCharacterization(double output){
+  public void runCharacterization(double output) {
     super.runCharacterization(output);
     follower.runCharacterization(-output);
   }
 
   @Override
-  public void runFFVelocity(double speed){
+  public void runFFVelocity(double speed) {
     super.runFFVelocity(speed);
     follower.runFFVelocity(-speed);
   }
 
-
+  @Override
+  public void stop() {
+    this.stop();
+    follower.stop();
+  }
 }
-
