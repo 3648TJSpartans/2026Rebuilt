@@ -14,9 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -67,6 +69,7 @@ import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -92,6 +95,7 @@ public class RobotContainer {
   private final Kicker m_kicker;
   private final Intake m_intake;
   private final Hopper m_hopper;
+  private final TrajectoryLogger m_trajectoryLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -190,6 +194,15 @@ public class RobotContainer {
     }
 
     m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
+    // TODO update as subsystems are made
+    m_trajectoryLogger =
+        new TrajectoryLogger(
+            () -> Units.degreesToRadians(80),
+            () -> m_turret.getTurretRotation().getRadians(),
+            m_shooter::getVelocity,
+            () -> 2.0,
+            () -> m_turret.getTurretFieldPose().getTranslation(),
+            m_turret::getTurretTranslationalVelocity);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -217,7 +230,7 @@ public class RobotContainer {
     // configureClimber();
     configureIntake();
     configureHopper();
-    configureTurret();
+    // configureTurret();
     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
@@ -389,11 +402,8 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+
     m_kicker.setDefaultCommand(
         Commands.run(
             () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
@@ -406,10 +416,29 @@ public class RobotContainer {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
     m_testController
         .x()
-        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter));
-
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_shooter.shootVelocity(shootSpeed.get());
+                      if (m_shooter.speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                      }
+                    },
+                    m_shooter,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
+    m_testController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
-        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
+        Commands.run(
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_shooter));
   }
 
   public void configureAutoChooser() {
@@ -431,9 +460,10 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_shooter,
-            speed -> m_shooter.runCharacterization(speed),
-            m_shooter::getFFCharacterizationVelocity));
+                m_shooter,
+                speed -> m_shooter.runCharacterization(speed),
+                m_shooter::getFFCharacterizationVelocity)
+            .finallyDo(m_shooter::stop));
   }
 
   public void configureSimpleMotor() {
@@ -456,10 +486,10 @@ public class RobotContainer {
         .y()
         .onTrue(
             Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_intake.setRollers(0)));
+        .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
     m_driveController
         .y()
-        .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
