@@ -404,8 +404,20 @@ public class RobotContainer {
     m_testController
         .x()
         .whileTrue(
-            Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter)
-                .finallyDo(m_shooter::stop));
+            Commands.run(
+                    () -> {
+                      m_shooter.shootVelocity(shootSpeed.get());
+                      if (m_shooter.speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                      }
+                    },
+                    m_shooter,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
     m_testController
         .leftTrigger()
         .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
