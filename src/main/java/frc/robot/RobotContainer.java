@@ -217,7 +217,7 @@ public class RobotContainer {
     // configureClimber();
     configureIntake();
     configureHopper();
-    configureTurret();
+    // configureTurret();
     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
@@ -389,11 +389,8 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+
     m_kicker.setDefaultCommand(
         Commands.run(
             () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
@@ -409,7 +406,10 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter)
                 .finallyDo(m_shooter::stop));
-
+    m_testController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
         Commands.run(
             () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
