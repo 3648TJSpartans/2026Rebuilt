@@ -225,6 +225,10 @@ public class Vision extends SubsystemBase implements Statusable {
     io[cameraIndex].setPipeline(pipeline);
   }
 
+  public int getPipeline(int cameraIndex) {
+    return io[cameraIndex].getPipeline();
+  }
+
   public void resetPipeline(int cameraIndex) {
     io[cameraIndex].resetPipeline();
   }
@@ -272,5 +276,9 @@ public class Vision extends SubsystemBase implements Statusable {
       }
     }
     return Status.WARNING;
+  }
+  
+  public double getTx(int IOIndex) {
+    return io[IOIndex].getTx();
   }
 }

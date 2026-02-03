@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -61,6 +62,7 @@ import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -68,6 +70,7 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
+import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import org.littletonrobotics.junction.Logger;
@@ -83,8 +86,10 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
+  private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Neural m_neural;
   private final Hood m_hood;
   private final ShiftTracker m_shiftTracker;
   private final Climber m_climber;
@@ -124,6 +129,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
+    m_compressor = new CompressorIO();
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -203,6 +209,9 @@ public class RobotContainer {
             () -> 2.0,
             () -> m_turret.getTurretFieldPose().getTranslation(),
             m_turret::getTurretTranslationalVelocity);
+
+    m_neural = new Neural(m_drive::getPose);
+    configureAutos();
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -604,6 +613,17 @@ public class RobotContainer {
                                 m_drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
                     m_drive)
                 .ignoringDisable(true));
+
+    m_driveController
+        .y()
+        .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
+        .whileTrue(
+            new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
+                .andThen(
+                    Commands.runOnce(m_neural::updateSavedPose)
+                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
+        .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
+
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));

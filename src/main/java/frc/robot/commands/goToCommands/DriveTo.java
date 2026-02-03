@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.RangeCalc;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,8 +28,19 @@ public class DriveTo extends Command {
 
   @Override
   public void execute() {
+
     Pose2d robotPose = robotPoseSupplier.get();
     Pose2d targetPose = targetPoseSupplier.get();
+
+    Logger.recordOutput("Commands/DriveTo/RobotPose", robotPose);
+    Logger.recordOutput("Commands/DriveTo/TargetPose", targetPose);
+    if (goToConstants.inFieldConstraint) {
+      if (!RangeCalc.inField(targetPose)) {
+        Logger.recordOutput("Commands/DriveTo/TargetInField", false);
+        return;
+      }
+      Logger.recordOutput("Commands/DriveTo/TargetInField", true);
+    }
     // Gets the displacement vector -- if the robot goes absolutely the wrong way,
     // switch target pose and robot pose.
     Translation2d displacement = targetPose.getTranslation().minus(robotPose.getTranslation());
@@ -51,9 +63,8 @@ public class DriveTo extends Command {
 
     // Lets Log stuff
     Logger.recordOutput("Commands/DriveTo/displacement", displacement);
-    Logger.recordOutput("Commands/DriveTo/RobotPose", robotPose);
+
     Logger.recordOutput("Commands/DriveTo/Trajectory", displacement);
-    Logger.recordOutput("Commands/DriveTo/TargetPose", targetPose);
     Logger.recordOutput("Commands/DriveTo/setDriveSpeed", driveSpeed);
     Logger.recordOutput("Commands/DriveTo/setDriveVelocity", setVelocity);
     Logger.recordOutput("Commands/DriveTo/thetaDifference", thetaDisplacement);
