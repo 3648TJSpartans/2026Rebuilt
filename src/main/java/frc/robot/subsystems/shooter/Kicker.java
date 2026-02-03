@@ -1,16 +1,19 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Constants.Status;
+import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
 public class Kicker extends RelEncoderSparkMax {
 
-  private final DigitalOutput irSensor;
+  private final DigitalInput irSensor;
 
   public Kicker() {
     super(ShooterConstants.kKickerMotorConfig);
-    irSensor = new DigitalOutput(ShooterConstants.kickerIRSensorChannel);
+    irSensor = new DigitalInput(ShooterConstants.kickerIRSensorChannel);
   }
 
   public boolean getSensor() {
@@ -28,4 +31,5 @@ public class Kicker extends RelEncoderSparkMax {
     super.updateValues();
     Logger.recordOutput("Subsystems/Climber/irSensor", irSensor.get());
   }
+
 }

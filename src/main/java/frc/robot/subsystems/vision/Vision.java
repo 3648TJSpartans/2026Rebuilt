@@ -33,13 +33,15 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.util.Statusable;
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements Statusable {
   private final VisionConsumer consumer;
   private final TimelessVisionConsumer targetSpaceConsumer;
   private final VisionIO[] io;
@@ -51,7 +53,7 @@ public class Vision extends SubsystemBase {
     this.consumer = consumer;
     this.targetSpaceConsumer = targetSpaceConsumer;
     this.io = io;
-
+    setName("Subsystems/Vision");
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {
@@ -258,6 +260,24 @@ public class Vision extends SubsystemBase {
         : new Pose2d(translation2d.div(validTags), new Rotation2d(rotation / validTags)));
   }
 
+  // If any of the cameras are disconnected, returns ERROR. If all of the cameras
+  // are connected and at least one sees an AprilTag, returns OK. If all are connected
+  // but none see an AprilTag, returns WARNING.
+  @Override
+  public Status getStatus() {
+    for (VisionIOInputsAutoLogged camera : inputs) {
+      if (!camera.connected) {
+        return Status.ERROR;
+      }
+    }
+    for (VisionIOInputsAutoLogged camera : inputs) {
+      if (camera.poseObservations.length > 0) {
+        return Status.OK;
+      }
+    }
+    return Status.WARNING;
+  }
+  
   public double getTx(int IOIndex) {
     return io[IOIndex].getTx();
   }

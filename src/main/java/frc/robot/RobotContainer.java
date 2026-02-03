@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -38,6 +39,7 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
+import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -153,7 +155,9 @@ public class RobotContainer {
                 // new
                 // VisionIOLimelight(VisionConstants.camera1Name,
                 // m_drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation));
+                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourtwo", m_drive::getRotation));
         break;
 
       case SIM:
@@ -214,7 +218,6 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
-    configureLeds();
   }
 
   /**
@@ -530,6 +533,14 @@ public class RobotContainer {
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
+    WrapperCommand statusCheck =
+        new StatusCheckLEDCommand(
+                m_leds, m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood,
+                m_hopper, m_intake)
+            .ignoringDisable(true);
+
+    m_leds.setDefaultCommand(statusCheck);
+    // new Trigger(() -> DriverStation.isDisabled()).whileTrue();
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 

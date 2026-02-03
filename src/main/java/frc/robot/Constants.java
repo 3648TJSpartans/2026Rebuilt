@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Arrays;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -37,4 +38,30 @@ public final class Constants {
   }
 
   public static class OperatorConstants {}
+
+  public static enum Status {
+    OK,
+    WARNING,
+    ERROR,
+    UNKNOWN
+  }
+
+  public static Status leastCommonStatus(Status a, Status b) {
+    if (a == Status.OK && b == Status.WARNING) {
+      return Status.WARNING;
+    }
+    if (a == Status.WARNING && b == Status.ERROR) {
+      return Status.ERROR;
+    }
+    if (a == Status.OK && b == Status.ERROR) {
+      return Status.ERROR;
+    }
+    return a;
+  }
+
+  public static Status leastCommonStatus(Status... statuses) {
+
+    return leastCommonStatus(
+        statuses[0], leastCommonStatus(Arrays.copyOfRange(statuses, 1, statuses.length)));
+  }
 }
