@@ -3,10 +3,21 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Hood extends AbsEncoderSparkMax {
   public Hood() {
     super(HoodConstants.motorConfig);
+  }
+
+  public void setAngle(double rotation) {
+    double setpoint = rotation * HoodConstants.hoodEncoderFactor.get();
+    setPosition(setpoint);
+  }
+
+  @AutoLogOutput
+  public double getAngle() {
+    return getPosition() / HoodConstants.hoodEncoderFactor.get();
   }
 
   @Override

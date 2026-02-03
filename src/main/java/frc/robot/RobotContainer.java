@@ -18,7 +18,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -26,12 +26,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.climberCommands.AutoClimb;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -60,6 +60,7 @@ import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -67,7 +68,9 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
+import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -81,8 +84,10 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
+  private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Neural m_neural;
   private final Hood m_hood;
   private final ShiftTracker m_shiftTracker;
   private final Climber m_climber;
@@ -93,6 +98,7 @@ public class RobotContainer {
   private final Kicker m_kicker;
   private final Intake m_intake;
   private final Hopper m_hopper;
+  private final TrajectoryLogger m_trajectoryLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -121,6 +127,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
+    m_compressor = new CompressorIO();
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -195,7 +202,17 @@ public class RobotContainer {
     }
 
     m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
+    // TODO update as subsystems are made
+    m_trajectoryLogger =
+        new TrajectoryLogger(
+            () -> Units.degreesToRadians(80),
+            () -> m_turret.getTurretRotation().getRadians(),
+            m_shooter::getVelocity,
+            () -> 2.0,
+            () -> m_turret.getTurretFieldPose().getTranslation(),
+            m_turret::getTurretTranslationalVelocity);
 
+    m_neural = new Neural(m_drive::getPose);
     configureAutos();
 
     // Set up auto routines
@@ -223,10 +240,10 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     configureClimber();
-    //     configureIntake();
-    //     configureHopper();
-    //     configureTurret();
-    //     configureHood();
+    configureIntake();
+    configureHopper();
+    // configureTurret();
+    configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
         new InstantCommand(
@@ -415,11 +432,8 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+
     m_kicker.setDefaultCommand(
         Commands.run(
             () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
@@ -432,10 +446,29 @@ public class RobotContainer {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
     m_testController
         .x()
-        .whileTrue(Commands.run(() -> m_shooter.shootVelocity(shootSpeed.get()), m_shooter).finallyDo(m_shooter::stop));
-
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_shooter.shootVelocity(shootSpeed.get());
+                      if (m_shooter.speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                      }
+                    },
+                    m_shooter,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
+    m_testController
+        .leftTrigger()
+        .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
-        Commands.run(() -> m_shooter.setPower(m_testController.getRightY()), m_shooter));
+        Commands.run(
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_shooter));
   }
 
   public void configureAutoChooser() {
@@ -457,9 +490,10 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter simple FF Identification",
         FFCharacterizationCmd.characterizeSystem(
-            m_shooter,
-            speed -> m_shooter.runCharacterization(speed),
-            m_shooter::getFFCharacterizationVelocity));
+                m_shooter,
+                speed -> m_shooter.runCharacterization(speed),
+                m_shooter::getFFCharacterizationVelocity)
+            .finallyDo(m_shooter::stop));
   }
 
   public void configureSimpleMotor() {
@@ -482,10 +516,10 @@ public class RobotContainer {
         .y()
         .onTrue(
             Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_intake.setRollers(0)));
+        .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
     m_driveController
         .y()
-        .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
@@ -592,6 +626,17 @@ public class RobotContainer {
                                 m_drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
                     m_drive)
                 .ignoringDisable(true));
+
+    m_driveController
+        .y()
+        .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
+        .whileTrue(
+            new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
+                .andThen(
+                    Commands.runOnce(m_neural::updateSavedPose)
+                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
+        .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
+
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));

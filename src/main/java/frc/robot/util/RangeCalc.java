@@ -23,4 +23,23 @@ public class RangeCalc {
     }
     return 2;
   }
+
+  public static boolean inField(Pose2d robotPose) {
+    double x = robotPose.getX();
+    if (x < 0.3429) {
+      return false;
+    }
+    if (x > PoseConstants.fieldLength - 0.3429) {
+      return false;
+    }
+    double y = robotPose.getY();
+    if (y < 0.3429) {
+      return false;
+    }
+    if (y > PoseConstants.fieldWidth - 0.3429) {
+      return false;
+    }
+
+    return true;
+  }
 }

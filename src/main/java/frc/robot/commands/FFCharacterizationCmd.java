@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class FFCharacterizationCmd extends Command {
   private static final double FF_START_DELAY = 2.0; // Secs
@@ -73,6 +74,8 @@ public class FFCharacterizationCmd extends Command {
                   System.out.println("********** FF Characterization Results **********");
                   System.out.println("\tkS: " + formatter.format(kS));
                   System.out.println("\tkV: " + formatter.format(kV));
+                  Logger.recordOutput("Utils/FFCharacterizer/kSResult", formatter.format(kS));
+                  Logger.recordOutput("Utils/FFCharacterizer/kVResult", formatter.format(kV));
                 }));
   }
 }

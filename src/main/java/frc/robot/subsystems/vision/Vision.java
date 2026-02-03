@@ -223,6 +223,10 @@ public class Vision extends SubsystemBase {
     io[cameraIndex].setPipeline(pipeline);
   }
 
+  public int getPipeline(int cameraIndex) {
+    return io[cameraIndex].getPipeline();
+  }
+
   public void resetPipeline(int cameraIndex) {
     io[cameraIndex].resetPipeline();
   }
@@ -252,5 +256,9 @@ public class Vision extends SubsystemBase {
     return (validTags == 0
         ? new Pose2d()
         : new Pose2d(translation2d.div(validTags), new Rotation2d(rotation / validTags)));
+  }
+
+  public double getTx(int IOIndex) {
+    return io[IOIndex].getTx();
   }
 }

@@ -48,9 +48,8 @@ public class VisionIOLimelight implements VisionIO {
   /**
    * Creates a new VisionIOLimelight.
    *
-   * @param name             The configured name of the Limelight.
-   * @param rotationSupplier Supplier for the current estimated rotation, used for
-   *                         MegaTag 2.
+   * @param name The configured name of the Limelight.
+   * @param rotationSupplier Supplier for the current estimated rotation, used for MegaTag 2.
    */
   public VisionIOLimelight(String name, Supplier<Rotation2d> rotationSupplier) {
     this.name = name;
@@ -61,15 +60,22 @@ public class VisionIOLimelight implements VisionIO {
     latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
     txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
     tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
-    botpose_targetSpaceSubscriber = table.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[6]);
+    botpose_targetSpaceSubscriber =
+        table.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[6]);
     megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    megatag2Subscriber = table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
+    megatag2Subscriber =
+        table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
   }
 
   @Override
   public double getTx() {
     var table = NetworkTableInstance.getDefault().getTable(name);
     return table.getDoubleTopic("tx").subscribe(0.0).getAsDouble();
+  }
+
+  public double getTy() {
+    var table = NetworkTableInstance.getDefault().getTable(name);
+    return table.getDoubleTopic("tync").subscribe(0.0).getAsDouble();
   }
 
   // If we're always gettign 0, the error is in here
@@ -141,8 +147,14 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public void setPipeline(int pipeline) {
-    var table = NetworkTableInstance.getDefault().getTable(name);
-    table.getEntry("pipeline").setNumber(pipeline);
+    // var table = NetworkTableInstance.getDefault().getTable(name);
+    // table.getEntry("pipeline").setNumber(pipeline);
+    LimelightHelpers.setPipelineIndex(name, pipeline);
+  }
+
+  @Override
+  public int getPipeline() {
+    return (int) LimelightHelpers.getCurrentPipelineIndex(name);
   }
 
   @Override
