@@ -153,6 +153,11 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
+  public int getPipeline() {
+    return (int) LimelightHelpers.getCurrentPipelineIndex(name);
+  }
+
+  @Override
   public void resetPipeline() {
     setPipeline(defualtPipeline);
   }
