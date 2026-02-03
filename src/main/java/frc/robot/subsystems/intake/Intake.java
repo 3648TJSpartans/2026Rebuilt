@@ -16,6 +16,10 @@ public class Intake extends SingleSolenoidIO {
     roller.setPower(speed);
   }
 
+  public void stopRollers() {
+    roller.stop();
+  }
+
   public void setSolenoidAndRollerUp() {
     setSolenoid(false);
     roller.stop();
