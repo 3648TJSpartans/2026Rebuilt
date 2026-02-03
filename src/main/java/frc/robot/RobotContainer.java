@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -604,11 +604,10 @@ public class RobotContainer {
         .y()
         .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
         .whileTrue(
-            new WaitCommand(.25)
+            new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
                 .andThen(
                     Commands.runOnce(m_neural::updateSavedPose)
-                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))
-                        .onlyIf(m_neural::isPoseDetected)))
+                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
         .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
 
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
