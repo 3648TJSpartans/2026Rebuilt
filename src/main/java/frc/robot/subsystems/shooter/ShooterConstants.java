@@ -24,7 +24,7 @@ public class ShooterConstants {
 
   public static MotorConfig kKickerMotorConfig =
       new MotorConfig("Subsystems/Shooter/KickerMotorIO")
-          .motorCan(13)
+          .motorCan(12)
           .Ks(0)
           .Kv(0)
           .speedTolerance(0.0);
