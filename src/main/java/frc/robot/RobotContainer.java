@@ -490,13 +490,13 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
         .y()
-        .onTrue(
-            Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
+        .whileTrue(
+            Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
 
     m_intake.setDefaultCommand(
         Commands.run(
-            () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(),0.1)), m_intake));
+            () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(),0.1)), m_intake).finallyDo(m_intake::stopRollers));
     
     m_driveController
         .y()
