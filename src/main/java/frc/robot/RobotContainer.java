@@ -129,18 +129,18 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         m_drive =
-            // new Drive(
-            //     new GyroIONavX(),
-            //     new ModuleIOMK4Spark(0),
-            //     new ModuleIOMK4Spark(1),
-            //     new ModuleIOMK4Spark(2),
-            //     new ModuleIOMK4Spark(3));
             new Drive(
                 new GyroIONavX(),
-                new ModuleIO(){},
-                new ModuleIO(){},
-                new ModuleIO(){},
-                new ModuleIO(){});
+                new ModuleIOMK4Spark(0),
+                new ModuleIOMK4Spark(1),
+                new ModuleIOMK4Spark(2),
+                new ModuleIOMK4Spark(3));
+            // new Drive(
+            //     new GyroIONavX(),
+            //     new ModuleIO(){},
+            //     new ModuleIO(){},
+            //     new ModuleIO(){},
+            //     new ModuleIO(){});
 
         // To change number of limelights, just add or delete IOs in the
         // parameters
