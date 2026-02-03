@@ -26,6 +26,8 @@ public class goToConstants {
   public static final double ffMinRadius = 0.2;
   public static final double ffMaxRadius = 0.6;
 
+  public static final boolean inFieldConstraint = false;
+
   public static final TunableNumber tunableDriveP =
       new TunableNumber("Commands/DriveTo/drive/P", drivekP);
   public static final TunableNumber tunableDriveI =
