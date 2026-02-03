@@ -65,5 +65,6 @@
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
   "files.autoSave": "onFocusChange",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "java.dependency.enableDependencyCheckup": true
 }
