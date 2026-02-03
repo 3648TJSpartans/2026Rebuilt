@@ -118,7 +118,6 @@ public class RobotContainer {
   public RobotContainer() {
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
-    m_neural = new Neural();
     m_climber = new Climber();
     m_hood = new Hood();
     m_shooter = new Shooter();
@@ -203,6 +202,7 @@ public class RobotContainer {
             () -> m_turret.getTurretFieldPose().getTranslation(),
             m_turret::getTurretTranslationalVelocity);
 
+    m_neural = new Neural(m_drive::getPose);
     configureAutos();
 
     // Set up auto routines
@@ -598,6 +598,14 @@ public class RobotContainer {
                                 m_drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
                     m_drive)
                 .ignoringDisable(true));
+
+    m_driveController
+        .y()
+        .and(m_neural::isPoseDetected)
+        .whileTrue(
+            Commands.runOnce(m_neural::updateSavedPose)
+                .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose())));
+
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));
