@@ -493,6 +493,11 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
+
+    m_intake.setDefaultCommand(
+        Commands.run(
+            () -> m_intake.setRollers(m_testController.getLeftY()), m_intake));
+    
     m_driveController
         .y()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
@@ -568,7 +573,7 @@ public class RobotContainer {
                 () -> {
                   Rotation2d driveRotation = m_drive.getRotation();
                   double smallestDiff = Double.MAX_VALUE;
-                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  Rotation2d closestLockpoint = new Rotation2d(0.0);
                   for (Rotation2d lockpoint : lockpoints) {
                     double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
                     if (diff < smallestDiff) {
