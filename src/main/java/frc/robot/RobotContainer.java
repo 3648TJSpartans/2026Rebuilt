@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -59,6 +60,7 @@ import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -83,6 +85,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
+  private final Neural m_neural;
   private final Hood m_hood;
   private final ShiftTracker m_shiftTracker;
   private final Climber m_climber;
@@ -200,6 +203,7 @@ public class RobotContainer {
             () -> m_turret.getTurretFieldPose().getTranslation(),
             m_turret::getTurretTranslationalVelocity);
 
+    m_neural = new Neural(m_drive::getPose);
     configureAutos();
 
     // Set up auto routines
@@ -595,6 +599,18 @@ public class RobotContainer {
                                 m_drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
                     m_drive)
                 .ignoringDisable(true));
+
+    m_driveController
+        .y()
+        .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
+        .whileTrue(
+            new WaitCommand(.25)
+                .andThen(
+                    Commands.runOnce(m_neural::updateSavedPose)
+                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))
+                        .onlyIf(m_neural::isPoseDetected)))
+        .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
+
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));
