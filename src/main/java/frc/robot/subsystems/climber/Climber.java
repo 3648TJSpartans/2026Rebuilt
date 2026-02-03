@@ -56,6 +56,7 @@ public class Climber extends RelEncoderSparkMax {
   public void updateInputs() {
     Logger.recordOutput("Subsystems/Climber/position", getTranslation());
     Logger.recordOutput("Subsystems/Climber/powerToSpeed", getPowerToSpeed());
+    Logger.recordOutput("Subsystems/Climber/currentToSpeed", getCurrentToSpeed());
     Logger.recordOutput("Subsystems/Climber/isEngaged", getEngaged());
     Logger.recordOutput("Subsystems/Climber/current", getCurrent());
   }
@@ -76,7 +77,11 @@ public class Climber extends RelEncoderSparkMax {
     return Math.abs(getSpeed())>100 && Math.abs(getAppliedOutput())>.05 ? Math.abs(getAppliedOutput()/getSpeed()) : 0.0;
   }
 
+  public double getCurrentToSpeed(){
+     return Math.abs(getSpeed())>100 && Math.abs(getCurrent())>.05 ? Math.abs(getCurrent()/getSpeed()) : 0.0;
+  }
+
   public boolean getEngaged(){
-    return getPowerToSpeed() > ClimberConstants.powerToSpeedThreshold.get();
+    return getCurrentToSpeed() > ClimberConstants.currentToSpeedThreshold.get();
   }
 }
