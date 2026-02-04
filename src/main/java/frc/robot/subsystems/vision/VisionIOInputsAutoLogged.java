@@ -12,6 +12,7 @@ public class VisionIOInputsAutoLogged extends VisionIO.VisionIOInputs
     table.put("PoseObservations", poseObservations);
     table.put("TagIds", tagIds);
     table.put("CameraName", cameraName);
+    table.put("Has Seen Target", hasSeenTarget);
   }
 
   @Override
@@ -21,6 +22,7 @@ public class VisionIOInputsAutoLogged extends VisionIO.VisionIOInputs
     poseObservations = table.get("PoseObservations", poseObservations);
     tagIds = table.get("TagIds", tagIds);
     cameraName = table.get("CameraName", cameraName);
+    hasSeenTarget = table.get("Has Seen Target", hasSeenTarget);
   }
 
   public VisionIOInputsAutoLogged clone() {
@@ -30,6 +32,7 @@ public class VisionIOInputsAutoLogged extends VisionIO.VisionIOInputs
     copy.poseObservations = this.poseObservations.clone();
     copy.tagIds = this.tagIds.clone();
     copy.cameraName = this.cameraName;
+    copy.hasSeenTarget = this.hasSeenTarget;
     return copy;
   }
 }

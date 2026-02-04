@@ -271,7 +271,7 @@ public class Vision extends SubsystemBase implements Statusable {
       }
     }
     for (VisionIOInputsAutoLogged camera : inputs) {
-      if (camera.poseObservations.length > 0) {
+      if (camera.hasSeenTarget) {
         return Status.OK;
       }
     }
