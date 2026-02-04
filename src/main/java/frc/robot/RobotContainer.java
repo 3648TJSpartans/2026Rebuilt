@@ -73,6 +73,9 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
+
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -156,8 +159,8 @@ public class RobotContainer {
                 // VisionIOLimelight(VisionConstants.camera1Name,
                 // m_drive::getRotation),
                 new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourtwo", m_drive::getRotation));
+                new VisionIOLimelight(VisionConstants.camera1Name, m_drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera2Name, m_drive::getRotation));
         break;
 
       case SIM:
