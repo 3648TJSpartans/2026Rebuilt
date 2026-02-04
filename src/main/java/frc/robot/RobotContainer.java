@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
 import frc.robot.commands.goToCommands.DriveTo;
@@ -104,6 +106,7 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final TrajectoryLogger m_trajectoryLogger;
   private final GenericStatusable m_usbStatus;
+  private final GenericStatusable m_batteryStatus;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -143,6 +146,9 @@ public class RobotContainer {
             return false;
           },
             "USB");
+    m_batteryStatus = 
+    new GenericStatusable(()-> RobotController.getMeasureBatteryVoltage().baseUnitMagnitude() < Constants.batteryThreshold
+    , "Battery", Status.WARNING);
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
