@@ -345,7 +345,7 @@ public class RobotContainer {
   }
 
   private void configureClimber() {
-    Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
+    // Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     // m_testController.leftBumper().whileTrue(autoFlip);
 
     new Trigger(()-> Math.abs(m_testController.getLeftY())>0.1).whileTrue(
