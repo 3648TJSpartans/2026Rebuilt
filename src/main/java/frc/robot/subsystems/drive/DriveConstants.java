@@ -74,9 +74,9 @@ public class DriveConstants {
   // Encoder Offsets
 
 
-  private static final String charlesSerial = "";
-  private static final String walterSerial = "023FF3ED 67";
-  private static final String jebediahSerial = "";
+  private static final String walterSerial = "023FF3ED";
+  private static final String jebediahSerial = "0322440D";
+  private static final String charlesSerial = "03223891";
 
 
   public static int getChassisSerial(){
@@ -91,6 +91,7 @@ public class DriveConstants {
     if (serial.equals(charlesSerial)) {
       return 3;
     }
+    Logger.recordOutput("Debug/Subsystems/Drive/chassisSerial", "Could not identify chassis");
     return 0;
   } 
 
