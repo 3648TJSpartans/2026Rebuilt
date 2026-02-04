@@ -136,14 +136,12 @@ public class RobotContainer {
     m_usbStatus =
         new GenericStatusable(
             () -> {
-              for (String path : Constants.usbPaths) {
-                File drive = new File(path);
-                if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                  return true;
-                }
+              File drive = new File(Constants.usbPath);
+              if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+                return true;
               }
-              return false;
-            },
+            return false;
+          },
             "USB");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
