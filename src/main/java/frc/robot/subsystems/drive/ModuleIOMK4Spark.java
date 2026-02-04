@@ -222,9 +222,6 @@ public class ModuleIOMK4Spark implements ModuleIO {
         .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
         .toArray(Rotation2d[]::new);
     timestampQueue.clear();
-    Logger.recordOutput("Debug/Module/" + module + "/OdometryTimestampsSizeRead", inputs.odometryTimestamps);
-    Logger.recordOutput("Debug/Module/" + module + "/OdometryTimestampsSizeCleared",
-        timestampQueue.stream().mapToDouble((Double value) -> value).toArray());
     drivePositionQueue.clear();
     turnPositionQueue.clear();
   }

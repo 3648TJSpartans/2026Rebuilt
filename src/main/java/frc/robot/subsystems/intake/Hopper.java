@@ -12,6 +12,6 @@ public class Hopper extends RelEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    return Status.OK;
+    return super.getStatus();
   }
 }

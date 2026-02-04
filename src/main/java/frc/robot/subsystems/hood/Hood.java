@@ -34,6 +34,6 @@ public class Hood extends AbsEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    return Status.OK;
+    return super.getStatus();
   }
 }

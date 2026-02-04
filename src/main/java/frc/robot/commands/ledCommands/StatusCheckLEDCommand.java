@@ -30,7 +30,7 @@ public class StatusCheckLEDCommand extends Command {
         continue;
       }
       if (m_statuses[i].getStatus() == Status.WARNING) {
-        m_leds.setSingleLed(255, 255, 0, i);
+        m_leds.setSingleLed(255, 80, 0, i);
         Logger.recordOutput("Utils/StatusCheck/" + m_statuses[i].getName(), "WARNING");
         continue;
       }

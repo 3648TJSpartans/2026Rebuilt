@@ -394,12 +394,14 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
-    for (Module module : modules) {
-      if (module.getDisconnected()) {
+    for (int i = 0; i<4;i++) {
+      if (modules[i].getDisconnected()) {
+        Logger.recordOutput("Debug/Subsystems/Drive/error", "moduleDisconnected");
         return Status.ERROR;
       }
     }
     if (gyroDisconnectedAlert.get()) {
+      Logger.recordOutput("Debug/Subsystems/Drive/error", "gyroDisconnected");
       return Status.ERROR;
     }
     return Status.OK;

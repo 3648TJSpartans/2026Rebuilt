@@ -49,6 +49,11 @@ public class SingleSolenoidIO extends SubsystemBase implements Statusable {
   }
 
   public Status getStatus() {
-    return getSolenoidEnabled() ? Status.OK : Status.WARNING;
+    Status localStatus = Status.OK;
+    if(!getSolenoidEnabled()){
+      localStatus = Status.WARNING;
+      Logger.recordOutput("Debug/Subsystems/" + name + "/warning", "Solenoid Disabled");
+    }
+    return localStatus;
   }
 }
