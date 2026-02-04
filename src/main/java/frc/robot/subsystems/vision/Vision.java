@@ -271,6 +271,7 @@ public class Vision extends SubsystemBase implements Statusable {
   public Status getStatus() {
     for (VisionIOInputsAutoLogged camera : inputs) {
       if (!camera.connected) {
+        Logger.recordOutput("Debug/Subsystems/Vision/error", "cameraDisconnected");
         return Status.ERROR;
       }
     }
@@ -280,6 +281,7 @@ public class Vision extends SubsystemBase implements Statusable {
       }
     }
     if(!hasAcceptedTarget){
+      Logger.recordOutput("Debug/Subsystems/Vision/warning", "Has Not Accepted Target");
       return Status.WARNING;
     }
     return Status.WARNING;

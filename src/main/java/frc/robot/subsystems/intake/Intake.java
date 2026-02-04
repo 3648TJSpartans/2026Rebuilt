@@ -33,6 +33,6 @@ public class Intake extends SingleSolenoidIO {
 
   @Override
   public Status getStatus() {
-    return Status.OK;
+    return super.getStatus();
   }
 }
