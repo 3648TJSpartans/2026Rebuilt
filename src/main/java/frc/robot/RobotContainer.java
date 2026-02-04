@@ -26,8 +26,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -67,12 +67,14 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.GenericStatusable;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
+import java.io.File;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -101,6 +103,7 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Hopper m_hopper;
   private final TrajectoryLogger m_trajectoryLogger;
+  private final GenericStatusable m_usbStatus;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -130,6 +133,16 @@ public class RobotContainer {
     m_intake = new Intake();
     m_hopper = new Hopper();
     m_compressor = new CompressorIO();
+    m_usbStatus =
+        new GenericStatusable(
+            () -> {
+              File drive = new File(Constants.usbPath);
+              if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+                return true;
+              }
+            return false;
+          },
+            "USB");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -535,8 +548,17 @@ public class RobotContainer {
 
     WrapperCommand statusCheck =
         new StatusCheckLEDCommand(
-                m_leds, m_drive, m_vision, m_turret, m_kicker, m_shooter, m_climber, m_hood,
-                m_hopper, m_intake)
+                m_leds,
+                m_drive,
+                m_vision,
+                m_turret,
+                m_kicker,
+                m_shooter,
+                m_climber,
+                m_hood,
+                m_hopper,
+                m_intake,
+                m_usbStatus)
             .ignoringDisable(true);
 
     m_leds.setDefaultCommand(statusCheck);

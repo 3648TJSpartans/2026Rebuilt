@@ -64,4 +64,6 @@ public final class Constants {
     return leastCommonStatus(
         statuses[0], leastCommonStatus(Arrays.copyOfRange(statuses, 1, statuses.length)));
   }
+
+  public static String usbPath = "/media/sdb1";
 }
