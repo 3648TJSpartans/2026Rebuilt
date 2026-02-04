@@ -147,7 +147,7 @@ public class RobotContainer {
           },
             "USB");
     m_batteryStatus = 
-    new GenericStatusable(()-> RobotController.getMeasureBatteryVoltage().baseUnitMagnitude() < Constants.batteryThreshold
+    new GenericStatusable(()-> RobotController.getMeasureBatteryVoltage().baseUnitMagnitude() > Constants.batteryThreshold
     , "Battery", Status.WARNING);
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -564,7 +564,8 @@ public class RobotContainer {
                 m_hood,
                 m_hopper,
                 m_intake,
-                m_usbStatus)
+                m_usbStatus,
+                m_batteryStatus)
             .ignoringDisable(true);
 
     m_leds.setDefaultCommand(statusCheck);
