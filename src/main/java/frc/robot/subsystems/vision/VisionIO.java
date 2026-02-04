@@ -27,6 +27,7 @@ public interface VisionIO {
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
     public String cameraName = "N/A";
+    public boolean hasSeenTarget = false;
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
@@ -64,4 +65,5 @@ public interface VisionIO {
   public default int getPipeline() {
     return 0;
   }
+
 }

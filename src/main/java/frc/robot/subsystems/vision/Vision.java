@@ -47,6 +47,7 @@ public class Vision extends SubsystemBase implements Statusable {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+  private boolean hasAcceptedTarget;
 
   public Vision(
       VisionConsumer consumer, TimelessVisionConsumer targetSpaceConsumer, VisionIO... io) {
@@ -59,6 +60,8 @@ public class Vision extends SubsystemBase implements Statusable {
     for (int i = 0; i < inputs.length; i++) {
       inputs[i] = new VisionIOInputsAutoLogged();
     }
+
+    hasAcceptedTarget = false;
 
     // Initialize disconnected alerts
     this.disconnectedAlerts = new Alert[io.length];
@@ -136,6 +139,7 @@ public class Vision extends SubsystemBase implements Statusable {
           robotPosesRejected.add(observation.pose());
         } else {
           robotPosesAccepted.add(observation.pose());
+          hasAcceptedTarget = true;
         }
 
         // Skip if rejected
@@ -267,13 +271,18 @@ public class Vision extends SubsystemBase implements Statusable {
   public Status getStatus() {
     for (VisionIOInputsAutoLogged camera : inputs) {
       if (!camera.connected) {
+        Logger.recordOutput("Debug/Subsystems/Vision/error", "cameraDisconnected");
         return Status.ERROR;
       }
     }
     for (VisionIOInputsAutoLogged camera : inputs) {
-      if (camera.poseObservations.length > 0) {
+      if (camera.hasSeenTarget) {
         return Status.OK;
       }
+    }
+    if(!hasAcceptedTarget){
+      Logger.recordOutput("Debug/Subsystems/Vision/warning", "Has Not Accepted Target");
+      return Status.WARNING;
     }
     return Status.WARNING;
   }

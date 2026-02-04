@@ -106,8 +106,8 @@ public class VisionIOLimelight implements VisionIO {
       doRejectUpdate = true;
     }
     if (!doRejectUpdate) {
-
       poseObservations.add(mt2.getAsObservartion());
+      inputs.hasSeenTarget = true;
     }
     doRejectUpdate = false;
     if (VisionConstants.usingMT1) {
@@ -120,6 +120,7 @@ public class VisionIOLimelight implements VisionIO {
       if (!doRejectUpdate) {
 
         poseObservations.add(mt1.getAsObservartion());
+        inputs.hasSeenTarget = true;
       }
     }
     // Save pose observations to inputs object

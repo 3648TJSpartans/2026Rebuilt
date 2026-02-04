@@ -137,7 +137,12 @@ public class Turret extends RelEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    return Constants.leastCommonStatus(super.getStatus(), isHomed ? Status.OK : Status.WARNING);
+    Status localStatus = Status.OK;
+    if(!isHomed){
+      Logger.recordOutput("Debug/Subsystems/Climb/warning", "Not Homed");
+      localStatus = Status.WARNING;
+    }
+    return Constants.leastCommonStatus(super.getStatus(), localStatus);
   }
 
   @AutoLogOutput(key = "Subsystems/Turret/homed")

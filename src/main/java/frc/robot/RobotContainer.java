@@ -170,7 +170,7 @@ public class RobotContainer {
                 // m_drive::getRotation),
                 new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
                 new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourtwo", m_drive::getRotation));
+                new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
         break;
 
       case SIM:
