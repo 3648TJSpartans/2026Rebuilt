@@ -13,6 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS.NavXComType;
@@ -20,9 +22,26 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.TunableNumber;
 
 public class DriveConstants {
+
+  private static final String charlesSerial = "";
+  private static final String walterSerial = "023FF3ED";
+  private static final String jebediahSerial = "";
+
+
+  public static int getChassisSerial(){
+    String serial = RobotController.getSerialNumber();
+    Logger.recordOutput("Utils/SerialIdentification/serialNumber", serial);
+      if (serial.equals(walterSerial)) {
+    // Set specific constants for Chassis #1
+    return 1;
+}
+return 0;
+  } 
+  
   public static final NavXComType navXComType = NavXComType.kUSB1;
 
   public static final double fieldRelativeMaxInputPercent = 1; // value between 0+ and 1,
@@ -57,13 +76,17 @@ public class DriveConstants {
   public static final int pigeonCanId = 9;
 
   /*
-   * Chassis Numbers 0- Tuning 1-Walter 2- Jebediah 3- Charles
+   * Chassis Numbers 
+   * 0- Tuning 
+   * 1-Walter 
+   * 2- Jebediah 
+   * 3- Charles
    *
    */
 
   // Encoder Offsets
 
-  public static int chasNum = (int) new TunableNumber("Drive/ChassisNumber", 1).get();
+  public static int chasNum =  (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
