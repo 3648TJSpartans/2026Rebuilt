@@ -140,8 +140,8 @@ public class RobotContainer {
               if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
                 return true;
               }
-            return false;
-          },
+              return false;
+            },
             "USB");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
@@ -636,15 +636,15 @@ public class RobotContainer {
                     m_drive)
                 .ignoringDisable(true));
 
-    m_driveController
-        .y()
-        .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
-        .whileTrue(
-            new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
-                .andThen(
-                    Commands.runOnce(m_neural::updateSavedPose)
-                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
-        .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
+    Command driveToBall =
+        new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
+            .andThen(
+                Commands.runOnce(m_neural::updateSavedPose)
+                    .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))
+                    .beforeStarting(() -> m_vision.setPipeline(1, 0))
+                    .finallyDo(() -> m_vision.setPipeline(0, 0)));
+
+    m_driveController.y().whileTrue(driveToBall);
 
     Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
