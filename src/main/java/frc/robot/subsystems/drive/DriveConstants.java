@@ -81,7 +81,6 @@ public class DriveConstants {
 
   public static int getChassisSerial(){
     String serial = RobotController.getSerialNumber();
-    Logger.recordOutput("Utils/SerialIdentification/serialNumber", serial);
     if (serial.equals(walterSerial)) {
       return 1;
     }
@@ -91,7 +90,6 @@ public class DriveConstants {
     if (serial.equals(charlesSerial)) {
       return 3;
     }
-    Logger.recordOutput("Debug/Subsystems/Drive/chassisSerial", "Could not identify chassis");
     return 0;
   } 
 

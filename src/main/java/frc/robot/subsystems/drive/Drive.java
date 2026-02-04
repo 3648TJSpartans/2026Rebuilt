@@ -394,6 +394,10 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
+    if(DriveConstants.chasNum == 0){
+      Logger.recordOutput("Debug/Subsystems/Drive/error", "invalidChassisNum");
+      return Status.ERROR;
+    }
     for (int i = 0; i<4;i++) {
       if (modules[i].getDisconnected()) {
         Logger.recordOutput("Debug/Subsystems/Drive/error", "moduleDisconnected");
