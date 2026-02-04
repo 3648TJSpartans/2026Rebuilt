@@ -27,20 +27,7 @@ import frc.robot.util.TunableNumber;
 
 public class DriveConstants {
 
-  private static final String charlesSerial = "";
-  private static final String walterSerial = "023FF3ED";
-  private static final String jebediahSerial = "";
-
-
-  public static int getChassisSerial(){
-    String serial = RobotController.getSerialNumber();
-    Logger.recordOutput("Utils/SerialIdentification/serialNumber", serial);
-      if (serial.equals(walterSerial)) {
-    // Set specific constants for Chassis #1
-    return 1;
-}
-return 0;
-  } 
+  
   
   public static final NavXComType navXComType = NavXComType.kUSB1;
 
@@ -85,6 +72,27 @@ return 0;
    */
 
   // Encoder Offsets
+
+
+  private static final String charlesSerial = "";
+  private static final String walterSerial = "023FF3ED 67";
+  private static final String jebediahSerial = "";
+
+
+  public static int getChassisSerial(){
+    String serial = RobotController.getSerialNumber();
+    Logger.recordOutput("Utils/SerialIdentification/serialNumber", serial);
+    if (serial.equals(walterSerial)) {
+      return 1;
+    }
+    if (serial.equals(jebediahSerial)) {
+      return 2;
+    }
+    if (serial.equals(charlesSerial)) {
+      return 3;
+    }
+    return 0;
+  } 
 
   public static int chasNum =  (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get();
   public static final double frontLeftExpectedZero =
@@ -132,7 +140,7 @@ return 0;
       };
   public static final int backLeftDriveCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 1;
         case 1 -> 2;
         case 2 -> 3;
         case 3 -> 2;
@@ -140,7 +148,7 @@ return 0;
       };
   public static final int frontRightDriveCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 2;
         case 1 -> 6;
         case 2 -> 7;
         case 3 -> 6;
@@ -148,7 +156,7 @@ return 0;
       };
   public static final int backRightDriveCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 3;
         case 1 -> 8;
         case 2 -> 5;
         case 3 -> 8;
@@ -159,7 +167,7 @@ return 0;
 
   public static final int frontLeftTurnCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 4;
         case 1 -> 3;
         case 2 -> 2;
         case 3 -> 3;
@@ -167,7 +175,7 @@ return 0;
       };
   public static final int backLeftTurnCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 5;
         case 1 -> 1;
         case 2 -> 4;
         case 3 -> 1;
@@ -175,7 +183,7 @@ return 0;
       };
   public static final int frontRightTurnCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 6;
         case 1 -> 5;
         case 2 -> 8;
         case 3 -> 5;
@@ -183,7 +191,7 @@ return 0;
       };
   public static final int backRightTurnCanId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 7;
         case 1 -> 7;
         case 2 -> 6;
         case 3 -> 7;
@@ -203,7 +211,7 @@ return 0;
 
   public static final int backLeftTurnEncoderId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 1;
         case 1 -> 1;
         case 2 -> 1;
         case 3 -> 3;
@@ -211,7 +219,7 @@ return 0;
       };
   public static final int frontRightTurnEncoderId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 2;
         case 1 -> 3;
         case 2 -> 3;
         case 3 -> 0;
@@ -219,7 +227,7 @@ return 0;
       };
   public static final int backRightTurnEncoderId =
       switch (chasNum) {
-        case 0 -> 0;
+        case 0 -> 3;
         case 1 -> 2;
         case 2 -> 0;
         case 3 -> 1;
