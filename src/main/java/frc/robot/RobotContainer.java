@@ -141,7 +141,7 @@ public class RobotContainer {
             () -> {
               File drive = new File(Constants.usbPath);
               if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                double freeSpace = drive.getFreeSpace();
+                double freeSpace = drive.getUsableSpace();
                 if (freeSpace < Constants.usbFreeThreshold) {
                   Logger.recordOutput("Debug/USB/warning", "USB near full");
                   Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
