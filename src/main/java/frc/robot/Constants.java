@@ -29,6 +29,8 @@ public final class Constants {
   public static final double batteryGoodThreshold = 12.5;
   public static final double batteryWarningThreshold = 12.0;
 
+  public static final long usbFreeThreshold = 100000000; // 100MB File
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

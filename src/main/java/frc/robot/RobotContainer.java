@@ -141,9 +141,16 @@ public class RobotContainer {
             () -> {
               File drive = new File(Constants.usbPath);
               if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+                double freeSpace = drive.getFreeSpace();
+                if (freeSpace < Constants.usbFreeThreshold) {
+                  Logger.recordOutput("Debug/USB/warning", "USB near full");
+                  Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
+                  return Status.WARNING;
+                }
                 return Status.OK;
               }
-              return Status.WARNING;
+              Logger.recordOutput("Debug/USB/error", "not found");
+              return Status.ERROR;
             },
             "USB");
 
@@ -152,11 +159,14 @@ public class RobotContainer {
             () -> {
               double voltage = RobotController.getBatteryVoltage();
               if (voltage > Constants.batteryGoodThreshold) {
+
                 return Status.OK;
               }
               if (voltage > Constants.batteryWarningThreshold) {
+                Logger.recordOutput("Debug/Battery/voltage", voltage);
                 return Status.WARNING;
               }
+              Logger.recordOutput("Debug/Battery/voltage", voltage);
               return Status.ERROR;
             },
             "Battery");
