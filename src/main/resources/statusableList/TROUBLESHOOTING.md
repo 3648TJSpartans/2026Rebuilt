@@ -1,5 +1,6 @@
 # Troubleshooting with LEDS
 Follow this guide to troubleshoot issues with subsystems using the LEDs.
+
 ## Reading Statuses
 To read the status for a particular subsystem, count from the **RoboRIO end of the LED strip** to the LED that corresponds to your subsystem. See the subsystem names below for indices.
 
