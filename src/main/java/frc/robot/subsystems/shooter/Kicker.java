@@ -39,10 +39,10 @@ public class Kicker extends RelEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    // if (super.getStatus() != Status.OK) {
-    //   Logger.recordOutput("Debug/Subsystems/Kicker/error", "Motor not attatched");
-    //   return super.getStatus();
-    // }
+    if (super.getStatus() != Status.OK) {
+      Logger.recordOutput("Debug/Subsystems/Kicker/error", "Motor not attatched");
+      return super.getStatus();
+    }
     if (irSensor.getStatus() != Status.OK) {
       Logger.recordOutput("Debug/Subsystems/Kicker/warning", "IR Sensor");
       return irSensor.getStatus();
