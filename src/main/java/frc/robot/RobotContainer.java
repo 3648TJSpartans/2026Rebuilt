@@ -147,10 +147,11 @@ public class RobotContainer {
                   Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
                   return Status.WARNING;
                 }
+                Logger.recordOutput("Debug/USB/warning", "N/A");
                 return Status.OK;
               }
-              Logger.recordOutput("Debug/USB/error", "not found");
-              return Status.ERROR;
+              Logger.recordOutput("Debug/USB/warning", "not found");
+              return Status.WARNING;
             },
             "USB");
 
