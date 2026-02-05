@@ -22,6 +22,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
 import frc.robot.commands.goToCommands.DriveTo;
@@ -104,6 +106,7 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final TrajectoryLogger m_trajectoryLogger;
   private final GenericStatusable m_usbStatus;
+  private final GenericStatusable m_batteryStatus;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -138,11 +141,36 @@ public class RobotContainer {
             () -> {
               File drive = new File(Constants.usbPath);
               if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                return true;
+                double freeSpace = drive.getUsableSpace();
+                if (freeSpace < Constants.usbFreeThreshold) {
+                  Logger.recordOutput("Debug/USB/warning", "USB near full");
+                  Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
+                  return Status.WARNING;
+                }
+                Logger.recordOutput("Debug/USB/warning", "N/A");
+                return Status.OK;
               }
-            return false;
-          },
+              Logger.recordOutput("Debug/USB/warning", "not found");
+              return Status.WARNING;
+            },
             "USB");
+
+    m_batteryStatus =
+        new GenericStatusable(
+            () -> {
+              double voltage = RobotController.getBatteryVoltage();
+              if (voltage > Constants.batteryGoodThreshold) {
+
+                return Status.OK;
+              }
+              if (voltage > Constants.batteryWarningThreshold) {
+                Logger.recordOutput("Debug/Battery/voltage", voltage);
+                return Status.WARNING;
+              }
+              Logger.recordOutput("Debug/Battery/voltage", voltage);
+              return Status.ERROR;
+            },
+            "Battery");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -558,7 +586,8 @@ public class RobotContainer {
                 m_hood,
                 m_hopper,
                 m_intake,
-                m_usbStatus)
+                m_usbStatus,
+                m_batteryStatus)
             .ignoringDisable(true);
 
     m_leds.setDefaultCommand(statusCheck);
