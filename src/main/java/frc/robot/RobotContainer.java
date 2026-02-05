@@ -21,8 +21,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -141,14 +141,25 @@ public class RobotContainer {
             () -> {
               File drive = new File(Constants.usbPath);
               if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                return true;
+                return Status.OK;
               }
-            return false;
-          },
+              return Status.WARNING;
+            },
             "USB");
-    m_batteryStatus = 
-    new GenericStatusable(()-> RobotController.getMeasureBatteryVoltage().baseUnitMagnitude() > Constants.batteryThreshold
-    , "Battery", Status.WARNING);
+
+    m_batteryStatus =
+        new GenericStatusable(
+            () -> {
+              double voltage = RobotController.getBatteryVoltage();
+              if (voltage > Constants.batteryGoodThreshold) {
+                return Status.OK;
+              }
+              if (voltage > Constants.batteryWarningThreshold) {
+                return Status.WARNING;
+              }
+              return Status.ERROR;
+            },
+            "Battery");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
