@@ -60,7 +60,7 @@ public class Climber extends RelEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    return Status.OK;
+    return super.getStatus();
   }
 
   public void setPower(double power) {
