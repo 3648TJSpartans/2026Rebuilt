@@ -16,6 +16,11 @@ public class StatusCheckLEDCommand extends Command {
     addRequirements(leds);
   }
 
+  public StatusCheckLEDCommand(Statusable... statuses) {
+    m_statuses = statuses;
+    m_leds = null;
+  }
+
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/LED/StatusCheckLEDCommand/running", true);
