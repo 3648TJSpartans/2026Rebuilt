@@ -48,7 +48,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.Constants.Status;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.Statusable;
+import frc.robot.util.statusableUtils.Statusable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -394,11 +394,11 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
-    if(DriveConstants.chasNum == 0){
+    if (DriveConstants.chasNum == 0) {
       Logger.recordOutput("Debug/Subsystems/Drive/error", "invalidChassisNum");
       return Status.ERROR;
     }
-    for (int i = 0; i<4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (modules[i].getDisconnected()) {
         Logger.recordOutput("Debug/Subsystems/Drive/error", "moduleDisconnected");
         return Status.ERROR;
@@ -410,7 +410,7 @@ public class Drive extends SubsystemBase implements Statusable {
     }
     return Status.OK;
   }
-  
+
   @AutoLogOutput(key = "Subsystems/Drive/Lean/Roll")
   public double getRoll() {
     return gyroInputs.roll;

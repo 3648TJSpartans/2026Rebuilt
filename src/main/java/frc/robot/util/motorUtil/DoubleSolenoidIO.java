@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
 public class DoubleSolenoidIO extends SubsystemBase implements Statusable {

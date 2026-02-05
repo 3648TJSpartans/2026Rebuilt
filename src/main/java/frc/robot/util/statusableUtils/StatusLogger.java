@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.statusableUtils;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;

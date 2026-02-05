@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
 public class SingleSolenoidIO extends SubsystemBase implements Statusable {
@@ -50,7 +50,7 @@ public class SingleSolenoidIO extends SubsystemBase implements Statusable {
 
   public Status getStatus() {
     Status localStatus = Status.OK;
-    if(!getSolenoidEnabled()){
+    if (!getSolenoidEnabled()) {
       localStatus = Status.WARNING;
       Logger.recordOutput("Debug/Subsystems/" + name + "/warning", "Solenoid Disabled");
     }

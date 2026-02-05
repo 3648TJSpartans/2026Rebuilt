@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
-
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
 public class CompressorIO extends SubsystemBase implements Statusable {
@@ -44,7 +43,8 @@ public class CompressorIO extends SubsystemBase implements Statusable {
     Logger.recordOutput("Subsystems/Compressor/getCompressorFull", getCompressorFull());
     Logger.recordOutput("Subsystems/Compressor/getCompressorCurrent", m_compressor.getCurrent());
     Logger.recordOutput("Subsystems/Compressor/getCompressorPressure", m_compressor.getPressure());
-    Logger.recordOutput("Subsystems/Compressor/getCompressorAnalogVoltage", m_compressor.getAnalogVoltage());
+    Logger.recordOutput(
+        "Subsystems/Compressor/getCompressorAnalogVoltage", m_compressor.getAnalogVoltage());
   }
 
   @Override
@@ -55,7 +55,7 @@ public class CompressorIO extends SubsystemBase implements Statusable {
   @Override
   public Status getStatus() {
     Status localStatus = Status.OK;
-    if(!getCompressorEnabled()){
+    if (!getCompressorEnabled()) {
       localStatus = Status.ERROR;
       Logger.recordOutput("Debug/Subsystems/" + name + "/warning", "Compressor Disabled");
     }

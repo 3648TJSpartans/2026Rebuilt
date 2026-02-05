@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.statusableUtils;
 
 import frc.robot.Constants.Status;
 import java.util.function.Supplier;

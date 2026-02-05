@@ -3,7 +3,6 @@ package frc.robot.subsystems.hood;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Status;
-import frc.robot.util.Statusable;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 import org.littletonrobotics.junction.AutoLogOutput;
 

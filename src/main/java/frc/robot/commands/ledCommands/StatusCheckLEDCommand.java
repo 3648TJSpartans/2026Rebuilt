@@ -3,7 +3,7 @@ package frc.robot.commands.ledCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Status;
 import frc.robot.subsystems.leds.LedSubsystem;
-import frc.robot.util.Statusable;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
 public class StatusCheckLEDCommand extends Command {
@@ -15,7 +15,6 @@ public class StatusCheckLEDCommand extends Command {
     m_leds = leds;
     addRequirements(leds);
   }
-
 
   @Override
   public void initialize() {
