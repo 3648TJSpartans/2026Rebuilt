@@ -37,6 +37,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Status;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Module IO implementation for Spark Flex drive motor controller, Spark Max turn motor controller,
@@ -274,11 +275,14 @@ public class ModuleIOMK4Spark implements ModuleIO {
   @Override
   public Status getStatus() {
     if (turnSpark.getLastError() != REVLibError.kOk) {
+      Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "turnSparkError");
       return Status.ERROR;
     }
     if (driveSpark.getLastError() != REVLibError.kOk) {
+      Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "driveSparkError");
       return Status.ERROR;
     }
+    Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "driveSparkError");
     return Status.OK;
   }
 }
