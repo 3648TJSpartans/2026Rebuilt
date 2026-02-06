@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import frc.robot.Constants.Status;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -129,7 +130,7 @@ public class Module {
     return inputs.driveVelocityRadPerSec;
   }
 
-  public boolean getDisconnected() {
-    return driveDisconnectedAlert.get() || turnDisconnectedAlert.get();
+  public Status getStatus() {
+    return io.getStatus();
   }
 }

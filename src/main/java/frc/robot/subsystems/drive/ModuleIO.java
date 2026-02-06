@@ -14,6 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.Status;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
@@ -51,4 +52,8 @@ public interface ModuleIO {
 
   /** Run the turn motor to the specified rotation. */
   public default void setTurnPosition(Rotation2d rotation) {}
+
+  public default Status getStatus() {
+    return Status.UNKNOWN;
+  }
 }
