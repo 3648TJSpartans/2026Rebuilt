@@ -71,4 +71,10 @@ public final class Constants {
   }
 
   public static String usbPath = "/media/sdb1";
+
+  public static boolean disableHAL = false;
+
+  public static void disableHAL() {
+    disableHAL = true;
+  }
 }
