@@ -35,7 +35,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
-import frc.robot.util.Statusable;
+import frc.robot.util.statusableUtils.Statusable;
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -280,13 +280,13 @@ public class Vision extends SubsystemBase implements Statusable {
         return Status.OK;
       }
     }
-    if(!hasAcceptedTarget){
+    if (!hasAcceptedTarget) {
       Logger.recordOutput("Debug/Subsystems/Vision/warning", "Has Not Accepted Target");
       return Status.WARNING;
     }
     return Status.WARNING;
   }
-  
+
   public double getTx(int IOIndex) {
     return io[IOIndex].getTx();
   }

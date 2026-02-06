@@ -1,8 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import frc.robot.Constants.Status;
-import frc.robot.util.StatusableDigitalInput;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.statusableUtils.StatusableDigitalInput;
 import org.littletonrobotics.junction.Logger;
 
 public class Kicker extends RelEncoderSparkMax {

@@ -69,12 +69,13 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.GenericStatusable;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.statusableUtils.GenericStatusable;
+import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import java.io.File;
 import org.littletonrobotics.junction.Logger;
@@ -107,6 +108,7 @@ public class RobotContainer {
   private final TrajectoryLogger m_trajectoryLogger;
   private final GenericStatusable m_usbStatus;
   private final GenericStatusable m_batteryStatus;
+  private final StatusLogger m_statusLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -135,7 +137,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
-    m_compressor = new CompressorIO();
+    m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
             () -> {
@@ -252,6 +254,21 @@ public class RobotContainer {
             m_turret::getTurretTranslationalVelocity);
 
     m_neural = new Neural(m_drive::getPose);
+
+    m_statusLogger =
+        new StatusLogger(
+            m_climber,
+            m_hood,
+            m_shooter,
+            m_kicker,
+            m_intake,
+            m_compressor,
+            m_hopper,
+            m_drive,
+            m_vision,
+            m_usbStatus,
+            m_batteryStatus);
+
     configureAutos();
 
     // Set up auto routines
@@ -575,22 +592,11 @@ public class RobotContainer {
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
     WrapperCommand statusCheck =
-        new StatusCheckLEDCommand(
-                m_leds,
-                m_drive,
-                m_vision,
-                m_turret,
-                m_kicker,
-                m_shooter,
-                m_climber,
-                m_hood,
-                m_hopper,
-                m_intake,
-                m_usbStatus,
-                m_batteryStatus)
-            .ignoringDisable(true);
+        new StatusCheckLEDCommand(m_leds, m_statusLogger.getStatuses()).ignoringDisable(true);
 
     m_leds.setDefaultCommand(statusCheck);
+    m_statusLogger.setDefaultCommand(
+        Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
     // new Trigger(() -> DriverStation.isDisabled()).whileTrue();
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
