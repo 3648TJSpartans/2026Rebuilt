@@ -87,8 +87,11 @@ public class Neural extends SubsystemBase {
       Transform2d transformToTarget =
           new Transform2d(
               new Translation2d(
-                  distanceToTargetM * Math.cos(Math.toRadians(tx)),
-                  -(distanceToTargetM * Math.sin(Math.toRadians(tx)))),
+                  (distanceToTargetM * Math.cos(Math.toRadians(tx)))
+                      + VisionConstants.ballDriveOffset
+                      + VisionConstants.robotToCamera0.getX(),
+                  -(distanceToTargetM * Math.sin(Math.toRadians(tx)))
+                      + VisionConstants.robotToCamera0.getY()),
               new Rotation2d());
       Logger.recordOutput("Subsystems/Vision/Neural/transformToTarget", transformToTarget);
       Pose2d targetPose = robotPose.transformBy(transformToTarget);
