@@ -84,7 +84,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-//   private final CompressorIO m_compressor;
+  //   private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final Neural m_neural;
@@ -238,7 +238,7 @@ public class RobotContainer {
     configureHopper();
     // configureTurret();
     configureHood();
-    // configureExampleSubsystem();
+    configureKicker();
     Command updateCommand =
         new InstantCommand(
                 () -> {
@@ -336,6 +336,11 @@ public class RobotContainer {
             // .beforeStarting(() -> leds.endgameAlert = true)
             // .finallyDo(() -> leds.endgameAlert = false)
             );
+  }
+
+  private void configureKicker() {
+    m_kicker.setDefaultCommand(
+        Commands.run(() -> m_kicker.setPower(m_testController.getLeftY()), m_kicker));
   }
 
   private void configureTurret() {
@@ -490,14 +495,15 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
         .y()
-        .whileTrue(
-            Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
+        .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
 
     m_intake.setDefaultCommand(
         Commands.run(
-            () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(),0.1)), m_intake).finallyDo(m_intake::stopRollers));
-    
+                () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(), 0.1)),
+                m_intake)
+            .finallyDo(m_intake::stopRollers));
+
     m_driveController
         .y()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
@@ -508,19 +514,19 @@ public class RobotContainer {
 
     m_testController
         .a()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povLeft()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povRight()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
 
     m_hopper.setDefaultCommand(
-        Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
+        Commands.run(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
   }
 
   public void configureLeds() {
