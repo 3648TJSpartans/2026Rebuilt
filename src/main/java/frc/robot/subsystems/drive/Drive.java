@@ -399,7 +399,7 @@ public class Drive extends SubsystemBase implements Statusable {
       return Status.ERROR;
     }
     for (int i = 0; i < 4; i++) {
-      if (modules[i].getDisconnected()) {
+      if (modules[i].getStatus() != Status.OK) {
         Logger.recordOutput("Debug/Subsystems/Drive/error", "moduleDisconnected");
         return Status.ERROR;
       }
