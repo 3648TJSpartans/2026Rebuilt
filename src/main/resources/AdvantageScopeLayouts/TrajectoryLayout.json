@@ -1,0 +1,267 @@
+{
+  "hubs": [
+    {
+      "x": 170,
+      "y": 69,
+      "width": 1100,
+      "height": 650,
+      "state": {
+        "sidebar": {
+          "width": 500,
+          "expanded": [
+            "/AdvantageKit",
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/Subsystems",
+            "/AdvantageKit/Drive/Module2/TurnPosition",
+            "/AdvantageKit/Drive/Module3/TurnPosition",
+            "/AdvantageKit/Drive/Module1/TurnPosition",
+            "/AdvantageKit/Drive/Module0/TurnPosition",
+            "/AdvantageKit/Drive/Module0/TurnEncoder",
+            "/AdvantageKit/RealOutputs/Commands/RunTrajectoryCmd",
+            "/AdvantageKit/RealOutputs/Commands/RunDynamicTrajectory",
+            "/AdvantageKit/RealOutputs/Subsystems/Drive/Odometry",
+            "/AdvantageKit/RealOutputs/Subsystems/Turret/MotorIO",
+            "/AdvantageKit/RealOutputs/Subsystems/Drive/Velocity (x,y,w)",
+            "/AdvantageKit/RealOutputs/Subsystems/Drive/SwerveChassisSpeeds/Measured",
+            "/AdvantageKit/RealOutputs/Subsystems/Drive/SwerveChassisSpeeds/Setpoints",
+            "/AdvantageKit/RealOutputs/Utils",
+            "/AdvantageKit/RealOutputs/Utils/Statusable",
+            "/AdvantageKit/RealOutputs/Debug",
+            "/AdvantageKit/RealOutputs/Debug/Controller",
+            "/AdvantageKit/RealOutputs/Utils/Statusable/Subsystems",
+            "/AdvantageKit/RealOutputs/Debug/Subsystems",
+            "/AdvantageKit/RealOutputs/Debug/Subsystems/Drive",
+            "/AdvantageKit/Drive",
+            "/SmartDashboard",
+            "/SmartDashboard/TunableNumbers",
+            "/SmartDashboard/TunableNumbers/Drive",
+            "/SmartDashboard/TunableNumbers/Subsystems",
+            "/AdvantageKit/URCL",
+            "/AdvantageKit/URCL/Spark-19",
+            "/AdvantageKit/RealOutputs/Subsystems/Claw",
+            "/AdvantageKit/RealOutputs/Subsystems/Claw/MotorIO"
+          ]
+        },
+        "tabs": {
+          "selected": 3,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "do57ars49vrvo342r44sa8mrrqt9479k",
+              "renderer": "",
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Subsystems/Claw/MotorIO/getPosition",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "hgyppjiptv6qjlexngdvy009fj0m62gb",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 2,
+              "title": "2D Field",
+              "controller": {
+                "sources": [],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
+              },
+              "controllerUUID": "nkd6mk1g7991f39htlkxn0wpely908zv",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 3,
+              "title": "3D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Commands/RunDynamicTrajectory/interpolatedTrajectory",
+                    "logType": "Translation3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Commands/RunDynamicTrajectory/interpolatedTrajectory (no velocity)",
+                    "logType": "Translation3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Subsystems/Drive/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "2026 KitBot"
+                    }
+                  },
+                  {
+                    "type": "cone",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Subsystems/Turret/TurretPose",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "position": "center"
+                    }
+                  }
+                ],
+                "game": "FRC:2026 Field"
+              },
+              "controllerUUID": "gjpukmv3hlt3lknmi6lsgih09orlt4ju",
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  -8.512074964345082,
+                  3.2509956396719946,
+                  0.9025792791620351
+                ],
+                "cameraTarget": [
+                  -2.5208450667690467,
+                  0.8974999999999995,
+                  1.7115251971658418
+                ]
+              },
+              "controlsHeight": 200
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Subsystems/Drive/SwerveChassisSpeeds/Measured",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff"
+                    }
+                  },
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Subsystems/Drive/SwerveChassisSpeeds/Setpoints",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  }
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
+              },
+              "controllerUUID": "8knkiho9v62kc3t04nfjv7f5w19en2lj",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Utils/Statusable/Subsystems/Drive",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "8qyzv8a5fdlu8kd1o6ynds6ji2pu9fn9",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [
+    {
+      "x": 270,
+      "y": 144,
+      "width": 900,
+      "height": 500,
+      "state": {
+        "type": 3,
+        "visualizer": {
+          "cameraIndex": -1,
+          "orbitFov": 50,
+          "cameraPosition": [
+            -7.725476390101226,
+            5.444130846028336,
+            -6.979838518655688
+          ],
+          "cameraTarget": [
+            -3.5944870559407573,
+            1.3914999991655363,
+            -1.2263272244048349
+          ]
+        }
+      },
+      "uuid": "gjpukmv3hlt3lknmi6lsgih09orlt4ju"
+    }
+  ],
+  "version": "26.0.0"
+}

@@ -297,7 +297,7 @@ public class RobotContainer {
     // configureClimber();
     configureIntake();
     configureHopper();
-    // configureTurret();
+    configureTurret();
     configureHood();
     // configureExampleSubsystem();
     Command updateCommand =
