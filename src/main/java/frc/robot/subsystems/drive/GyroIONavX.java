@@ -23,7 +23,8 @@ import java.util.Queue;
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
 
-  private final AHRS navX = new AHRS(DriveConstants.navXComType, (byte) odometryFrequency); // kMXP_SPI
+  private final AHRS navX =
+      new AHRS(DriveConstants.navXComType, (byte) odometryFrequency); // kMXP_SPI
 
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
@@ -40,10 +41,12 @@ public class GyroIONavX implements GyroIO {
     inputs.roll = Units.degreesToRadians(navX.getRoll());
     inputs.pitch = Units.degreesToRadians(navX.getPitch());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
-    inputs.odometryYawTimestamps = yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryYawPositions = yawPositionQueue.stream()
-        .map((Double value) -> Rotation2d.fromDegrees(-value))
-        .toArray(Rotation2d[]::new);
+    inputs.odometryYawTimestamps =
+        yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryYawPositions =
+        yawPositionQueue.stream()
+            .map((Double value) -> Rotation2d.fromDegrees(-value))
+            .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
   }

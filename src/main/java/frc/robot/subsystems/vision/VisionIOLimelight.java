@@ -24,6 +24,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.LimelightHelpers;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -90,6 +91,8 @@ public class VisionIOLimelight implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last
     // 250ms
+    inputs.connected =
+        ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 500;
     inputs.cameraName = name;
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
@@ -103,8 +106,8 @@ public class VisionIOLimelight implements VisionIO {
       doRejectUpdate = true;
     }
     if (!doRejectUpdate) {
-
       poseObservations.add(mt2.getAsObservartion());
+      inputs.hasSeenTarget = true;
     }
     doRejectUpdate = false;
     if (VisionConstants.usingMT1) {
@@ -117,6 +120,7 @@ public class VisionIOLimelight implements VisionIO {
       if (!doRejectUpdate) {
 
         poseObservations.add(mt1.getAsObservartion());
+        inputs.hasSeenTarget = true;
       }
     }
     // Save pose observations to inputs object

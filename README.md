@@ -1,10 +1,14 @@
 # Team 3468 2026 Rebuilt
 This is our team's repository for the 2026 FRC Rebuilt competition.
 
-## Tools
+## Resources
+
+### Troubleshooting Guide
+A troubleshooting guide for LED statuses can be found at [Troubleshooting Guide](src/main/resources/statusableList/TROUBLESHOOTING.md).
+
 ### Trajectory Calculations - Desmos
 Math used to find an initial velocity $v_0$ and angle $\theta$ to land within the Hub. Click the image to access tool. 
-[![Desmos Tool](src/main/resources/readMe/DesmosTool.png)](https://www.desmos.com/calculator/2vgcp7eqsk)
+[![Desmos Tool](src/main/resources/readme/DesmosTool.png)](https://www.desmos.com/calculator/2vgcp7eqsk)
 
 ## Style Guide
 Unless otherwise specified, like in naming, this repository should follow [Google's Java style guide.](https://google.github.io/styleguide/javaguide.html) Our formatter should automatically enforce this.

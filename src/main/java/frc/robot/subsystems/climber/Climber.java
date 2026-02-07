@@ -3,6 +3,7 @@ package frc.robot.subsystems.climber;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
@@ -62,6 +63,10 @@ public class Climber extends RelEncoderSparkMax {
   }
 
   @Override
+  public Status getStatus() {
+    return super.getStatus();
+  }
+
   public void setPower(double power) {
     super.setPower(power);
     follower.setPower(power);
