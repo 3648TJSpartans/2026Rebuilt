@@ -92,4 +92,14 @@ public class TrajectoryCalc {
     }
     return out;
   }
+
+  public static Translation3d[] interpolateTrajectory(
+      Trajectory traj, Translation3d turretTranslation) {
+    Translation3d[] out = new Translation3d[interpolationPoints];
+    double dt = traj.getHangTime() / (interpolationPoints - 1);
+    for (int i = 0; i < interpolationPoints; i++) {
+      out[i] = trajectoryAtTime(dt * i, traj, new double[] {0.0, 0.0}, turretTranslation);
+    }
+    return out;
+  }
 }
