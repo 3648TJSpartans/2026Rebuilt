@@ -1,5 +1,6 @@
 package frc.robot.util.motorUtil;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
@@ -11,6 +12,8 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import frc.robot.Constants.Status;
+import org.littletonrobotics.junction.Logger;
 
 public class RelEncoderSparkMax extends MotorIO {
 
@@ -46,6 +49,7 @@ public class RelEncoderSparkMax extends MotorIO {
     motorController.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
+  @Override
   public void setPower(double power) {
     super.setPower(power);
     motor.set(power);
@@ -90,11 +94,13 @@ public class RelEncoderSparkMax extends MotorIO {
         .inverted(m_motorConfig.isInverted())
         .idleMode(m_motorConfig.idleMode())
         .voltageCompensation(12.0);
-    config.closedLoop
+    config
+        .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(m_motorConfig.p(), m_motorConfig.i(), m_motorConfig.d(), m_motorConfig.ff())
         .outputRange(m_motorConfig.minPower(), m_motorConfig.maxPower());
-    config.signals
+    config
+        .signals
         .absoluteEncoderPositionAlwaysOn(true)
         .absoluteEncoderPositionPeriodMs((int) (1000.0 / m_motorConfig.encoderOdometryFrequency()))
         .absoluteEncoderVelocityAlwaysOn(true)
@@ -136,5 +142,13 @@ public class RelEncoderSparkMax extends MotorIO {
   // Runs specified voltage.
   public void runCharacterization(double output) {
     motor.setVoltage(output);
+  }
+
+  public Status getStatus() {
+    if (motor.getLastError() == REVLibError.kOk) {
+      return Status.OK;
+    }
+    Logger.recordOutput("Debug/" + name + "/revError", motor.getLastError().toString());
+    return Status.ERROR;
   }
 }

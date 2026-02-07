@@ -62,6 +62,7 @@
   "[java]": {
     "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code"
   },
+  "java.format.settings.google.version": "latest",
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
   "files.autoSave": "onFocusChange",

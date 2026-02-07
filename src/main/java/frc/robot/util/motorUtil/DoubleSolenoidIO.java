@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
-public class DoubleSolenoidIO extends SubsystemBase {
+public class DoubleSolenoidIO extends SubsystemBase implements Statusable {
 
   private DoubleSolenoid m_solenoid;
   private String name;
@@ -14,6 +16,11 @@ public class DoubleSolenoidIO extends SubsystemBase {
   public DoubleSolenoidIO(int solenoidChannel1, int solenoidChannel2, String name) {
     m_solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, solenoidChannel1, solenoidChannel2);
     this.name = name;
+  }
+
+  @Override
+  public final String getName() {
+    return name;
   }
 
   public void setSolenoidForward() {
@@ -58,5 +65,10 @@ public class DoubleSolenoidIO extends SubsystemBase {
   @Override
   public void periodic() {
     updateValues();
+  }
+
+  // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
+  public Status getStatus() {
+    return Status.WARNING;
   }
 }

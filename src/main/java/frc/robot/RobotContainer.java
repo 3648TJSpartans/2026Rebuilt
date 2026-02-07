@@ -22,14 +22,17 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
 import frc.robot.commands.goToCommands.DriveTo;
@@ -38,6 +41,7 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
+import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -70,7 +74,10 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.statusableUtils.GenericStatusable;
+import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
+import java.io.File;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -99,6 +106,9 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Hopper m_hopper;
   private final TrajectoryLogger m_trajectoryLogger;
+  private final GenericStatusable m_usbStatus;
+  private final GenericStatusable m_batteryStatus;
+  private final StatusLogger m_statusLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -127,7 +137,42 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
-    m_compressor = new CompressorIO();
+    m_compressor = new CompressorIO("Compressor");
+    m_usbStatus =
+        new GenericStatusable(
+            () -> {
+              File drive = new File(Constants.usbPath);
+              if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+                double freeSpace = drive.getUsableSpace();
+                if (freeSpace < Constants.usbFreeThreshold) {
+                  Logger.recordOutput("Debug/USB/warning", "USB near full");
+                  Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
+                  return Status.WARNING;
+                }
+                Logger.recordOutput("Debug/USB/warning", "N/A");
+                return Status.OK;
+              }
+              Logger.recordOutput("Debug/USB/warning", "not found");
+              return Status.WARNING;
+            },
+            "USB");
+
+    m_batteryStatus =
+        new GenericStatusable(
+            () -> {
+              double voltage = RobotController.getBatteryVoltage();
+              if (voltage > Constants.batteryGoodThreshold) {
+
+                return Status.OK;
+              }
+              if (voltage > Constants.batteryWarningThreshold) {
+                Logger.recordOutput("Debug/Battery/voltage", voltage);
+                return Status.WARNING;
+              }
+              Logger.recordOutput("Debug/Battery/voltage", voltage);
+              return Status.ERROR;
+            },
+            "Battery");
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -159,7 +204,9 @@ public class RobotContainer {
                 // new
                 // VisionIOLimelight(VisionConstants.camera1Name,
                 // m_drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation));
+                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
+                new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
         break;
 
       case SIM:
@@ -213,6 +260,21 @@ public class RobotContainer {
             m_turret::getTurretTranslationalVelocity);
 
     m_neural = new Neural(m_drive::getPose);
+
+    m_statusLogger =
+        new StatusLogger(
+            m_climber,
+            m_hood,
+            m_shooter,
+            m_kicker,
+            m_intake,
+            m_compressor,
+            m_hopper,
+            m_drive,
+            m_vision,
+            m_usbStatus,
+            m_batteryStatus);
+
     configureAutos();
 
     // Set up auto routines
@@ -220,7 +282,6 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
-    configureLeds();
   }
 
   /**
@@ -557,6 +618,13 @@ public class RobotContainer {
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
+    WrapperCommand statusCheck =
+        new StatusCheckLEDCommand(m_leds, m_statusLogger.getStatuses()).ignoringDisable(true);
+
+    m_leds.setDefaultCommand(statusCheck);
+    m_statusLogger.setDefaultCommand(
+        Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
+    // new Trigger(() -> DriverStation.isDisabled()).whileTrue();
     // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
     // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
 
