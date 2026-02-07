@@ -282,7 +282,15 @@ public class ModuleIOMK4Spark implements ModuleIO {
       Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "driveSparkError");
       return Status.ERROR;
     }
-    Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "driveSparkError");
+    if (driveSpark.hasStickyFault()) {
+      Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "driveSparkStickyFault");
+      return Status.ERROR;
+    }
+    if (turnSpark.hasStickyFault()) {
+      Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "turnSparkStickyFault");
+      return Status.ERROR;
+    }
+    Logger.recordOutput("Debug/Subsystems/Drive/Module" + module, "OK");
     return Status.OK;
   }
 }
