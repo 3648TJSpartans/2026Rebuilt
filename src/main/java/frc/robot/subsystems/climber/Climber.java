@@ -2,20 +2,15 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.Logger;
 
 public class Climber extends RelEncoderSparkMax {
-  private final DigitalOutput bottomSwitch;
-  private final DigitalOutput topSwitch;
   private final RelEncoderSparkMax follower;
 
   public Climber() {
     super(ClimberConstants.leadMotorConfig);
-    bottomSwitch = new DigitalOutput(ClimberConstants.bottomSwitchPort);
-    topSwitch = new DigitalOutput(ClimberConstants.topSwitchPort);
     follower = new RelEncoderSparkMax(ClimberConstants.followMotorConfig);
   }
 
@@ -24,19 +19,6 @@ public class Climber extends RelEncoderSparkMax {
     position =
         MathUtil.clamp(
             position, ClimberConstants.minPosition.get(), ClimberConstants.maxPosition.get());
-    if (topSwitch.get()) {
-      if (position > getPosition()) {
-        super.setPower(0.0);
-        return;
-      }
-    }
-
-    if (bottomSwitch.get()) {
-      if (position < getPosition()) {
-        super.setPower(0.0);
-        return;
-      }
-    }
     super.setPosition(position);
   }
 
