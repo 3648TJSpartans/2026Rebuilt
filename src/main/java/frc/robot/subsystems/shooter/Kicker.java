@@ -1,20 +1,23 @@
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
+import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.statusableUtils.StatusableDigitalInput;
 import org.littletonrobotics.junction.Logger;
 
 public class Kicker extends RelEncoderSparkMax {
 
-  private final DigitalOutput irSensor;
+  private final StatusableDigitalInput irSensor;
 
   public Kicker() {
     super(ShooterConstants.kKickerMotorConfig);
-    irSensor = new DigitalOutput(ShooterConstants.kickerIRSensorChannel);
+    irSensor =
+        new StatusableDigitalInput(
+            ShooterConstants.kickerIRSensorChannel, "Subsystems/Kicker/irSensor");
   }
 
   public boolean getSensor() {
-    return irSensor.get();
+    return !irSensor.get();
   }
 
   public void runExceptSensor(double speed) {
@@ -26,6 +29,24 @@ public class Kicker extends RelEncoderSparkMax {
   @Override
   public void updateValues() {
     super.updateValues();
-    Logger.recordOutput("Subsystems/Climber/irSensor", irSensor.get());
+    Logger.recordOutput("Subsystems/Kicker/irSensor", irSensor.get());
+  }
+
+  @Override
+  public String getName() {
+    return "Subsystems/Kicker";
+  }
+
+  @Override
+  public Status getStatus() {
+    if (super.getStatus() != Status.OK) {
+      Logger.recordOutput("Debug/Subsystems/Kicker/error", "Motor not attatched");
+      return super.getStatus();
+    }
+    if (irSensor.getStatus() != Status.OK) {
+      Logger.recordOutput("Debug/Subsystems/Kicker/warning", "IR Sensor");
+      return irSensor.getStatus();
+    }
+    return Status.OK;
   }
 }

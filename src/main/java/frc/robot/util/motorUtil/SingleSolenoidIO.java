@@ -3,9 +3,11 @@ package frc.robot.util.motorUtil;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Status;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
-public class SingleSolenoidIO extends SubsystemBase {
+public class SingleSolenoidIO extends SubsystemBase implements Statusable {
 
   private Solenoid m_solenoid;
   private String name;
@@ -13,6 +15,11 @@ public class SingleSolenoidIO extends SubsystemBase {
   public SingleSolenoidIO(int channel, String name) {
     m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, channel);
     this.name = name;
+  }
+
+  @Override
+  public final String getName() {
+    return name;
   }
 
   public void setSolenoid(boolean on) {
@@ -39,5 +46,14 @@ public class SingleSolenoidIO extends SubsystemBase {
   @Override
   public void periodic() {
     updateValues();
+  }
+
+  public Status getStatus() {
+    Status localStatus = Status.OK;
+    if (!getSolenoidEnabled()) {
+      localStatus = Status.WARNING;
+      Logger.recordOutput("Debug/Subsystems/" + name + "/warning", "Solenoid Disabled");
+    }
+    return localStatus;
   }
 }

@@ -45,14 +45,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.Constants.Status;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.statusableUtils.Statusable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive extends SubsystemBase implements Statusable {
+
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -87,6 +90,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
+    setName("Subsystems/Drive");
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
@@ -386,6 +390,25 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Subsystems/Drive/Lean/Tilt")
   public double getTilt() {
     return Math.acos(Math.cos(gyroInputs.pitch) * Math.cos(gyroInputs.roll));
+  }
+
+  @Override
+  public Status getStatus() {
+    if (DriveConstants.chasNum == 0) {
+      Logger.recordOutput("Debug/Subsystems/Drive/error", "invalidChassisNum");
+      return Status.ERROR;
+    }
+    for (int i = 0; i < 4; i++) {
+      if (modules[i].getDisconnected()) {
+        Logger.recordOutput("Debug/Subsystems/Drive/error", "moduleDisconnected");
+        return Status.ERROR;
+      }
+    }
+    if (gyroDisconnectedAlert.get()) {
+      Logger.recordOutput("Debug/Subsystems/Drive/error", "gyroDisconnected");
+      return Status.ERROR;
+    }
+    return Status.OK;
   }
 
   @AutoLogOutput(key = "Subsystems/Drive/Lean/Roll")

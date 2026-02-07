@@ -8,7 +8,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.statusableUtils.StatusableDigitalInput;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -19,6 +21,8 @@ public class Turret extends RelEncoderSparkMax {
   private final Supplier<double[]> m_robotVelocitySupplier;
   private Pose3d turretPose;
   private double[] turretTranslationalVelocity;
+  private final StatusableDigitalInput m_zeroSwitch;
+  private boolean isHomed;
 
   public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
     super(TurretConstants.kTurretMotorConfig);
@@ -27,6 +31,9 @@ public class Turret extends RelEncoderSparkMax {
     m_robotVelocitySupplier = robotVelocitySupplier;
     turretPose = new Pose3d();
     turretTranslationalVelocity = new double[2];
+    m_zeroSwitch =
+        new StatusableDigitalInput(TurretConstants.zeroSwitchPort, "Subsystems/Turret/ZeroSwitch");
+    isHomed = false;
   }
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
@@ -38,6 +45,7 @@ public class Turret extends RelEncoderSparkMax {
   public void periodic() {
     super.periodic();
     updateInputs();
+    checkHeading();
   }
 
   public void updateInputs() {
@@ -59,6 +67,18 @@ public class Turret extends RelEncoderSparkMax {
         "Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
   }
 
+  public void checkHeading() {
+    boolean zeroSwitchState = !m_zeroSwitch.get();
+    Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
+    // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
+    // If we go that direction, update code. Use floor function as fix.
+    if (zeroSwitchState) {
+      // Allows us to rotate turret 360 degrees and get our encoder offset value.
+      Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", getPosition());
+      setZeroHeading();
+    }
+  }
+
   public Transform3d getTransformToPose(Pose3d target) {
     Transform3d out = target.minus(turretPose);
     Logger.recordOutput("Subsystems/Turret/getTransformToPose/Pose", out);
@@ -73,12 +93,21 @@ public class Turret extends RelEncoderSparkMax {
     return turretTranslationalVelocity;
   }
 
+  public double getTurretTranslationalSpeed() {
+    double[] velocity = getTurretTranslationalVelocity();
+    return Math.sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1]);
+  }
+
   public void setZeroHeading() {
+    isHomed = true;
     setEncoder(0.0);
   }
 
   // sets rotation in robot space
   public void setRotation(Rotation2d rotation) {
+    if (!isHomed) {
+      return;
+    }
     double rotationRads = rotation.getRadians();
     rotationRads =
         MathUtil.clamp(
@@ -106,10 +135,30 @@ public class Turret extends RelEncoderSparkMax {
     setRotation(targetAngle);
   }
 
-  public double getTurretTranslationalSpeed() {
-    double[] turretTranslationalVelocity = getTurretTranslationalVelocity();
-    return Math.sqrt(
-        turretTranslationalVelocity[0] * turretTranslationalVelocity[0]
-            + turretTranslationalVelocity[1] * turretTranslationalVelocity[1]);
+  @Override
+  public Status getStatus() {
+    if (super.getStatus() != Status.OK) {
+      Logger.recordOutput("Debug/Subsystems/Turret/error", "Motor not attatched");
+      return super.getStatus();
+    }
+    if (!isHomed) {
+      Logger.recordOutput("Debug/Subsystems/Turret/warning", "Not Homed");
+      return Status.WARNING;
+    }
+    if (m_zeroSwitch.getStatus() != Status.OK) {
+      Logger.recordOutput("Debug/Subsystems/Turret/warning", "Limit Switch");
+      return m_zeroSwitch.getStatus();
+    }
+    return Status.OK;
+  }
+
+  @AutoLogOutput(key = "Subsystems/Turret/homed")
+  public boolean getHomed() {
+    return isHomed;
+  }
+
+  @Override
+  public String getName() {
+    return "Subsystems/Turret";
   }
 }

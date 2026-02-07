@@ -1,11 +1,12 @@
 package frc.robot.util.motorUtil;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.statusableUtils.Statusable;
 import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
-public abstract class MotorIO extends SubsystemBase {
+public abstract class MotorIO extends SubsystemBase implements Statusable {
 
   private static List<MotorIO> m_motorList = new ArrayList<MotorIO>();
 
@@ -65,7 +66,7 @@ public abstract class MotorIO extends SubsystemBase {
     m_speedSetpoint = 0.0;
   }
 
-  public final String getName() {
+  public String getName() {
     return name;
   }
 
