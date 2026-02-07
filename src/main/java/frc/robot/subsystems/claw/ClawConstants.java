@@ -14,8 +14,8 @@ public class ClawConstants {
           .maxPower(0.1)
           .minPower(-0.1)
           .positionTolerance(0.0);
-  public static final int bottomSwitchPort = 0;
-  public static final int topSwitchPort = 1;
+  public static final int bottomSwitchPort = 5;
+  public static final int topSwitchPort = 6;
   public static final TunableNumber minPosition =
       new TunableNumber("Subsystems/Claw/MinPosition", 0.0);
   public static final TunableNumber maxPosition =

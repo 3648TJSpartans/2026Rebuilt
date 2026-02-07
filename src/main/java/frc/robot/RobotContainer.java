@@ -45,6 +45,7 @@ import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
+import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -105,6 +106,7 @@ public class RobotContainer {
   private final Kicker m_kicker;
   private final Intake m_intake;
   private final Hopper m_hopper;
+  private final Claw m_claw;
   private final TrajectoryLogger m_trajectoryLogger;
   private final GenericStatusable m_usbStatus;
   private final GenericStatusable m_batteryStatus;
@@ -137,6 +139,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
+    m_claw = new Claw();
     m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
@@ -295,6 +298,7 @@ public class RobotContainer {
     configureShooter();
     configureAlerts();
     // configureClimber();
+    configureClaw();
     configureIntake();
     configureHopper();
     // configureTurret();
@@ -604,6 +608,13 @@ public class RobotContainer {
     // autonomous.onTrue(AutoLED);
     // teleop.onTrue(TeleopLED);
     /* */
+  }
+
+  public void configureClaw() {
+    m_claw.setDefaultCommand(
+        Commands.run(
+            () -> m_claw.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_claw));
   }
 
   private void configureHood() {}

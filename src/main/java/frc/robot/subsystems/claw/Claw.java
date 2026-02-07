@@ -52,7 +52,7 @@ public class Claw extends RelEncoderSparkMax {
   }
 
   public void updateInputs() {
-    Logger.recordOutput("Subsystems/Climber/position", getTranslation());
+    Logger.recordOutput("Subsystems/Claw/position", getTranslation());
   }
 
   @Override
