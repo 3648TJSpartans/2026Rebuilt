@@ -106,6 +106,7 @@ public class RobotContainer {
       new CommandXboxController(Constants.kCopilotControllerPort);
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.kTestControllerPort);
+  private final CommandXboxController m_test3Controller = new CommandXboxController(3);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -351,19 +352,25 @@ public class RobotContainer {
     // Rotation2d())));
     // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
     TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
-    m_testController
-        .rightBumper()
-        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
-        .onFalse(new InstantCommand(m_turret::stop, m_turret));
-    m_testController
-        .leftBumper()
-        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
-        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    // m_testController
+    //     .rightBumper()
+    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    // m_testController
+    //     .leftBumper()
+    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
     // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     // m_testController
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () ->
+                m_turret.setPower(
+                    MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0)));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -450,7 +457,7 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
         Commands.run(
-            () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_test3Controller.getRightY(), 0.1)),
             m_shooter));
   }
 
