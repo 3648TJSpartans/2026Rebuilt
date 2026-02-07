@@ -1,16 +1,16 @@
 package frc.robot.subsystems.shooter;
 
-import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.motorUtil.RelEncoderSparkFlex;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends RelEncoderSparkMax {
+public class Shooter extends RelEncoderSparkFlex {
 
-  private static RelEncoderSparkMax follower;
+  private static RelEncoderSparkFlex follower;
 
   public Shooter() {
     super(ShooterConstants.kLeaderMotorConfig);
-    follower = new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig);
+    follower = new RelEncoderSparkFlex(ShooterConstants.kFollowerMotorConfig);
   }
 
   @Override
