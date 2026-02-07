@@ -47,7 +47,6 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
@@ -137,12 +136,18 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         m_drive =
+            // new Drive(
+            //     new GyroIONavX(),
+            //     new ModuleIOMK4Spark(0),
+            //     new ModuleIOMK4Spark(1),
+            //     new ModuleIOMK4Spark(2),
+            //     new ModuleIOMK4Spark(3));
             new Drive(
                 new GyroIONavX(),
-                new ModuleIOMK4Spark(0),
-                new ModuleIOMK4Spark(1),
-                new ModuleIOMK4Spark(2),
-                new ModuleIOMK4Spark(3));
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
 
         // To change number of limelights, just add or delete IOs in the
         // parameters
@@ -369,8 +374,8 @@ public class RobotContainer {
     m_turret.setDefaultCommand(
         Commands.run(
             () ->
-                m_turret.setPower(
-                    MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0)));
+                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+            m_turret));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
