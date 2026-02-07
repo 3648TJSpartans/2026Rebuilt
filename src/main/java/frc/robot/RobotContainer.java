@@ -142,12 +142,12 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
-            // new Drive(
-            //     new GyroIONavX(),
-            //     new ModuleIO(){},
-            //     new ModuleIO(){},
-            //     new ModuleIO(){},
-            //     new ModuleIO(){});
+        // new Drive(
+        //     new GyroIONavX(),
+        //     new ModuleIO(){},
+        //     new ModuleIO(){},
+        //     new ModuleIO(){},
+        //     new ModuleIO(){});
 
         // To change number of limelights, just add or delete IOs in the
         // parameters
@@ -348,18 +348,21 @@ public class RobotContainer {
     // Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     // m_testController.leftBumper().whileTrue(autoFlip);
 
-    new Trigger(()-> Math.abs(m_testController.getLeftY())>0.1).whileTrue(
-        Commands.run(
-                () -> {
-                    m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
-                    //m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));
-                },
-                m_climber
-               // ,m_drive
-                )
-            .finallyDo(() -> {m_climber.stop();
-                // m_drive.stop();
-                }));
+    new Trigger(() -> Math.abs(m_testController.getLeftY()) > 0.1)
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_climber.setPower(-MathUtil.applyDeadband(m_testController.getLeftY(), 0.1));
+                      // m_drive.runVelocity(new ChassisSpeeds(-0.01, 0.0, 0.0));
+                    },
+                    m_climber
+                    // ,m_drive
+                    )
+                .finallyDo(
+                    () -> {
+                      m_climber.stop();
+                      // m_drive.stop();
+                    }));
   }
 
   private void configureTurret() {
