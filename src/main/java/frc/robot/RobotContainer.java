@@ -236,7 +236,7 @@ public class RobotContainer {
     // configureClimber();
     configureIntake();
     configureHopper();
-    // configureTurret();
+    configureTurret();
     configureHood();
     configureKicker();
     Command updateCommand =
@@ -340,7 +340,9 @@ public class RobotContainer {
 
   private void configureKicker() {
     m_kicker.setDefaultCommand(
-        Commands.run(() -> m_kicker.setPower(m_testController.getLeftY()), m_kicker));
+        Commands.run(
+            () -> m_kicker.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_kicker));
   }
 
   private void configureTurret() {
@@ -358,10 +360,10 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
-    m_testController
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    // m_testController
+    //     .rightTrigger()
+    //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -370,10 +372,10 @@ public class RobotContainer {
     // new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() *
     // 5);
 
-    m_testController
-        .b()
-        .whileTrue(
-            Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
+    // m_testController
+    //     .b()
+    //     .whileTrue(
+    //         Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
     RunTrajectoryCmd dynamicTrajectory =
         new RunDynamicTrajectory(
@@ -387,8 +389,8 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeLeft(),
             () -> m_shiftTracker.timeUntil());
-    m_testController.povLeft().whileTrue(dynamicTrajectory);
-    m_driveController.povLeft().whileTrue(dynamicTrajectory);
+    // m_testController.povLeft().whileTrue(dynamicTrajectory);
+    // m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
     RunTrajectoryCmd feedAlliance =
         new RunDynamicTrajectory(
@@ -413,14 +415,14 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+    // new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
 
-    m_kicker.setDefaultCommand(
-        Commands.run(
-            () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    new Trigger(() -> dynamicTrajectory.ready())
-        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
+    // m_kicker.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
+    // new Trigger(() -> dynamicTrajectory.ready())
+    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
@@ -518,11 +520,13 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povLeft()
-        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
         .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povRight()
-        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
         .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
 
     m_hopper.setDefaultCommand(
