@@ -66,4 +66,6 @@ public static final TunableNumber currentToSpeedThreshold = new TunableNumber("S
     out.enableContinuousInput(-Math.PI, Math.PI);
     return out;
   }
+
+  public static int solenoidChannel = 2;
 }

@@ -5,12 +5,15 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.motorUtil.SingleSolenoidIO;
 import org.littletonrobotics.junction.Logger;
 
 public class Climber extends RelEncoderSparkMax {
   private final DigitalOutput bottomSwitch;
   private final DigitalOutput topSwitch;
   private final RelEncoderSparkMax follower;
+  private final SingleSolenoidIO solenoid =
+      new SingleSolenoidIO(ClimberConstants.solenoidChannel, "Subsystems/Climber");
 
   public Climber() {
     super(ClimberConstants.leadMotorConfig);
@@ -78,15 +81,23 @@ public class Climber extends RelEncoderSparkMax {
     follower.setPower(0.0);
   }
 
-  public double getPowerToSpeed(){
-    return Math.abs(getSpeed())>100 && Math.abs(getAppliedOutput())>.05 ? Math.abs(getAppliedOutput()/getSpeed()) : 0.0;
+  public double getPowerToSpeed() {
+    return Math.abs(getSpeed()) > 100 && Math.abs(getAppliedOutput()) > .05
+        ? Math.abs(getAppliedOutput() / getSpeed())
+        : 0.0;
   }
 
-  public double getCurrentToSpeed(){
-     return Math.abs(getSpeed())>100 && Math.abs(getCurrent())>.05 ? Math.abs(getCurrent()/getSpeed()) : 0.0;
+  public double getCurrentToSpeed() {
+    return Math.abs(getSpeed()) > 100 && Math.abs(getCurrent()) > .05
+        ? Math.abs(getCurrent() / getSpeed())
+        : 0.0;
   }
 
-  public boolean getEngaged(){
+  public boolean getEngaged() {
     return getCurrentToSpeed() > ClimberConstants.currentToSpeedThreshold.get();
+  }
+
+  public void toggleSolenoid() {
+    solenoid.toggleSolenoid();
   }
 }

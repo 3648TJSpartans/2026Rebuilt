@@ -408,6 +408,7 @@ public class RobotContainer {
   private void configureClimber() {
     // Command autoFlip = new AutoClimb(m_climber, m_drive::getRoll);
     // m_testController.leftBumper().whileTrue(autoFlip);
+    m_testController.y().onTrue(Commands.runOnce(() -> m_climber.toggleSolenoid()));
 
     new Trigger(() -> Math.abs(m_testController.getLeftY()) > 0.1)
         .whileTrue(
