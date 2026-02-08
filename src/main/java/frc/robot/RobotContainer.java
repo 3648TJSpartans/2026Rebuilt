@@ -51,6 +51,7 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Hopper;
@@ -61,7 +62,6 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
@@ -181,18 +181,18 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         m_drive =
-            // new Drive(
-            //     new GyroIONavX(),
-            //     new ModuleIOMK4Spark(0),
-            //     new ModuleIOMK4Spark(1),
-            //     new ModuleIOMK4Spark(2),
-            //     new ModuleIOMK4Spark(3));
             new Drive(
                 new GyroIONavX(),
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIOMK4Spark(0),
+                new ModuleIOMK4Spark(1),
+                new ModuleIOMK4Spark(2),
+                new ModuleIOMK4Spark(3));
+        // new Drive(
+        //     new GyroIONavX(),
+        //     new ModuleIO() {},
+        //     new ModuleIO() {},
+        //     new ModuleIO() {},
+        //     new ModuleIO() {});
 
         // To change number of limelights, just add or delete IOs in the
         // parameters
@@ -268,7 +268,7 @@ public class RobotContainer {
             m_shooter,
             m_kicker,
             m_intake,
-            m_compressor,
+            // m_compressor,
             m_hopper,
             m_drive,
             m_vision,
@@ -432,11 +432,13 @@ public class RobotContainer {
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () ->
-                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
-            m_turret));
+    // m_turret.setDefaultCommand(
+    //     Commands.run(
+    //         () ->
+    //             m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) /
+    // 10.0),
+    //         m_turret));
+
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -500,27 +502,27 @@ public class RobotContainer {
 
   private void configureShooter() {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
-    m_testController
-        .x()
-        .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_shooter.shootVelocity(shootSpeed.get());
-                      if (m_shooter.speedInTolerance()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                      }
-                    },
-                    m_shooter,
-                    m_kicker)
-                .finallyDo(
-                    () -> {
-                      m_shooter.stop();
-                      m_kicker.stop();
-                    }));
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+    // m_testController
+    //     .x()
+    //     .whileTrue(
+    //         Commands.run(
+    //                 () -> {
+    //                   m_shooter.shootVelocity(shootSpeed.get());
+    //                   if (m_shooter.speedInTolerance()) {
+    //                     m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+    //                   }
+    //                 },
+    //                 m_shooter,
+    //                 m_kicker)
+    //             .finallyDo(
+    //                 () -> {
+    //                   m_shooter.stop();
+    //                   m_kicker.stop();
+    //                 }));
+    // m_testController
+    //     .leftTrigger()
+    //     .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+    //     .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
         Commands.run(
             () -> m_shooter.setPower(MathUtil.applyDeadband(m_test3Controller.getRightY(), 0.1)),
@@ -564,10 +566,8 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController
-        .povDown()
-        .onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
+    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
+    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
         .y()
         .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
@@ -603,7 +603,11 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
 
     m_hopper.setDefaultCommand(
-        Commands.run(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
+        Commands.run(
+            () ->
+                m_hopper.setPower(
+                    -MathUtil.applyDeadband(m_testController.getRightTriggerAxis(), 0.05) / 2.0),
+            m_hopper));
   }
 
   public void configureLeds() {
@@ -633,7 +637,14 @@ public class RobotContainer {
     /* */
   }
 
-  private void configureHood() {}
+  private void configureHood() {
+    m_test3Controller
+        .povUp()
+        .whileTrue(Commands.run(() -> m_hood.setPower(0.05), m_hood).finallyDo(m_hood::stop));
+    m_test3Controller
+        .povDown()
+        .whileTrue(Commands.run(() -> m_hood.setPower(-0.05), m_hood).finallyDo(m_hood::stop));
+  }
 
   public void configureDrive() {
     // Default command, normal field-relative drive/

@@ -23,7 +23,7 @@ public class ShooterConstants {
   //   .isInverted(true);
 
   public static MotorConfig kKickerMotorConfig =
-      new MotorConfig("Subsystems/Kicker/MotorIO").motorCan(12).Ks(0).Kv(0).speedTolerance(0.0);
+      new MotorConfig("Subsystems/Kicker/MotorIO").motorCan(13).Ks(0).Kv(0).speedTolerance(0.0);
 
   public static final int kickerIRSensorChannel = 3;
 
