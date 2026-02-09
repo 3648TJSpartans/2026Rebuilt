@@ -23,8 +23,8 @@ public class HoodConstants {
       new TunableNumber("Subsystems/Hood/limits/minPose", 0.0);
   public static final TunableNumber maxPosition =
       new TunableNumber("Subsystems/Hood/limits/maxPose", 0.602);
-  public static final Rotation2d minAngle = new Rotation2d(Units.degreesToRadians(0));
-  public static final Rotation2d maxAngle = new Rotation2d(Units.degreesToRadians(90));
+  public static final Rotation2d minAngle = new Rotation2d(Units.degreesToRadians(70));
+  public static final Rotation2d maxAngle = new Rotation2d(Units.degreesToRadians(85));
   public static final double hoodEncoderFactor =
       maxPosition.get() / (maxAngle.getRadians() - minAngle.getRadians());
 }
