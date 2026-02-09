@@ -46,13 +46,13 @@ public abstract class MotorIO extends SubsystemBase implements Statusable {
   ;
 
   public void updateValues() {
-    Logger.recordOutput(name + "/getPosition", getPosition());
-    Logger.recordOutput(name + "/getSpeed", getSpeed());
-    Logger.recordOutput(name + "/setPose", m_positionSetpoint);
-    Logger.recordOutput(name + "/setSpeed", m_speedSetpoint);
-    Logger.recordOutput(name + "/poseInTolerance", positionInTolerance());
-    Logger.recordOutput(name + "/speedInTolerance", speedInTolerance());
-    Logger.recordOutput(name + "/setPower", m_powerSetpoint);
+    Logger.recordOutput(name + "getPosition", getPosition());
+    Logger.recordOutput(name + "getSpeed", getSpeed());
+    Logger.recordOutput(name + "setPose", m_positionSetpoint);
+    Logger.recordOutput(name + "setSpeed", m_speedSetpoint);
+    Logger.recordOutput(name + "poseInTolerance", positionInTolerance());
+    Logger.recordOutput(name + "speedInTolerance", speedInTolerance());
+    Logger.recordOutput(name + "setPower", m_powerSetpoint);
   }
 
   public abstract void setEncoder(double setpoint);
