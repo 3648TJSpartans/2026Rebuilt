@@ -1,11 +1,12 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
 public class HoodConstants {
-  public static final TunableNumber hoodEncoderFactor =
-      new TunableNumber("Subsystems/Hood/rotationFactor", 1.0);
+
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Hood/MotorIO")
           .motorCan(17)
@@ -18,9 +19,12 @@ public class HoodConstants {
 
   public static final TunableNumber hoodAngleOffset =
       new TunableNumber("Subsystems/Hood/angleOffset", Math.PI / 2);
-
-  public static final TunableNumber minAngle =
-      new TunableNumber("Subsystems/Hood/limits/minAngle", 0.0);
-  public static final TunableNumber maxAngle =
-      new TunableNumber("Subsystems/Hood/limits/minAngle", 1.0);
+  public static final TunableNumber minPosition =
+      new TunableNumber("Subsystems/Hood/limits/minPose", 0.0);
+  public static final TunableNumber maxPosition =
+      new TunableNumber("Subsystems/Hood/limits/maxPose", 0.602);
+  public static final Rotation2d minAngle = new Rotation2d(Units.degreesToRadians(0));
+  public static final Rotation2d maxAngle = new Rotation2d(Units.degreesToRadians(90));
+  public static final double hoodEncoderFactor =
+      maxPosition.get() / (maxAngle.getRadians() - minAngle.getRadians());
 }
