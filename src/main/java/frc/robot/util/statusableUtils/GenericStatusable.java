@@ -17,6 +17,10 @@ public class GenericStatusable implements Statusable {
     m_fetchDelay = fetchDelay;
   }
 
+  public GenericStatusable(Supplier<Status> statusSupplier, String name) {
+    this(statusSupplier, name, 0);
+  }
+
   public String getName() {
     return m_name;
   }
