@@ -47,6 +47,7 @@ import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
@@ -198,16 +199,34 @@ public class RobotContainer {
         // To change number of limelights, just add or delete IOs in the
         // parameters
         // Make sure camera name match in the coprocessor!
-        m_vision =
-            new Vision(
-                m_drive::addVisionMeasurement,
-                m_drive::addTargetSpaceVisionMeasurement,
-                // new
-                // VisionIOLimelight(VisionConstants.camera1Name,
-                // m_drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
+        switch (DriveConstants.chasNum) {
+          case 3:
+            m_vision =
+                new Vision(
+                    m_drive::addVisionMeasurement,
+                    m_drive::addTargetSpaceVisionMeasurement,
+                    // new
+                    // VisionIOLimelight(VisionConstants.camera0Name,
+                    // m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourtwo", m_drive::getRotation));
+            break;
+          case 1:
+            m_vision =
+                new Vision(
+                    m_drive::addVisionMeasurement,
+                    m_drive::addTargetSpaceVisionMeasurement,
+                    // new
+                    // VisionIOLimelight(VisionConstants.camera1Name,
+                    // m_drive::getRotation),
+                    new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
+            break;
+          default:
+            m_vision =
+                new Vision(m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement);
+            break;
+        }
         break;
 
       case SIM:
@@ -443,7 +462,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                     () -> {
-                      m_turret.setRotation(new Rotation2d(turretSetpoint.get()));
+                      m_turret.setFieldRotation(new Rotation2d(turretSetpoint.get()));
                     },
                     m_turret)
                 .finallyDo(() -> m_turret.stop()));
