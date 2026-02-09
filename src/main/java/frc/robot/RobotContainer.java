@@ -62,6 +62,7 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
@@ -417,7 +418,7 @@ public class RobotContainer {
     // new
     // Rotation2d())));
     // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
+    TunableNumber turretSetpoint = new TunableNumber("Subsystems/Turret/testSetpoint", 0.5);
     // m_testController
     //     .rightBumper()
     //     .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
@@ -502,23 +503,28 @@ public class RobotContainer {
 
   private void configureShooter() {
     TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
-    // m_testController
-    //     .x()
-    //     .whileTrue(
-    //         Commands.run(
-    //                 () -> {
-    //                   m_shooter.shootVelocity(shootSpeed.get());
-    //                   if (m_shooter.speedInTolerance()) {
-    //                     m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-    //                   }
-    //                 },
-    //                 m_shooter,
-    //                 m_kicker)
-    //             .finallyDo(
-    //                 () -> {
-    //                   m_shooter.stop();
-    //                   m_kicker.stop();
-    //                 }));
+    m_testController
+        .x()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_shooter.shootVelocity(shootSpeed.get());
+                      if (m_shooter.speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                      } else {
+                        m_kicker.stop();
+                        m_hopper.stop();
+                      }
+                    },
+                    m_shooter,
+                    m_kicker,
+                    m_hopper)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
     // m_testController
     //     .leftTrigger()
     //     .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
