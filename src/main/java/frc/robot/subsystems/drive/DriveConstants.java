@@ -94,7 +94,7 @@ public class DriveConstants {
         case 0 -> 0.0;
         case 1 -> 4.255;
         case 2 -> 1.71;
-        case 3 -> 4.397;
+        case 3 -> 4.415;
         default -> 0.0;
       };
   public static final double backLeftExpectedZero =
@@ -102,7 +102,7 @@ public class DriveConstants {
         case 0 -> 0.0;
         case 1 -> 4.120;
         case 2 -> 4.10;
-        case 3 -> 4.488;
+        case 3 -> 4.415;
         default -> 0.0;
       };
   public static final double frontRightExpectedZero =
@@ -110,7 +110,7 @@ public class DriveConstants {
         case 0 -> 0.0;
         case 1 -> 1.658;
         case 2 -> 2.98;
-        case 3 -> 5.702;
+        case 3 -> 0.096;
         default -> 0.0;
       };
   public static final double backRightExpectedZero =
@@ -118,7 +118,7 @@ public class DriveConstants {
         case 0 -> 0.0;
         case 1 -> 0.519;
         case 2 -> 0.217;
-        case 3 -> 3.857;
+        case 3 -> 0.642;
         default -> 0.0;
       };
 
