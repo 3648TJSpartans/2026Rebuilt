@@ -14,7 +14,7 @@ public class TurretConstants {
           .i(0.0)
           .maxPower(0.3)
           .minPower(-0.3);
-  public static final Translation3d kTurretOffset = new Translation3d(-.3, .2, .2);
+  public static final Translation3d kTurretOffset = new Translation3d(-.26, .26, .58);
   public static final TunableNumber kTurretMinRotation =
       new TunableNumber("Subsystems/Turret/minRotation", -Math.PI);
   public static final TunableNumber kTurretMaxRotation =

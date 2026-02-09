@@ -462,7 +462,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                     () -> {
-                      m_turret.setFieldRotation(new Rotation2d(turretSetpoint.get()));
+                      m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
                     },
                     m_turret)
                 .finallyDo(() -> m_turret.stop()));
