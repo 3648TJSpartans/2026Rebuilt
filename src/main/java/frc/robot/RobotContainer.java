@@ -433,12 +433,21 @@ public class RobotContainer {
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
 
-    // m_turret.setDefaultCommand(
-    //     Commands.run(
-    //         () ->
-    //             m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) /
-    // 10.0),
-    //         m_turret));
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () ->
+                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+            m_turret));
+    m_test3Controller
+        .a()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_turret.setRotation(new Rotation2d(turretSetpoint.get()));
+                    },
+                    m_turret)
+                .finallyDo(() -> m_turret.stop()));
+    m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
 
     // Random rand = new Random();
     // TunableNumber targetX =
