@@ -9,16 +9,16 @@ public class TurretConstants {
   public static final MotorConfig kTurretMotorConfig =
       new MotorConfig("Subsystems/Turret/MotorIO/")
           .motorCan(12)
-          .p(1.0)
+          .p(2.0)
           .d(0.0)
           .i(0.0)
-          .maxPower(0.05)
-          .minPower(-0.05);
+          .maxPower(0.3)
+          .minPower(-0.3);
   public static final Translation3d kTurretOffset = new Translation3d(-.3, .2, .2);
   public static final TunableNumber kTurretMinRotation =
-      new TunableNumber("Subsystems/Turret/minRotation", -3 * Math.PI / 4);
+      new TunableNumber("Subsystems/Turret/minRotation", -Math.PI);
   public static final TunableNumber kTurretMaxRotation =
-      new TunableNumber("Subsystems/Turret/maxRotation", 3 * Math.PI / 4);
+      new TunableNumber("Subsystems/Turret/maxRotation", Math.PI);
   public static double encoderPositionFactor = Math.PI / 63;
   public static final int zeroSwitchPort = 0;
 }
