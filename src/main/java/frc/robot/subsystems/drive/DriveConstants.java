@@ -224,7 +224,7 @@ public class DriveConstants {
         case 0 -> 3;
         case 1 -> 2;
         case 2 -> 0;
-        case 3 -> 1;
+        case 3 -> 0;
         default -> 0;
       };
 

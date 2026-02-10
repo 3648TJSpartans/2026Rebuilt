@@ -65,10 +65,19 @@ public class RelEncoderSparkMax extends MotorIO {
     return encoder.getVelocity();
   }
 
+  public double getAppliedOutput(){
+    return motor.getAppliedOutput();
+  }
+
+  public double getCurrent(){
+    return motor.getOutputCurrent();
+  }
+
   @Override
   public void setEncoder(double setpoint) {
     encoder.setPosition(setpoint);
   }
+
 
   public double getPositionTolerance() {
     return m_positionTolerance;
