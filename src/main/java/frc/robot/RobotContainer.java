@@ -156,7 +156,8 @@ public class RobotContainer {
               Logger.recordOutput("Debug/USB/warning", "not found");
               return Status.WARNING;
             },
-            "USB");
+            "USB",
+            5);
 
     m_batteryStatus =
         new GenericStatusable(
@@ -173,7 +174,8 @@ public class RobotContainer {
               Logger.recordOutput("Debug/Battery/voltage", voltage);
               return Status.ERROR;
             },
-            "Battery");
+            "Battery",
+            10);
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
