@@ -13,6 +13,8 @@ public class HoodConstants {
           .p(0)
           .i(0)
           .d(0)
+          .minPower(-.05)
+          .maxPower(0.05)
           .positionTolerance(0.01)
           .isInverted(true);
   public static final TunableNumber hoodTestSpeed =
@@ -24,8 +26,8 @@ public class HoodConstants {
       new TunableNumber("Subsystems/Hood/limits/minPose", 0.02);
   public static final TunableNumber maxPosition =
       new TunableNumber("Subsystems/Hood/limits/maxPose", 0.57);
-  public static final Rotation2d minAngle = new Rotation2d(Units.degreesToRadians(69));
-  public static final Rotation2d maxAngle = new Rotation2d(Units.degreesToRadians(79.8));
+  public static final Rotation2d minAngle = new Rotation2d(Units.degreesToRadians(79.8));
+  public static final Rotation2d maxAngle = new Rotation2d(Units.degreesToRadians(69));
   public static final double hoodEncoderFactor =
       maxPosition.get() / (maxAngle.getRadians() - minAngle.getRadians());
 }

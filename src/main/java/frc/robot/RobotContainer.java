@@ -492,6 +492,19 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeLeft(),
             () -> m_shiftTracker.timeUntil());
+    TunableNumber aspect = new TunableNumber("Trajectory/testTrajHeight", 1.5);
+    RunTrajectoryCmd dynamicTestTrajectory =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> aspect.get(),
+            () -> .5,
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
+            () -> m_shiftTracker.timeLeft(),
+            () -> m_shiftTracker.timeUntil());
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     // m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
@@ -518,7 +531,23 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    // new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+    m_test3Controller
+        .y()
+        .whileTrue(
+            dynamicTestTrajectory.alongWith(
+                Commands.run(
+                        () -> {
+                          if (m_shooter.speedInTolerance()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
 
     // m_kicker.setDefaultCommand(
     //     Commands.run(
@@ -677,6 +706,14 @@ public class RobotContainer {
     m_test3Controller
         .povDown()
         .whileTrue(Commands.run(() -> m_hood.setPower(-0.05), m_hood).finallyDo(m_hood::stop));
+    TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
+    m_test3Controller
+        .leftBumper()
+        .whileTrue(
+            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood).finallyDo(m_hood::stop));
+    m_test3Controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(m_hood::stop));
   }
 
   public void configureDrive() {

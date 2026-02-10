@@ -30,12 +30,7 @@ public class Hood extends AbsEncoderSparkMax {
 
   public void setAngle(Rotation2d angle) {
     double setpoint =
-        (MathUtil.clamp(
-                    angle.getRadians(),
-                    HoodConstants.minAngle.getRadians(),
-                    HoodConstants.maxAngle.getRadians())
-                - HoodConstants.minAngle.getRadians())
-            * HoodConstants.hoodEncoderFactor;
+        angle.minus(HoodConstants.minAngle).getRadians() * HoodConstants.hoodEncoderFactor;
     setPosition(setpoint);
   }
 
