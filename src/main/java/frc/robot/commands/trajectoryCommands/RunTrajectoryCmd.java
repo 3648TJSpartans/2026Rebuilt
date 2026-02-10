@@ -91,5 +91,7 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stop();
+    m_turret.stop();
+    m_hood.stop();
   }
 }
