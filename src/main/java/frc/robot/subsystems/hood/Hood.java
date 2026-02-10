@@ -16,7 +16,7 @@ public class Hood extends AbsEncoderSparkMax {
   //   setPosition(setpoint);
   // }
 
-  @AutoLogOutput
+  @AutoLogOutput(key = "Subsystems/Hood/getAngle")
   public double getAngle() {
     return getPosition() / HoodConstants.hoodEncoderFactor + HoodConstants.minAngle.getRadians();
   }

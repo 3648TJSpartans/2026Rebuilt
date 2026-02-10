@@ -7,17 +7,17 @@ import frc.robot.util.motorUtil.MotorConfig;
 public class ShooterConstants {
   public static MotorConfig kLeaderMotorConfig =
       new MotorConfig("Subsystems/Shooter/LeaderMotorIO")
-          .motorCan(10)
-          .Ks(0.52341)
-          .Kv(0.00195)
-          .speedTolerance(75)
+          .motorCan(11)
+          .Ks(-0.02985)
+          .Kv(0.00176)
+          .speedTolerance(200)
           .idleMode(IdleMode.kCoast);
   public static MotorConfig kFollowerMotorConfig =
       new MotorConfig("Subsystems/Shooter/FollowerMotorIO")
-          .motorCan(11)
-          .Ks(0)
-          .Kv(0)
-          .speedTolerance(75)
+          .motorCan(10)
+          .Ks(-0.02985)
+          .Kv(0.00176)
+          .speedTolerance(200)
           .idleMode(IdleMode.kCoast);
   //   .follow(10)
   //   .isInverted(true);
