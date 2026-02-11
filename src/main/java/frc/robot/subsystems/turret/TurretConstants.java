@@ -12,7 +12,7 @@ public class TurretConstants {
           .p(2.0)
           .d(0.0)
           .i(0.0)
-          .positionTolerance(0.1)
+          .positionTolerance(0.3)
           .maxPower(0.3)
           .minPower(-0.3);
   public static final Translation3d kTurretOffset = new Translation3d(-.26, .26, .58);

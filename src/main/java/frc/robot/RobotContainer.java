@@ -273,7 +273,7 @@ public class RobotContainer {
     m_trajectoryLogger =
         new TrajectoryLogger(
             () -> m_hood.getAngle(),
-            () -> m_turret.getTurretRotation().getRadians(),
+            () -> m_turret.getTurretFieldPose().getRotation().getZ(),
             m_shooter::getVelocity,
             () -> 2.0,
             () -> m_turret.getTurretFieldPose().getTranslation(),
