@@ -47,6 +47,24 @@ public class TrajectoryCalc {
     return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
   }
 
+  public static Trajectory stationaryTrajectory(
+      Translation3d current, Translation3d target, double thetaShooter) {
+
+    target = target.minus(current);
+    Logger.recordOutput(
+        "Utils/TrajectoryCalc/Path", new Translation3d[] {current, target.plus(current)});
+    double thetaTurret = Math.atan2(target.getY(), target.getX());
+    double xpt = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    double zpt = target.getZ();
+    double det = 2 * g * (Math.tan(thetaShooter) * xpt - zpt);
+    if (det < 0) {
+      return Trajectory.invalidTrajectory;
+    }
+    double shooterSpeed = g * xpt / (Math.cos(thetaShooter) * Math.sqrt(det));
+    double hangTime = xpt / (shooterSpeed * Math.cos(thetaShooter));
+    return new Trajectory(thetaShooter, thetaTurret, shooterSpeed, hangTime);
+  }
+
   public static Trajectory dynamicTrajectory(
       Translation3d current,
       Translation3d target,
@@ -62,6 +80,21 @@ public class TrajectoryCalc {
                   robotVelocity[1] * trajectory.getHangTime(),
                   0));
       trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
+    }
+    return trajectory;
+  }
+
+  public static Trajectory dynamicTrajectory(
+      Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
+    Trajectory trajectory = stationaryTrajectory(current, target, shootAngle);
+    for (int i = 0; i < movingtargetIts; i++) {
+      Translation3d newTarget =
+          target.minus(
+              new Translation3d(
+                  robotVelocity[0] * trajectory.getHangTime(),
+                  robotVelocity[1] * trajectory.getHangTime(),
+                  0));
+      trajectory = stationaryTrajectory(current, newTarget, shootAngle);
     }
     return trajectory;
   }
