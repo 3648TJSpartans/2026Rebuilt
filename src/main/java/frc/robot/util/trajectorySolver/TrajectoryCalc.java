@@ -15,8 +15,7 @@ public class TrajectoryCalc {
             new Translation3d(0, 0, 0),
             new Translation3d(4.034536, 4.625594, 1.430425),
             new double[] {-1, 2},
-            7.0 / 8,
-            2.1336);
+            2);
     System.out.println(results);
   }
 
@@ -97,6 +96,30 @@ public class TrajectoryCalc {
       trajectory = stationaryTrajectory(current, newTarget, shootAngle);
     }
     return trajectory;
+  }
+
+  public static Trajectory dynamicTrajectory(
+      Translation3d current, Translation3d target, double[] robotVelocity, double hangTime) {
+    target = target.minus(current);
+
+    if (hangTime <= 0.0) {
+      return Trajectory.invalidTrajectory;
+    }
+    double yT = target.getY();
+    double xT = target.getX();
+    double zT = target.getZ();
+    double vtx = robotVelocity[0];
+    double vty = robotVelocity[1];
+    double thetat = Math.atan2(yT / hangTime - vty, xT / hangTime - vtx);
+    double thetas =
+        Math.atan2((zT / hangTime + g * hangTime / 2.0) * Math.cos(thetat), xT / hangTime - vtx);
+
+    if (thetas <= 0) {
+      return Trajectory.invalidTrajectory;
+    }
+    double vs = (zT / hangTime + g * hangTime / 2.0) / Math.sin(thetas);
+
+    return new Trajectory(thetas, thetat, vs, hangTime);
   }
 
   public static Translation3d trajectoryAtTime(
