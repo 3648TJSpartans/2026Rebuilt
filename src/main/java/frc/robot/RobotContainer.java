@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -273,7 +272,7 @@ public class RobotContainer {
     // TODO update as subsystems are made
     m_trajectoryLogger =
         new TrajectoryLogger(
-            () -> Units.degreesToRadians(80),
+            () -> m_hood.getAngle(),
             () -> m_turret.getTurretRotation().getRadians(),
             m_shooter::getVelocity,
             () -> 2.0,
