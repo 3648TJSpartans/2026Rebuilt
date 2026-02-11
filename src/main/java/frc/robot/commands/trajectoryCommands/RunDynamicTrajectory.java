@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.trajectorySolver.Trajectory;
@@ -60,6 +61,10 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           Trajectory traj =
               TrajectoryCalc.dynamicTrajectory(
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
+          if (traj.getShooterAngle() < HoodConstants.minAngle.getRadians()
+              || traj.getShooterAngle() > HoodConstants.getMaxAngle().getRadians()) {
+            traj = Trajectory.invalidTrajectory;
+          }
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/trajectory/hangTime", traj.getHangTime());
           Logger.recordOutput(
