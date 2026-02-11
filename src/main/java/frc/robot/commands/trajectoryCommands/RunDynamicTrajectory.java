@@ -61,9 +61,18 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           Trajectory traj =
               TrajectoryCalc.dynamicTrajectory(
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
-          if (traj.getShooterAngle() < HoodConstants.minAngle.getRadians()
-              || traj.getShooterAngle() > HoodConstants.getMaxAngle().getRadians()) {
-            traj = Trajectory.invalidTrajectory;
+          if (traj.getShooterAngle() < HoodConstants.maxAngle.getRadians()) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose, target, turretVelocity, HoodConstants.maxAngle.getRadians());
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+          } else if (traj.getShooterAngle() < HoodConstants.minAngle.getRadians()) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose, target, turretVelocity, HoodConstants.minAngle.getRadians());
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+          } else {
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", false);
           }
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/trajectory/hangTime", traj.getHangTime());

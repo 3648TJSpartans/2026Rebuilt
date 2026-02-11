@@ -539,7 +539,7 @@ public class RobotContainer {
             dynamicTestTrajectory.alongWith(
                 Commands.run(
                         () -> {
-                          if (m_shooter.speedInTolerance()) {
+                          if (dynamicTestTrajectory.ready()) {
                             m_kicker.setPower(1.0);
                             m_hopper.setPower(-.5);
                           }

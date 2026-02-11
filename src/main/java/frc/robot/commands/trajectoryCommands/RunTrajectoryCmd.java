@@ -42,9 +42,8 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void execute() {
     Trajectory trajectory = m_trajectorySupplier.get();
-    Logger.recordOutput("Commands/RunTrajectoryCmd/validTrajectory", !trajectory.isValid());
+    Logger.recordOutput("Commands/RunTrajectoryCmd/validTrajectory", trajectory.isValid());
     if (!trajectory.isValid()) {
-
       return;
     }
     // Use the trajectory to control subsystems
