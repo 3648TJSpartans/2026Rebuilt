@@ -9,15 +9,15 @@ public class ShooterConstants {
       new MotorConfig("Subsystems/Shooter/LeaderMotorIO")
           .motorCan(11)
           .Ks(-0.02985)
-          .Kv(0.00176)
-          .speedTolerance(200)
+          .Kv(0.00182)
+          .speedTolerance(100)
           .idleMode(IdleMode.kCoast);
   public static MotorConfig kFollowerMotorConfig =
       new MotorConfig("Subsystems/Shooter/FollowerMotorIO")
           .motorCan(10)
           .Ks(-0.02985)
-          .Kv(0.00176)
-          .speedTolerance(200)
+          .Kv(0.00182)
+          .speedTolerance(100)
           .idleMode(IdleMode.kCoast);
   //   .follow(10)
   //   .isInverted(true);
