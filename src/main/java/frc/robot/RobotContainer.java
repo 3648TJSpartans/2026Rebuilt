@@ -560,13 +560,13 @@ public class RobotContainer {
   }
 
   private void configureShooter() {
-    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
+    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootRPM", 500);
     m_testController
         .x()
         .whileTrue(
             Commands.run(
                     () -> {
-                      m_shooter.shootVelocity(shootSpeed.get());
+                      m_shooter.runFFVelocity(shootSpeed.get());
                       if (m_shooter.speedInTolerance()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                         m_hopper.setPower(IntakeConstants.hopperSpeed.get());
