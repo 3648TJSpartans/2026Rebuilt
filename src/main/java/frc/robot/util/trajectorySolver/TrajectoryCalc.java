@@ -98,7 +98,7 @@ public class TrajectoryCalc {
     return trajectory;
   }
 
-  public static Trajectory dynamicTrajectory(
+  public static Trajectory fixedTimeDynamicTrajectory(
       Translation3d current, Translation3d target, double[] robotVelocity, double hangTime) {
     target = target.minus(current);
 
