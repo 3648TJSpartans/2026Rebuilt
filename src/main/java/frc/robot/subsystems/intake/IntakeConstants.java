@@ -1,7 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
@@ -17,7 +15,8 @@ public class IntakeConstants {
           .minPower(-.1)
           .positionTolerance(0.0);
 
-  public static final MotorConfig intakeRollerConfig = new MotorConfig("Subsystems/Intake/MotorIO")
+  public static final MotorConfig intakeRollerConfig =
+      new MotorConfig("Subsystems/Intake/MotorIO")
           .motorCan(16)
           .p(0)
           .i(0)
@@ -27,9 +26,9 @@ public class IntakeConstants {
           .positionTolerance(0.0);
 
   public static final TunableNumber intakeRollerSpeed =
-      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", 0.1);
+      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", 0.5);
   public static final TunableNumber hopperSpeed =
-      new TunableNumber("Subsystems/Intake/hopperSpeed", 0.1);
+      new TunableNumber("Subsystems/Intake/hopperSpeed", -.5);
   // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
   // to push any balls in the hopper towards the shooter. It can't run fast or else
   // it will shred the balls.

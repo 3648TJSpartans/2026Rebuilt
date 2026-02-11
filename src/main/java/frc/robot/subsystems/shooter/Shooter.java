@@ -20,7 +20,9 @@ public class Shooter extends RelEncoderSparkMax {
   }
 
   public void shootVelocity(double velocity) {
-    double rpmSetpoint = velocity * ShooterConstants.kShooterVelocityFactor.get();
+    double rpmSetpoint =
+        velocity * ShooterConstants.kShooterVelocityFactor.get()
+            + ShooterConstants.rpmThreshold.get();
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/velocity", velocity);
     Logger.recordOutput("Subsystems/Shooter/shootVelocity/rpmSetpoint", rpmSetpoint);
     runFFVelocity(rpmSetpoint);
@@ -28,7 +30,8 @@ public class Shooter extends RelEncoderSparkMax {
 
   @AutoLogOutput(key = "Subsystems/Shooter/getVelocity")
   public double getVelocity() {
-    return getSpeed() / ShooterConstants.kShooterVelocityFactor.get();
+    return (getSpeed() - ShooterConstants.rpmThreshold.get())
+        / ShooterConstants.kShooterVelocityFactor.get();
   }
 
   public void runCharacterization(double output) {
