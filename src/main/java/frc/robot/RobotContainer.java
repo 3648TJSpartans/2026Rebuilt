@@ -69,6 +69,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.BallCounter;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
@@ -108,6 +109,7 @@ public class RobotContainer {
   private final GenericStatusable m_usbStatus;
   private final GenericStatusable m_batteryStatus;
   private final StatusLogger m_statusLogger;
+  private final BallCounter m_ballCounter;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -137,6 +139,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
+
     // m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
@@ -280,7 +283,7 @@ public class RobotContainer {
             m_turret::getTurretTranslationalVelocity);
 
     m_neural = new Neural(m_drive::getPose);
-
+    m_ballCounter = new BallCounter(() -> m_shooter.getSpeed());
     m_statusLogger =
         new StatusLogger(
             m_climber,
