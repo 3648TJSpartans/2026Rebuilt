@@ -68,7 +68,7 @@ public class Turret extends RelEncoderSparkMax {
   }
 
   public void checkHeading() {
-    boolean zeroSwitchState = !m_zeroSwitch.get();
+    boolean zeroSwitchState = m_zeroSwitch.get();
     Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
     // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
     // If we go that direction, update code. Use floor function as fix.
