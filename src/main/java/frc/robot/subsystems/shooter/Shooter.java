@@ -6,7 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends RelEncoderSparkMax {
 
-  private static RelEncoderSparkMax follower;
+  private final RelEncoderSparkMax follower;
 
   public Shooter() {
     super(ShooterConstants.kLeaderMotorConfig);
