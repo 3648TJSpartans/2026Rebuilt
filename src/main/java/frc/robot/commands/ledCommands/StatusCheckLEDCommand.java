@@ -33,7 +33,7 @@ public class StatusCheckLEDCommand extends Command {
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "WARNING");
         }
         case UNKNOWN -> {
-          m_leds.setSingleLed(255, 0, 175, i);
+          m_leds.setSingleLed(255, 255, 255, i);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "UNKNOWN");
         }
         case ERROR -> {
