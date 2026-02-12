@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.util.TunableNumber;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -14,7 +15,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class FFCharacterizationCmd extends Command {
   private static final double FF_START_DELAY = 2.0; // Secs
-  private static final double FF_RAMP_RATE = 0.25; // Volts/Sec
+  private static final TunableNumber FF_RAMP_RATE =
+      new TunableNumber("Utils/FFCharacterizer/rampRate", 0.5); // Volts/Sec
 
   public static Command characterizeSystem(
       Subsystem system,
@@ -23,7 +25,7 @@ public class FFCharacterizationCmd extends Command {
     List<Double> velocitySamples = new LinkedList<>();
     List<Double> voltageSamples = new LinkedList<>();
     Timer timer = new Timer();
-
+    double rampRate = FF_RAMP_RATE.get();
     return Commands.sequence(
         // Reset data
         Commands.runOnce(
@@ -46,7 +48,7 @@ public class FFCharacterizationCmd extends Command {
         // Accelerate and gather data
         Commands.run(
                 () -> {
-                  double voltage = timer.get() * FF_RAMP_RATE;
+                  double voltage = timer.get() * rampRate;
                   runCharacterization.accept(voltage);
                   velocitySamples.add(getFFCharacterizationVelocity.get());
                   voltageSamples.add(voltage);

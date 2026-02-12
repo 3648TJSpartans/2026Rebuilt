@@ -13,8 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS.NavXComType;
@@ -27,8 +25,6 @@ import frc.robot.util.TunableNumber;
 
 public class DriveConstants {
 
-  
-  
   public static final NavXComType navXComType = NavXComType.kUSB1;
 
   public static final double fieldRelativeMaxInputPercent = 1; // value between 0+ and 1,
@@ -63,23 +59,21 @@ public class DriveConstants {
   public static final int pigeonCanId = 9;
 
   /*
-   * Chassis Numbers 
-   * 0- Tuning 
-   * 1-Walter 
-   * 2- Jebediah 
+   * Chassis Numbers
+   * 0- Tuning
+   * 1-Walter
+   * 2- Jebediah
    * 3- Charles
    *
    */
 
   // Encoder Offsets
 
-
   private static final String walterSerial = "023FF3ED";
   private static final String jebediahSerial = "0322440D";
   private static final String charlesSerial = "03223891";
 
-
-  public static int getChassisSerial(){
+  public static int getChassisSerial() {
     String serial = RobotController.getSerialNumber();
     if (serial.equals(walterSerial)) {
       return 1;
@@ -91,39 +85,40 @@ public class DriveConstants {
       return 3;
     }
     return 0;
-  } 
+  }
 
-  public static int chasNum =  (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get();
+  public static int chasNum =
+      (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 4.255;
-        case 2 -> 0.141;
-        case 3 -> 4.397;
+        case 1 -> 4.09;
+        case 2 -> 1.71;
+        case 3 -> 4.415;
         default -> 0.0;
       };
   public static final double backLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 4.120;
-        case 2 -> 2.957;
-        case 3 -> 4.488;
+        case 1 -> 0.38;
+        case 2 -> 4.10;
+        case 3 -> 4.415;
         default -> 0.0;
       };
   public static final double frontRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 1.658;
-        case 2 -> 5.61;
-        case 3 -> 5.702;
+        case 1 -> 4.24;
+        case 2 -> 2.98;
+        case 3 -> 0.096;
         default -> 0.0;
       };
   public static final double backRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 0.519;
-        case 2 -> 5.14;
-        case 3 -> 3.857;
+        case 1 -> 5.66;
+        case 2 -> 0.217;
+        case 3 -> 0.642;
         default -> 0.0;
       };
 

@@ -11,24 +11,27 @@ public class Hood extends AbsEncoderSparkMax {
     super(HoodConstants.motorConfig);
   }
 
-  public void setAngle(double rotation) {
-    double setpoint = rotation * HoodConstants.hoodEncoderFactor.get();
-    setPosition(setpoint);
-  }
+  // public void setAngle(double rotation) {
+  //   double setpoint = rotation * HoodConstants.hoodEncoderFactor;
+  //   setPosition(setpoint);
+  // }
 
-  @AutoLogOutput
+  @AutoLogOutput(key = "Subsystems/Hood/getAngle")
   public double getAngle() {
-    return getPosition() / HoodConstants.hoodEncoderFactor.get();
+    return getPosition() / HoodConstants.hoodEncoderFactor + HoodConstants.minAngle.getRadians();
   }
 
   @Override
   public void setPosition(double setpoint) {
-    setpoint = MathUtil.clamp(setpoint, HoodConstants.minAngle.get(), HoodConstants.maxAngle.get());
+    setpoint =
+        MathUtil.clamp(setpoint, HoodConstants.minPosition.get(), HoodConstants.maxPosition.get());
     super.setPosition(setpoint);
   }
 
   public void setAngle(Rotation2d angle) {
-    setPosition(angle.getRadians() * HoodConstants.hoodEncoderFactor.get());
+    double setpoint =
+        angle.minus(HoodConstants.minAngle).getRadians() * HoodConstants.hoodEncoderFactor;
+    setPosition(setpoint);
   }
 
   @Override

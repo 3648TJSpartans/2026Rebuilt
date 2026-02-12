@@ -68,7 +68,7 @@ public class Turret extends RelEncoderSparkMax {
   }
 
   public void checkHeading() {
-    boolean zeroSwitchState = !m_zeroSwitch.get();
+    boolean zeroSwitchState = m_zeroSwitch.get();
     Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
     // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
     // If we go that direction, update code. Use floor function as fix.
@@ -124,13 +124,16 @@ public class Turret extends RelEncoderSparkMax {
     setRotation(turretRotation);
   }
 
-  public void pointAt(Translation2d target) {
-    Logger.recordOutput("Subsystems/Turret/pointAt/target", target);
+  public void pointAt(Translation2d feedmiddle) {
+    Logger.recordOutput("Subsystems/Turret/pointAt/target", feedmiddle);
     Translation2d turretTranslation =
         new Translation2d(this.turretPose.getX(), this.turretPose.getY());
 
     Rotation2d targetAngle =
-        target.minus(turretTranslation).getAngle().minus(m_robotPoseSupplier.get().getRotation());
+        feedmiddle
+            .minus(turretTranslation)
+            .getAngle()
+            .minus(m_robotPoseSupplier.get().getRotation());
     Logger.recordOutput("Subsystems/Turret/pointAt/targetAngle", targetAngle);
     setRotation(targetAngle);
   }

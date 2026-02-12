@@ -18,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -47,6 +46,7 @@ import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.LoggedAnalogEncoder;
@@ -72,7 +72,6 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
-import frc.robot.util.motorUtil.CompressorIO;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
@@ -91,7 +90,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-  private final CompressorIO m_compressor;
+  // private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final Neural m_neural;
@@ -116,6 +115,7 @@ public class RobotContainer {
       new CommandXboxController(Constants.kCopilotControllerPort);
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.kTestControllerPort);
+  private final CommandXboxController m_test3Controller = new CommandXboxController(3);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -137,7 +137,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_intake = new Intake();
     m_hopper = new Hopper();
-    m_compressor = new CompressorIO("Compressor");
+    // m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
             () -> {
@@ -155,7 +155,8 @@ public class RobotContainer {
               Logger.recordOutput("Debug/USB/warning", "not found");
               return Status.WARNING;
             },
-            "USB");
+            "USB",
+            5);
 
     m_batteryStatus =
         new GenericStatusable(
@@ -172,7 +173,8 @@ public class RobotContainer {
               Logger.recordOutput("Debug/Battery/voltage", voltage);
               return Status.ERROR;
             },
-            "Battery");
+            "Battery",
+            10);
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
     Logger.recordOutput("Override", override);
@@ -187,20 +189,44 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
+        // new Drive(
+        //     new GyroIONavX(),
+        //     new ModuleIO() {},
+        //     new ModuleIO() {},
+        //     new ModuleIO() {},
+        //     new ModuleIO() {});
 
         // To change number of limelights, just add or delete IOs in the
         // parameters
         // Make sure camera name match in the coprocessor!
-        m_vision =
-            new Vision(
-                m_drive::addVisionMeasurement,
-                m_drive::addTargetSpaceVisionMeasurement,
-                // new
-                // VisionIOLimelight(VisionConstants.camera1Name,
-                // m_drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
-                new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
+        switch (DriveConstants.chasNum) {
+          case 3:
+            m_vision =
+                new Vision(
+                    m_drive::addVisionMeasurement,
+                    m_drive::addTargetSpaceVisionMeasurement,
+                    // new
+                    // VisionIOLimelight(VisionConstants.camera0Name,
+                    // m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourb", m_drive::getRotation));
+            break;
+          case 1:
+            m_vision =
+                new Vision(
+                    m_drive::addVisionMeasurement,
+                    m_drive::addTargetSpaceVisionMeasurement,
+                    // new
+                    // VisionIOLimelight(VisionConstants.camera1Name,
+                    // m_drive::getRotation),
+                    new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourone", m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourthr", m_drive::getRotation));
+            break;
+          default:
+            m_vision =
+                new Vision(m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement);
+            break;
+        }
         break;
 
       case SIM:
@@ -246,8 +272,8 @@ public class RobotContainer {
     // TODO update as subsystems are made
     m_trajectoryLogger =
         new TrajectoryLogger(
-            () -> Units.degreesToRadians(80),
-            () -> m_turret.getTurretRotation().getRadians(),
+            () -> m_hood.getAngle(),
+            () -> m_turret.getTurretFieldPose().getRotation().getZ(),
             m_shooter::getVelocity,
             () -> 2.0,
             () -> m_turret.getTurretFieldPose().getTranslation(),
@@ -262,7 +288,7 @@ public class RobotContainer {
             m_shooter,
             m_kicker,
             m_intake,
-            m_compressor,
+            // m_compressor,
             m_hopper,
             m_drive,
             m_vision,
@@ -297,9 +323,9 @@ public class RobotContainer {
     // configureClimber();
     configureIntake();
     configureHopper();
-    // configureTurret();
+    configureTurret();
     configureHood();
-    // configureExampleSubsystem();
+    configureKicker();
     Command updateCommand =
         new InstantCommand(
                 () -> {
@@ -399,25 +425,49 @@ public class RobotContainer {
             );
   }
 
+  private void configureKicker() {
+    m_kicker.setDefaultCommand(
+        Commands.run(
+            () -> m_kicker.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            m_kicker));
+  }
+
   private void configureTurret() {
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1,
     // new
     // Rotation2d())));
     // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretPower = new TunableNumber("Subsystems/Turret/analogPower", 0.05);
-    m_testController
-        .rightBumper()
-        .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
-        .onFalse(new InstantCommand(m_turret::stop, m_turret));
-    m_testController
-        .leftBumper()
-        .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
-        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    TunableNumber turretSetpoint = new TunableNumber("Subsystems/Turret/testSetpoint", 0.5);
+    // m_testController
+    //     .rightBumper()
+    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
+    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    // m_testController
+    //     .leftBumper()
+    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
+    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
-    m_testController
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    // m_testController
+    //     .rightTrigger()
+    //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+
+    m_turret.setDefaultCommand(
+        Commands.run(
+            () ->
+                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+            m_turret));
+    m_test3Controller
+        .a()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
+                    },
+                    m_turret)
+                .finallyDo(() -> m_turret.stop()));
+    m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
+
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -426,10 +476,10 @@ public class RobotContainer {
     // new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() *
     // 5);
 
-    m_testController
-        .b()
-        .whileTrue(
-            Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
+    // m_testController
+    //     .b()
+    //     .whileTrue(
+    //         Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
     RunTrajectoryCmd dynamicTrajectory =
         new RunDynamicTrajectory(
@@ -443,8 +493,21 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeLeft(),
             () -> m_shiftTracker.timeUntil());
-    m_testController.povLeft().whileTrue(dynamicTrajectory);
-    m_driveController.povLeft().whileTrue(dynamicTrajectory);
+    TunableNumber aspect = new TunableNumber("Trajectory/testTrajHeight", 1.5);
+    RunTrajectoryCmd dynamicTestTrajectory =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> aspect.get(),
+            () -> .5,
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
+            () -> m_shiftTracker.timeLeft(),
+            () -> m_shiftTracker.timeUntil());
+    // m_testController.povLeft().whileTrue(dynamicTrajectory);
+    // m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
     RunTrajectoryCmd feedAlliance =
         new RunDynamicTrajectory(
@@ -469,42 +532,63 @@ public class RobotContainer {
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
 
-    new Trigger(() -> DriverStation.isTeleopEnabled()).whileTrue(dynamicTrajectory);
+    m_test3Controller
+        .y()
+        .whileTrue(
+            dynamicTestTrajectory.alongWith(
+                Commands.run(
+                        () -> {
+                          if (dynamicTestTrajectory.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
 
-    m_kicker.setDefaultCommand(
-        Commands.run(
-            () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    new Trigger(() -> dynamicTrajectory.ready())
-        .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-        .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
+    // m_kicker.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
+    // new Trigger(() -> dynamicTrajectory.ready())
+    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
+    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
-    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootSpeed", 10.0);
+    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootRPM", 500);
     m_testController
         .x()
         .whileTrue(
             Commands.run(
                     () -> {
-                      m_shooter.shootVelocity(shootSpeed.get());
+                      m_shooter.runFFVelocity(shootSpeed.get());
                       if (m_shooter.speedInTolerance()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                      } else {
+                        m_kicker.stop();
+                        m_hopper.stop();
                       }
                     },
                     m_shooter,
-                    m_kicker)
+                    m_kicker,
+                    m_hopper)
                 .finallyDo(
                     () -> {
                       m_shooter.stop();
                       m_kicker.stop();
                     }));
-    m_testController
-        .leftTrigger()
-        .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+    // m_testController
+    //     .leftTrigger()
+    //     .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
+    //     .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
         Commands.run(
-            () -> m_shooter.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_test3Controller.getRightY(), 0.1)),
             m_shooter));
   }
 
@@ -545,15 +629,19 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController
-        .povDown()
-        .onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoid(false)));
+    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
+    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
     m_testController
         .y()
-        .onTrue(
-            Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
+        .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
+
+    m_intake.setDefaultCommand(
+        Commands.run(
+                () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(), 0.1)),
+                m_intake)
+            .finallyDo(m_intake::stopRollers));
+
     m_driveController
         .y()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
@@ -564,19 +652,25 @@ public class RobotContainer {
 
     m_testController
         .a()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povLeft()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
     m_testController
         .povRight()
-        .onTrue(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get())));
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
 
     m_hopper.setDefaultCommand(
-        Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
+        Commands.run(
+            () ->
+                m_hopper.setPower(
+                    -MathUtil.applyDeadband(m_testController.getRightTriggerAxis(), 0.05) / 2.0),
+            m_hopper));
   }
 
   public void configureLeds() {
@@ -606,7 +700,22 @@ public class RobotContainer {
     /* */
   }
 
-  private void configureHood() {}
+  private void configureHood() {
+    m_test3Controller
+        .povUp()
+        .whileTrue(Commands.run(() -> m_hood.setPower(0.05), m_hood).finallyDo(m_hood::stop));
+    m_test3Controller
+        .povDown()
+        .whileTrue(Commands.run(() -> m_hood.setPower(-0.05), m_hood).finallyDo(m_hood::stop));
+    TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
+    m_test3Controller
+        .leftBumper()
+        .whileTrue(
+            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood).finallyDo(m_hood::stop));
+    m_test3Controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(m_hood::stop));
+  }
 
   public void configureDrive() {
     // Default command, normal field-relative drive/
@@ -636,7 +745,7 @@ public class RobotContainer {
                 () -> {
                   Rotation2d driveRotation = m_drive.getRotation();
                   double smallestDiff = Double.MAX_VALUE;
-                  Rotation2d closestLockpoint = new Rotation2d(0);
+                  Rotation2d closestLockpoint = new Rotation2d(0.0);
                   for (Rotation2d lockpoint : lockpoints) {
                     double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
                     if (diff < smallestDiff) {
