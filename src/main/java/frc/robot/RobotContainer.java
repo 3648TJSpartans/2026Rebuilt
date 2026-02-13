@@ -469,7 +469,7 @@ public class RobotContainer {
                     },
                     m_turret)
                 .finallyDo(() -> m_turret.stop()));
-    m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
+    m_test3Controller.b().onTrue(Commands.runOnce(() -> m_turret.setZeroHeading(0), m_turret));
 
     // Random rand = new Random();
     // TunableNumber targetX =
