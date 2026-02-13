@@ -64,5 +64,6 @@ public class VisionConstants {
       11.5; // Height of the limelight camera from the *ground* in cm
   public static double nCameraAngle =
       0; // Angle of the limelight camera from perfectly horizontal in degrees
-  public static double ballDriveOffset = 0; // Meters
+  public static double ballDriveOffset = 0; // Meters (probably)
+  public static double ballHorizOffest = 0;
 }
