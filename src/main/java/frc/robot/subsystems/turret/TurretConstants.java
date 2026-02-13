@@ -23,5 +23,5 @@ public class TurretConstants {
   public static double encoderPositionFactor = Math.PI / 63;
   public static final int zeroSwitchPort = 0;
   public static final TunableNumber zeroSwitchOffset =
-      new TunableNumber("Subsystems/Truret/zeroSwitchOffset", 0.762);
+      new TunableNumber("Subsystems/Turret/zeroSwitchOffset", 0.762);
 }
