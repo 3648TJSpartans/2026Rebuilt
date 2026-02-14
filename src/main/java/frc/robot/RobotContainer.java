@@ -643,7 +643,7 @@ public class RobotContainer {
             .finallyDo(m_intake::stopRollers));
 
     m_driveController
-        .y()
+        .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
@@ -736,7 +736,7 @@ public class RobotContainer {
     };
 
     m_driveController
-        .rightBumper()
+        .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 m_drive,
@@ -759,9 +759,9 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
 
-    // Reset gyro to 0° when A button is pressed
+    // Reset gyro to 0° when povLeft button is pressed
     m_driveController
-        .a()
+        .povLeft()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -781,7 +781,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     m_driveController
-        .y()
+        .leftBumper()
         .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
         .whileTrue(
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
