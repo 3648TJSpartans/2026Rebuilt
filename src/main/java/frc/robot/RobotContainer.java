@@ -17,6 +17,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -455,7 +457,7 @@ public class RobotContainer {
     m_turret.setDefaultCommand(
         Commands.run(
             () ->
-                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 3.0),
             m_turret));
     m_test3Controller
         .a()
@@ -467,6 +469,36 @@ public class RobotContainer {
                     m_turret)
                 .finallyDo(() -> m_turret.stop()));
     m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
+    TunableNumber xTarget = new TunableNumber("Testing/testTraj/xTarget", 1.0);
+    TunableNumber yTarget = new TunableNumber("Testing/testTraj/yTarget", 0);
+    ;
+
+    TunableNumber xOffset = new TunableNumber("Testing/testTraj/xOffset", 1.0);
+    TunableNumber yOffset = new TunableNumber("Testing/testTraj/yOffset", 0);
+    TunableNumber testAspect = new TunableNumber("Testing/testTraj/Aspect", 1.5);
+    TunableNumber height = new TunableNumber("Testing/testTraj/Height", 1.5);
+
+    RunTrajectoryCmd calTraj =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> height.get(),
+            () -> testAspect.get(),
+            () ->
+                m_turret
+                    .getTurretFieldPose()
+                    .plus(
+                        new Transform3d(
+                            xTarget.get() - xOffset.get(),
+                            yTarget.get() - yOffset.get(),
+                            0,
+                            new Rotation3d()))
+                    .getTranslation(),
+            () -> true,
+            () -> 0.0,
+            () -> 5.0,
+            () -> 0.0);
 
     // Random rand = new Random();
     // TunableNumber targetX =
@@ -549,7 +581,23 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-
+    m_test3Controller
+        .rightBumper()
+        .whileTrue(
+            calTraj.alongWith(
+                Commands.run(
+                        () -> {
+                          if (calTraj.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
     // m_kicker.setDefaultCommand(
     //     Commands.run(
     //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));

@@ -87,6 +87,8 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
               new Pose3d(
                   turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
           Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
+          Logger.recordOutput(
               "Commands/RunDynamicTrajectory/interpolatedTrajectory",
               TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));
           Logger.recordOutput(

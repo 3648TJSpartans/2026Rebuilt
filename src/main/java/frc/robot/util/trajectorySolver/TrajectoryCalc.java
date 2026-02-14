@@ -158,4 +158,9 @@ public class TrajectoryCalc {
     }
     return out;
   }
+
+  public static double maxHeight(Trajectory traj) {
+    double tmax = traj.getShooterSpeed() * Math.sin(traj.getShooterAngle()) / g;
+    return traj.getShooterSpeed() * Math.sin(traj.getShooterAngle()) * tmax - 0.5 * g * tmax * tmax;
+  }
 }
