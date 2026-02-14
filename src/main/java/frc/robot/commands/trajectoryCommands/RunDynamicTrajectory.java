@@ -66,7 +66,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
                 TrajectoryCalc.dynamicTrajectory(
                     turretPose, target, turretVelocity, HoodConstants.maxAngle.getRadians());
             Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
-          } else if (traj.getShooterAngle() < HoodConstants.minAngle.getRadians()) {
+          } else if (traj.getShooterAngle() > HoodConstants.minAngle.getRadians()) {
             traj =
                 TrajectoryCalc.dynamicTrajectory(
                     turretPose, target, turretVelocity, HoodConstants.minAngle.getRadians());

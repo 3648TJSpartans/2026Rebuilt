@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -473,9 +474,9 @@ public class RobotContainer {
     TunableNumber yTarget = new TunableNumber("Testing/testTraj/yTarget", 0);
     ;
 
-    TunableNumber xOffset = new TunableNumber("Testing/testTraj/xOffset", 1.0);
+    TunableNumber xOffset = new TunableNumber("Testing/testTraj/xOffset", 0.0);
     TunableNumber yOffset = new TunableNumber("Testing/testTraj/yOffset", 0);
-    TunableNumber testAspect = new TunableNumber("Testing/testTraj/Aspect", 1.5);
+    TunableNumber testAspect = new TunableNumber("Testing/testTraj/Aspect", .5);
     TunableNumber height = new TunableNumber("Testing/testTraj/Height", 1.5);
 
     RunTrajectoryCmd calTraj =
@@ -492,14 +493,14 @@ public class RobotContainer {
                         new Transform3d(
                             xTarget.get() - xOffset.get(),
                             yTarget.get() - yOffset.get(),
-                            0,
+                            -m_turret.getTurretFieldPose().getZ(),
                             new Rotation3d()))
                     .getTranslation(),
             () -> true,
             () -> 0.0,
             () -> 5.0,
             () -> 0.0);
-
+    m_test3Controller.povUp().onTrue(Commands.runOnce(() -> m_hood.setEncoder(0), m_hood));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -533,7 +534,9 @@ public class RobotContainer {
             m_hood,
             () -> aspect.get(),
             () -> .5,
-            () -> TrajectoryConstants.hubPose,
+            () ->
+                TrajectoryConstants.hubPose.plus(
+                    new Translation3d(xOffset.get(), yOffset.get(), 0.0)),
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeLeft(),
@@ -598,7 +601,7 @@ public class RobotContainer {
                           m_hopper.stop();
                         })));
     m_test3Controller
-        .rightBumper()
+        .a()
         .whileTrue(
             calTraj.alongWith(
                 Commands.run(
@@ -695,8 +698,8 @@ public class RobotContainer {
 
     m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
     m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
-    m_testController
-        .y()
+    m_driveController
+        .leftTrigger()
         .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
 
@@ -706,10 +709,10 @@ public class RobotContainer {
                 m_intake)
             .finallyDo(m_intake::stopRollers));
 
-    m_driveController
-        .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+    // m_driveController
+    //     .leftTrigger()
+    //     .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+    //     .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
   public void configureHopper() {
