@@ -518,8 +518,8 @@ public class RobotContainer {
             m_turret,
             m_shooter,
             m_hood,
-            () -> TrajectoryConstants.overhangHeight,
-            () -> TrajectoryConstants.overhangAspect,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -563,7 +563,23 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
-
+    m_test3Controller
+        .x()
+        .whileTrue(
+            dynamicTrajectory.alongWith(
+                Commands.run(
+                        () -> {
+                          if (dynamicTestTrajectory.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
     m_test3Controller
         .y()
         .whileTrue(
