@@ -691,7 +691,7 @@ public class RobotContainer {
             .finallyDo(m_intake::stopRollers));
 
     m_driveController
-        .y()
+        .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
