@@ -100,7 +100,7 @@ public class Turret extends RelEncoderSparkMax {
 
   public void setZeroHeading() {
     isHomed = true;
-    setEncoder(m_turre);
+    setEncoder(TurretConstants.turretZeroingOffset.get());
   }
 
   // sets rotation in robot space
