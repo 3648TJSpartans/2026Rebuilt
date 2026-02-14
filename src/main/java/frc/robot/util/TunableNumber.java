@@ -28,6 +28,12 @@ public class TunableNumber {
    */
   public TunableNumber(String dashboardKey) {
     this.key = TABLE_KEY + "/" + dashboardKey;
+    if (SmartDashboard.containsKey(key)) {
+      throw new IllegalArgumentException(
+          "A TunableNumber with the key '"
+              + key
+              + "' already exists. Use a unique key to avoid conflicts.");
+    }
   }
 
   /**
