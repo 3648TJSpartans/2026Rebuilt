@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -78,6 +79,7 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
+import frc.robot.util.trajectorySolver.TrajectoryCalc;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import java.io.File;
 import org.littletonrobotics.junction.Logger;
@@ -460,19 +462,18 @@ public class RobotContainer {
             () ->
                 m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 3.0),
             m_turret));
-    m_test3Controller
-        .a()
-        .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
-                    },
-                    m_turret)
-                .finallyDo(() -> m_turret.stop()));
+    // m_test3Controller
+    //     .a()
+    //     .whileTrue(
+    //         Commands.run(
+    //                 () -> {
+    //                   m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
+    //                 },
+    //                 m_turret)
+    //             .finallyDo(() -> m_turret.stop()));
     m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
     TunableNumber xTarget = new TunableNumber("Testing/testTraj/xTarget", 1.0);
     TunableNumber yTarget = new TunableNumber("Testing/testTraj/yTarget", 0);
-    ;
 
     TunableNumber xOffset = new TunableNumber("Testing/testTraj/xOffset", 0.0);
     TunableNumber yOffset = new TunableNumber("Testing/testTraj/yOffset", 0);
@@ -491,8 +492,8 @@ public class RobotContainer {
                     .getTurretFieldPose()
                     .plus(
                         new Transform3d(
-                            xTarget.get() - xOffset.get(),
-                            yTarget.get() - yOffset.get(),
+                            xTarget.get() + xOffset.get(),
+                            yTarget.get() + yOffset.get(),
                             -m_turret.getTurretFieldPose().getZ(),
                             new Rotation3d()))
                     .getTranslation(),
@@ -566,6 +567,26 @@ public class RobotContainer {
             () -> m_drive.getTilt(),
             () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
             () -> m_shiftTracker.timeLeft());
+    TunableNumber fixedHoodAngle = new TunableNumber("Trajectory/fixedHoodAngle", 0.0);
+    RunTrajectoryCmd fixedHoodTraj =
+        new RunTrajectoryCmd(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> true,
+            () -> 0.0,
+            () -> 10.0,
+            () -> 0.0,
+            () ->
+                TrajectoryCalc.dynamicTrajectory(
+                    new Translation3d(),
+                    new Translation3d(
+                        xTarget.get() + xOffset.get(),
+                        yTarget.get() + yOffset.get(),
+                        -m_turret.getTurretFieldPose().getZ()),
+                    new double[2],
+                    Units.degreesToRadians(fixedHoodAngle.get())));
+
     m_test3Controller
         .x()
         .whileTrue(
@@ -607,6 +628,23 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (calTraj.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
+    m_test3Controller
+        .b()
+        .whileTrue(
+            fixedHoodTraj.alongWith(
+                Commands.run(
+                        () -> {
+                          if (fixedHoodTraj.ready()) {
                             m_kicker.setPower(1.0);
                             m_hopper.setPower(-.5);
                           }

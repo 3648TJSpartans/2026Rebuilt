@@ -2,6 +2,7 @@ package frc.robot.subsystems.hood;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -18,7 +19,8 @@ public class Hood extends AbsEncoderSparkMax {
 
   @AutoLogOutput(key = "Subsystems/Hood/getAngle")
   public double getAngle() {
-    return getPosition() / HoodConstants.hoodEncoderFactor + HoodConstants.minAngle.getRadians();
+    return getPosition() / HoodConstants.hoodEncoderFactor.getAsDouble()
+        + Units.degreesToRadians(HoodConstants.minAngle.get());
   }
 
   @Override
@@ -30,7 +32,10 @@ public class Hood extends AbsEncoderSparkMax {
 
   public void setAngle(Rotation2d angle) {
     double setpoint =
-        angle.minus(HoodConstants.minAngle).getRadians() * HoodConstants.hoodEncoderFactor;
+        angle
+                .minus(new Rotation2d(Units.degreesToRadians(HoodConstants.minAngle.get())))
+                .getRadians()
+            * HoodConstants.hoodEncoderFactor.getAsDouble();
     setPosition(setpoint);
   }
 
