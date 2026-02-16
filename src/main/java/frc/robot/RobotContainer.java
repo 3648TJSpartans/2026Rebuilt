@@ -340,7 +340,12 @@ public class RobotContainer {
                       m_kicker.stop();
                       m_hopper.stop();
                     }));
+
+    Command intake =
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
+            .finallyDo(m_intake::setSolenoidAndRollerUp);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
+    NamedCommands.registerCommand("Intake", intake);
   }
 
   private void configureButtonBindings() {

@@ -45,7 +45,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Nevada",
+  "folder": "ToDepot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

@@ -3,7 +3,7 @@
   "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
-    "Nevada"
+    "ToDepot"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,
