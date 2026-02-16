@@ -16,25 +16,21 @@ public class RunMatrix extends Command {
   private final Shooter m_shooter;
   private final Hood m_hood;
   private final Supplier<Translation3d> m_targetSupplier;
-  private final Supplier<Translation3d> m_turretPoseSupplier;
+  ;
 
   public RunMatrix(
-      Turret turret,
-      Shooter shooter,
-      Hood hood,
-      Supplier<Translation3d> targetSupplier,
-      Supplier<Translation3d> turretPoseSupplier) {
+      Turret turret, Shooter shooter, Hood hood, Supplier<Translation3d> targetSupplier) {
     m_turret = turret;
     m_shooter = shooter;
     m_hood = hood;
     m_targetSupplier = targetSupplier;
-    m_turretPoseSupplier = turretPoseSupplier;
     addRequirements(m_hood, m_shooter, m_turret);
   }
 
   @Override
   public void execute() {
     MatrixTrajectory trajectory = movingTrajectory();
+
     m_turret.setRotation(new Rotation2d(trajectory.turretAngle()));
     m_hood.setPosition(trajectory.hoodPose());
     m_shooter.setSpeed(trajectory.shooterRPM());
@@ -42,25 +38,24 @@ public class RunMatrix extends Command {
 
   public boolean isReady() {
     Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.positionInTolerance());
-    Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.positionInTolerance());
-    Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/shooterSpeed", m_shooter.speedInTolerance());
+        "Commands/RunMatrix/ready/turretPositioned", m_turret.positionInTolerance());
+    Logger.recordOutput("Commands/RunMatrix/ready/hoodPositioned", m_hood.positionInTolerance());
+    Logger.recordOutput("Commands/RunMatrix/ready/shooterSpeed", m_shooter.speedInTolerance());
     return m_turret.positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance();
   }
 
   private MatrixTrajectory stationaryTrajectory() {
-    return stationaryTrajectory(m_turretPoseSupplier.get(), m_targetSupplier.get());
+    return stationaryTrajectory(
+        m_turret.getTurretFieldPose().getTranslation(), m_targetSupplier.get());
   }
 
   private MatrixTrajectory stationaryTrajectory(Translation3d current, Translation3d target) {
     target = target.minus(current);
     double turretAngle = Math.atan2(target.getY(), target.getX());
     double distance = target.getNorm();
-
+    Logger.recordOutput("Commands/RunMatrix/ready/shotDistance", distance);
     return new MatrixTrajectory(
         linearInterpolate(distance, TrajectoryConstants.hoodMatrix),
         turretAngle,
@@ -85,7 +80,7 @@ public class RunMatrix extends Command {
 
   private MatrixTrajectory movingTrajectory() {
     return movingTrajectory(
-        m_turretPoseSupplier.get(),
+        m_turret.getTurretFieldPose().getTranslation(),
         m_targetSupplier.get(),
         m_turret.getTurretTranslationalVelocity());
   }

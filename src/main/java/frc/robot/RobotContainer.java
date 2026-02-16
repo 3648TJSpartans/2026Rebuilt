@@ -46,6 +46,7 @@ import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.RunMatrix;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -545,6 +546,8 @@ public class RobotContainer {
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     // m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
+    RunMatrix matrixTraj =
+        new RunMatrix(m_turret, m_shooter, m_hood, () -> TrajectoryConstants.hubPose);
     RunTrajectoryCmd feedAlliance =
         new RunDynamicTrajectory(
             m_turret,
@@ -624,10 +627,10 @@ public class RobotContainer {
     m_test3Controller
         .a()
         .whileTrue(
-            calTraj.alongWith(
+            matrixTraj.alongWith(
                 Commands.run(
                         () -> {
-                          if (calTraj.ready()) {
+                          if (matrixTraj.isReady()) {
                             m_kicker.setPower(1.0);
                             m_hopper.setPower(-.5);
                           }
