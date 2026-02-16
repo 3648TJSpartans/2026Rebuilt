@@ -14,6 +14,7 @@ public class TrajectoryConstants {
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);
   public static final double maxTilt = Units.degreesToRadians(7.5);
   public static final double preshotDelay = 0.0;
+  public static final double postshotDelay = 3.0;
   public static final double translationalSpeedThreshold = Double.MAX_VALUE;
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;

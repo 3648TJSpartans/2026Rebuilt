@@ -43,17 +43,13 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
       Supplier<Double> overhangAspect,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
-      Supplier<Double> robotTiltSupplier,
-      Supplier<Double> timeLeft,
-      Supplier<Double> timeTill) {
+      Supplier<Double> robotTiltSupplier) {
     super(
         turret,
         shooter,
         hood,
         inRangeSupplier,
         robotTiltSupplier,
-        timeLeft,
-        timeTill,
         () -> {
           Translation3d target = targetSupplier.get();
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
