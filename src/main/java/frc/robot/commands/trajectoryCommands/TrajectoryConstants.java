@@ -20,6 +20,7 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] rpmMatrix =
       new TunableNumber[] {
+        new TunableNumber("Trajectory/0m/RPM", 2000),
         new TunableNumber("Trajectory/.5m/RPM", 2000),
         new TunableNumber("Trajectory/1.0m/RPM", 2250),
         new TunableNumber("Trajectory/1.5m/RPM", 2500),
@@ -40,6 +41,7 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] hoodMatrix =
       new TunableNumber[] {
+        new TunableNumber("Trajectory/0m/hoodPose", 0.02),
         new TunableNumber("Trajectory/.5m/hoodPose", 0.02),
         new TunableNumber("Trajectory/1.0m/hoodPose", 0.06),
         new TunableNumber("Trajectory/1.5m/hoodPose", 0.10),
@@ -61,6 +63,7 @@ public class TrajectoryConstants {
   public static final TunableNumber[] hangTimeMatrix =
       new TunableNumber[] {
         new TunableNumber("Trajectory/.5m/hangTime", 1.0),
+        new TunableNumber("Trajectory/.5m/hangTime", 1.0),
         new TunableNumber("Trajectory/1.0m/hangTime", 1.1),
         new TunableNumber("Trajectory/1.5m/hangTime", 1.2),
         new TunableNumber("Trajectory/2.0m/hangTime", 1.3),
@@ -76,5 +79,26 @@ public class TrajectoryConstants {
         new TunableNumber("Trajectory/7.0m/hangTime", 2.3),
         new TunableNumber("Trajectory/7.5m/hangTime", 2.4),
         new TunableNumber("Trajectory/8.0m/hangTime", 2.5)
+      };
+
+  public static final TunableNumber[] velocityMatrix =
+      new TunableNumber[] {
+        new TunableNumber("Trajectory/.5m/velocity", 1.0),
+        new TunableNumber("Trajectory/.5m/velocity", 1.0),
+        new TunableNumber("Trajectory/1.0m/velocity", 1.1),
+        new TunableNumber("Trajectory/1.5m/velocity", 1.2),
+        new TunableNumber("Trajectory/2.0m/velocity", 1.3),
+        new TunableNumber("Trajectory/2.5m/velocity", 1.4),
+        new TunableNumber("Trajectory/3.0m/velocity", 1.5),
+        new TunableNumber("Trajectory/3.5m/velocity", 1.6),
+        new TunableNumber("Trajectory/4.0m/velocity", 1.7),
+        new TunableNumber("Trajectory/4.5m/velocity", 1.8),
+        new TunableNumber("Trajectory/5.0m/velocity", 1.9),
+        new TunableNumber("Trajectory/5.5m/velocity", 2.0),
+        new TunableNumber("Trajectory/6.0m/velocity", 2.1),
+        new TunableNumber("Trajectory/6.5m/velocity", 2.2),
+        new TunableNumber("Trajectory/7.0m/velocity", 2.3),
+        new TunableNumber("Trajectory/7.5m/velocity", 2.4),
+        new TunableNumber("Trajectory/8.0m/velocity", 2.5)
       };
 }

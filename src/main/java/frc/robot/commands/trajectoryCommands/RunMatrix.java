@@ -31,9 +31,9 @@ public class RunMatrix extends Command {
   public void execute() {
     MatrixTrajectory trajectory = movingTrajectory();
 
-    m_turret.setRotation(new Rotation2d(trajectory.turretAngle()));
+    m_turret.setFieldRotation(new Rotation2d(trajectory.turretAngle()));
     m_hood.setPosition(trajectory.hoodPose());
-    m_shooter.setSpeed(trajectory.shooterRPM());
+    m_shooter.runFFVelocity(trajectory.shooterRPM());
   }
 
   public boolean isReady() {
