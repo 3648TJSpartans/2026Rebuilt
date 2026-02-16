@@ -468,10 +468,14 @@ public class RobotContainer {
         () -> {
           double timeTill = m_shiftTracker.timeUntil();
           Trajectory trajectory = shootToHub.getTrajectory();
-          return timeTill == 0
-              || trajectory.getHangTime() + TrajectoryConstants.preshotDelay.get() < timeTill
-              || trajectory.getHangTime()
-                  < TrajectoryConstants.postshotDelay.get() + timeTill - 25.0;
+          boolean good =
+              timeTill == 0
+                  || trajectory.getHangTime() + TrajectoryConstants.preshotDelay.get() < timeTill
+                  || trajectory.getHangTime()
+                      < TrajectoryConstants.postshotDelay.get() + timeTill - 25.0;
+
+          Logger.recordOutput("Commands/SmartShoot/timeToHubGood", good);
+          return good;
         };
 
     Command runKickerAndShootToHub =
@@ -510,7 +514,11 @@ public class RobotContainer {
         new ConditionalCommand(
             runKickerAndShootToHub,
             runKickerAndShootToField,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()));
+            () -> {
+              boolean inRange = RangeCalc.inShootingRange(m_drive.getPose());
+              Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
+              return inRange;
+            });
 
     m_driveController.rightTrigger().whileFalse(smartShootCommand);
   }
