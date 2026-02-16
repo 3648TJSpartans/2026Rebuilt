@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 3.975593822337963,
+        "y": 5.9610627893518515
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 4.6827939450260985,
+        "y": 5.965411811494554
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.432357819905214,
-        "y": 7.129976303317535
+        "x": 0.38479499421296337,
+        "y": 5.9610627893518515
       },
       "prevControl": {
-        "x": 5.432357819905214,
-        "y": 7.129976303317535
+        "x": 0.13538081669969793,
+        "y": 5.9439581684738165
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Nevada",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
