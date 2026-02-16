@@ -42,10 +42,8 @@ import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
-import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -317,7 +315,6 @@ public class RobotContainer {
     // configureAutos();
     configureLeds();
     configureAutoChooser();
-    configureSimpleMotor();
     configureDrive();
     configureShooter();
     configureAlerts();
@@ -427,12 +424,7 @@ public class RobotContainer {
             );
   }
 
-  private void configureKicker() {
-    m_kicker.setDefaultCommand(
-        Commands.run(
-            () -> m_kicker.setPower(MathUtil.applyDeadband(m_testController.getRightY(), 0.1)),
-            m_kicker));
-  }
+  private void configureKicker() {}
 
   private void configureClimber() {
     // We will eventually replace this with a more detailed command that lines the robot up
@@ -441,141 +433,41 @@ public class RobotContainer {
     m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
     m_climber.setDefaultCommand(
-        Commands.run(() -> m_climber.setPower(
-            MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1))
-            , m_climber).onlyWhile(() -> override));
+        Commands.run(
+                () ->
+                    m_climber.setPower(
+                        MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1)),
+                m_climber)
+            .onlyWhile(() -> override));
   }
 
   private void configureTurret() {
-    // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1,
-    // new
-    // Rotation2d())));
-    // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
-    TunableNumber turretSetpoint = new TunableNumber("Subsystems/Turret/testSetpoint", 0.5);
     m_copilotController
-        .rightBumper().and(() -> override)
+        .rightBumper()
+        .and(() -> override)
         .onTrue(Commands.runOnce(() -> m_turret.setPower(0.2), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
     m_copilotController
-        .leftBumper().and(() -> override)
+        .leftBumper()
+        .and(() -> override)
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-0.2), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
-    // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
-    // m_testController
-    //     .rightTrigger()
-    //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
-
     // TODO: change this to a head-up shot
-    m_driveController.a().whileTrue(new RunDynamicTrajectory(
-            m_turret,
-            m_shooter,
-            m_hood,
-            () -> TrajectoryConstants.overhangHeight,
-            () -> TrajectoryConstants.overhangAspect,
-            () -> TrajectoryConstants.hubPose,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil()));
-
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () ->
-                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
-            m_turret));
-    m_test3Controller
+    m_driveController
         .a()
         .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
-                    },
-                    m_turret)
-                .finallyDo(() -> m_turret.stop()));
-    m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
-
-    // Random rand = new Random();
-    // TunableNumber targetX =
-    // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
-    // 5);
-    // TunableNumber targetY =
-    // new TunableNumber("Subsystems/Turret/testTargeting/y", rand.nextDouble() *
-    // 5);
-
-    // m_testController
-    //     .b()
-    //     .whileTrue(
-    //         Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
-
-    RunTrajectoryCmd dynamicTrajectory =
-        new RunDynamicTrajectory(
-            m_turret,
-            m_shooter,
-            m_hood,
-            () -> TrajectoryConstants.overhangHeight,
-            () -> TrajectoryConstants.overhangAspect,
-            () -> TrajectoryConstants.hubPose,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil());
-    TunableNumber aspect = new TunableNumber("Trajectory/testTrajHeight", 1.5);
-    RunTrajectoryCmd dynamicTestTrajectory =
-        new RunDynamicTrajectory(
-            m_turret,
-            m_shooter,
-            m_hood,
-            () -> aspect.get(),
-            () -> .5,
-            () -> TrajectoryConstants.hubPose,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil());
-    // m_testController.povLeft().whileTrue(dynamicTrajectory);
-    // m_driveController.povLeft().whileTrue(dynamicTrajectory);
-
-    RunTrajectoryCmd feedAlliance =
-        new RunDynamicTrajectory(
-            m_turret,
-            m_shooter,
-            m_hood,
-            () ->
-                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 1 -> PoseConstants.overhangMiddle;
-                  default -> PoseConstants.overhangSide;
-                },
-            () -> .5,
-            () ->
-                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
-                },
-            () -> !RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
-            () -> m_shiftTracker.timeLeft());
-
-    m_test3Controller
-        .y()
-        .whileTrue(
-            dynamicTestTrajectory.alongWith(
-                Commands.run(
-                        () -> {
-                          if (dynamicTestTrajectory.ready()) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
-                          }
-                        },
-                        m_kicker)
-                    .finallyDo(
-                        () -> {
-                          m_kicker.stop();
-                          m_hopper.stop();
-                        })));
+            new RunDynamicTrajectory(
+                m_turret,
+                m_shooter,
+                m_hood,
+                () -> TrajectoryConstants.overhangHeight,
+                () -> TrajectoryConstants.overhangAspect,
+                () -> TrajectoryConstants.hubPose,
+                () -> RangeCalc.inShootingRange(m_drive.getPose()),
+                () -> m_drive.getTilt(),
+                () -> m_shiftTracker.timeLeft(),
+                () -> m_shiftTracker.timeUntil()));
 
     // m_kicker.setDefaultCommand(
     //     Commands.run(
@@ -609,14 +501,13 @@ public class RobotContainer {
                       m_shooter.stop();
                       m_kicker.stop();
                     }));
-    // m_testController
-    //     .leftTrigger()
-    //     .onTrue(Commands.runOnce(() -> m_kicker.setPower(ShooterConstants.kickerSpeed.get())))
-    //     .onFalse(Commands.runOnce(() -> m_kicker.stop()));
+
     m_shooter.setDefaultCommand(
         Commands.run(
-            () -> m_shooter.setPower(MathUtil.applyDeadband(m_copilotController.getLeftY(), 0.1)),
-            m_shooter).onlyWhile(() -> override));
+                () ->
+                    m_shooter.setPower(MathUtil.applyDeadband(m_copilotController.getLeftY(), 0.1)),
+                m_shooter)
+            .onlyWhile(() -> override));
   }
 
   public void configureAutoChooser() {
@@ -644,39 +535,22 @@ public class RobotContainer {
             .finallyDo(m_shooter::stop));
   }
 
-  public void configureSimpleMotor() {
-    // Command simpleForward =
-    // new SimpleMotorCmd(m_simpleMotor, SimpleMotorConstants.speed1);
-    // Command simpleBackward =
-    // new SimpleMotorCmd(m_simpleMotor, -SimpleMotorConstants.speed1);
-
-    // m_copilotController.leftBumper().whileTrue(simpleBackward);
-    // m_copilotController.rightBumper().whileTrue(simpleForward);
-  }
-
   public void configureIntake() {
 
-    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true), m_intake));
-    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false), m_intake));
-    m_testController
-        .y()
-        .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
-        .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
-
-    m_intake.setDefaultCommand(
-        Commands.run(
-                () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(), 0.1)),
-                m_intake)
-            .finallyDo(m_intake::stopRollers));
-
     m_copilotController
-        .leftTrigger().and(() -> override)
-        .whileTrue(Commands.run(() -> m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get()), m_intake)
-        .alongWith(Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
-        .alongWith(Commands.run(() -> m_kicker.setPower(-0.5), m_kicker)))
-        .onFalse(Commands.run(() -> m_intake.setRollers(0), m_intake)
-        .alongWith(Commands.run(() -> m_hopper.setPower(0), m_hopper))
-        .alongWith(Commands.run(() -> m_kicker.setPower(0), m_kicker)));
+        .leftTrigger()
+        .and(() -> override)
+        .whileTrue(
+            Commands.run(
+                    () -> m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get()), m_intake)
+                .alongWith(
+                    Commands.run(
+                        () -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
+                .alongWith(Commands.run(() -> m_kicker.setPower(-0.5), m_kicker)))
+        .onFalse(
+            Commands.run(() -> m_intake.setRollers(0), m_intake)
+                .alongWith(Commands.run(() -> m_hopper.setPower(0), m_hopper))
+                .alongWith(Commands.run(() -> m_kicker.setPower(0), m_kicker)));
 
     m_driveController
         .leftTrigger()
@@ -684,38 +558,9 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
   }
 
-  public void configureHopper() {
-
-    m_testController
-        .a()
-        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get()), m_hopper))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
-    m_testController
-        .povLeft()
-        .whileTrue(
-            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
-    m_testController
-        .povRight()
-        .whileTrue(
-            Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
-
-    m_hopper.setDefaultCommand(
-        Commands.run(
-            () ->
-                m_hopper.setPower(
-                    -MathUtil.applyDeadband(m_testController.getRightTriggerAxis(), 0.05) / 2.0),
-            m_hopper));
-  }
+  public void configureHopper() {}
 
   public void configureLeds() {
-
-    // This code changes LED patterns when the robot is in auto or teleop.
-    // It can be manipulated for your desires
-
-    // Command AutoLED = new AutoLEDCommand(m_leds);
-    // Command TeleopLED = new TeleopLEDCommand(m_leds);
 
     Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
@@ -727,39 +572,19 @@ public class RobotContainer {
     m_leds.setDefaultCommand(statusCheck);
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
-    // new Trigger(() -> DriverStation.isDisabled()).whileTrue();
-    // Trigger autonomous = new Trigger(() -> DriverStation.isAutonomousEnabled());
-    // Trigger teleop = new Trigger(() -> DriverStation.isTeleopEnabled());
-
-    // autonomous.onTrue(AutoLED);
-    // teleop.onTrue(TeleopLED);
-    /* */
   }
 
   private void configureHood() {
-    m_test3Controller
+    m_copilotController
         .povUp()
-        .whileTrue(Commands.run(() -> m_hood.setPower(0.05), m_hood).finallyDo(m_hood::stop));
-    m_test3Controller
+        .and(() -> override)
+        .whileTrue(Commands.run(() -> m_hood.setPower(0.1), m_hood))
+        .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
+    m_copilotController
         .povDown()
-        .whileTrue(Commands.run(() -> m_hood.setPower(-0.05), m_hood).finallyDo(m_hood::stop));
-    TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
-    m_test3Controller
-        .leftBumper()
-        .whileTrue(
-            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood).finallyDo(m_hood::stop));
-    m_test3Controller
-        .rightBumper()
-        .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(m_hood::stop));
-
-    m_copilotController
-    .povUp().and(() -> override)
-    .whileTrue(Commands.run(() -> m_hood.setPower(0.1), m_hood))
-    .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
-    m_copilotController
-    .povDown().and(() -> override)
-    .whileTrue(Commands.run(() -> m_hood.setPower(-0.1), m_hood))
-    .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
+        .and(() -> override)
+        .whileTrue(Commands.run(() -> m_hood.setPower(-0.1), m_hood))
+        .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
   }
 
   public void configureDrive() {
