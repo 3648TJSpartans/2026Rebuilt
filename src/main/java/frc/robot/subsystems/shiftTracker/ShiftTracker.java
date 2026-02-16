@@ -7,14 +7,14 @@ import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class ShiftTracker extends SubsystemBase {
-  private boolean hubActive;
+  private boolean onShift;
   private double timeLeft;
   private double timeUntil;
   private double time;
   private boolean firstTimeSlot;
 
   public ShiftTracker() {
-    hubActive = false;
+    onShift = false;
     time = 0.0;
     firstTimeSlot = false;
   }
@@ -34,29 +34,29 @@ public class ShiftTracker extends SubsystemBase {
 
   private void updateInputs() {
     time = DriverStation.getMatchTime();
-    hubActive = isHubActive();
+    onShift = isOnShift();
     timeLeft = timeLeft();
     timeUntil = timeUntil();
 
     Logger.recordOutput("Subsystems/ShiftTracker/time", time);
-    Logger.recordOutput("Subsystems/ShiftTracker/hubActive", hubActive);
+    Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
     Logger.recordOutput("Subsystems/ShiftTracker/timeLeft", timeLeft);
     Logger.recordOutput("Subsystems/ShiftTracker/timeUntil", timeUntil);
   }
 
   private void overrideInputs() {
     time = 0;
-    hubActive = true;
+    onShift = true;
     timeLeft = 25.0;
     timeUntil = 0.0;
 
     Logger.recordOutput("Subsystems/ShiftTracker/time", time);
-    Logger.recordOutput("Subsystems/ShiftTracker/hubActive", hubActive);
+    Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
     Logger.recordOutput("Subsystems/ShiftTracker/timeLeft", timeLeft);
     Logger.recordOutput("Subsystems/ShiftTracker/timeUntil", timeUntil);
   }
 
-  public boolean isHubActive() {
+  public boolean isOnShift() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // If we have no alliance, we cannot be enabled, therefore no hub.
     if (alliance.isEmpty()) {
@@ -120,7 +120,7 @@ public class ShiftTracker extends SubsystemBase {
   // This requires input from the copilot, so it isn't as good in theory as the
   // above solution. However, we can't verify that the above solution works because
   // it requires data from the FMS, which we don't have unless we're in competition.
-  public boolean isHubActiveDeprecated() {
+  public boolean onShiftDeprecated() {
     return isEndgame() || !(firstTimeSlot ^ onShiftOneOrThree());
   }
 
@@ -146,14 +146,14 @@ public class ShiftTracker extends SubsystemBase {
   }
 
   public double timeLeft() {
-    if (!hubActive) {
+    if (!onShift) {
       return 0.0;
     }
     return (time - 30.0) % 25.0;
   }
 
   public double timeUntil() {
-    if (hubActive) {
+    if (onShift) {
       return 0.0;
     }
     return (time - 30.0) % 25.0;
@@ -164,8 +164,8 @@ public class ShiftTracker extends SubsystemBase {
     firstTimeSlot = timeSlot;
   }
 
-  public boolean getHubActive() {
-    return hubActive;
+  public boolean getOnShift() {
+    return onShift;
   }
 }
 /*  make the controller vibrate evey second  */

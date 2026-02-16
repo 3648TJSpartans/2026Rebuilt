@@ -681,7 +681,7 @@ public class RobotContainer {
     // Command AutoLED = new AutoLEDCommand(m_leds);
     // Command TeleopLED = new TeleopLEDCommand(m_leds);
 
-    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getHubActive());
+    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
