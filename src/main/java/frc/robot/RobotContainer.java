@@ -439,6 +439,11 @@ public class RobotContainer {
     // for its L1 climb
     // We should also probably make it so it drives to different possible climb poses
     m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
+
+    m_climber.setDefaultCommand(
+        Commands.run(() -> m_climber.setPower(
+            MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1))
+            , m_climber).onlyWhile(() -> override));
   }
 
   private void configureTurret() {
@@ -447,14 +452,14 @@ public class RobotContainer {
     // Rotation2d())));
     // m_testController.a().onTrue(new InstantCommand(m_turret::setZeroHeading));
     TunableNumber turretSetpoint = new TunableNumber("Subsystems/Turret/testSetpoint", 0.5);
-    // m_testController
-    //     .rightBumper()
-    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(turretPower.get()), m_turret))
-    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
-    // m_testController
-    //     .leftBumper()
-    //     .onTrue(Commands.runOnce(() -> m_turret.setPower(-turretPower.get()), m_turret))
-    //     .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_copilotController
+        .rightBumper().and(() -> override)
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(0.2), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
+    m_copilotController
+        .leftBumper().and(() -> override)
+        .onTrue(Commands.runOnce(() -> m_turret.setPower(-0.2), m_turret))
+        .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
     // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     // m_testController
@@ -610,8 +615,8 @@ public class RobotContainer {
     //     .onFalse(Commands.runOnce(() -> m_kicker.stop()));
     m_shooter.setDefaultCommand(
         Commands.run(
-            () -> m_shooter.setPower(MathUtil.applyDeadband(m_test3Controller.getRightY(), 0.1)),
-            m_shooter));
+            () -> m_shooter.setPower(MathUtil.applyDeadband(m_copilotController.getLeftY(), 0.1)),
+            m_shooter).onlyWhile(() -> override));
   }
 
   public void configureAutoChooser() {
@@ -651,12 +656,12 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
-    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
+    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true), m_intake));
+    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false), m_intake));
     m_testController
         .y()
-        .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
+        .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
+        .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
     m_intake.setDefaultCommand(
         Commands.run(
@@ -664,28 +669,37 @@ public class RobotContainer {
                 m_intake)
             .finallyDo(m_intake::stopRollers));
 
+    m_copilotController
+        .leftTrigger().and(() -> override)
+        .whileTrue(Commands.run(() -> m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get()), m_intake)
+        .alongWith(Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
+        .alongWith(Commands.run(() -> m_kicker.setPower(-0.5), m_kicker)))
+        .onFalse(Commands.run(() -> m_intake.setRollers(0), m_intake)
+        .alongWith(Commands.run(() -> m_hopper.setPower(0), m_hopper))
+        .alongWith(Commands.run(() -> m_kicker.setPower(0), m_kicker)));
+
     m_driveController
         .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
+        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
   }
 
   public void configureHopper() {
 
     m_testController
         .a()
-        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSpeed.get()), m_hopper))
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
     m_testController
         .povLeft()
         .whileTrue(
             Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
     m_testController
         .povRight()
         .whileTrue(
             Commands.run(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper))
-        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get())));
+        .onFalse(Commands.runOnce(() -> m_hopper.setPower(IntakeConstants.hopperSlowSpeed.get()), m_hopper));
 
     m_hopper.setDefaultCommand(
         Commands.run(
@@ -737,6 +751,15 @@ public class RobotContainer {
     m_test3Controller
         .rightBumper()
         .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(m_hood::stop));
+
+    m_copilotController
+    .povUp().and(() -> override)
+    .whileTrue(Commands.run(() -> m_hood.setPower(0.1), m_hood))
+    .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
+    m_copilotController
+    .povDown().and(() -> override)
+    .whileTrue(Commands.run(() -> m_hood.setPower(-0.1), m_hood))
+    .onFalse(Commands.run(() -> m_hood.setPower(0), m_hood));
   }
 
   public void configureDrive() {
