@@ -3,6 +3,7 @@
   "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
+    "DriveToOutpost",
     "ToDepot"
   ],
   "autoFolders": [],
