@@ -11,10 +11,12 @@ public class ShiftTracker extends SubsystemBase {
   private double timeLeft;
   private double timeUntil;
   private double time;
+  private boolean firstTimeSlot;
 
   public ShiftTracker() {
     hubActive = false;
     time = 0.0;
+    firstTimeSlot = false;
   }
 
   @Override
@@ -115,6 +117,13 @@ public class ShiftTracker extends SubsystemBase {
     }
   }
 
+  // This requires input from the copilot, so it isn't as good in theory as the
+  // above solution. However, we can't verify that the above solution works because
+  // it requires data from the FMS, which we don't have unless we're in competition.
+  public boolean isHubActiveDeprecated() {
+    return isEndgame() || !(firstTimeSlot ^ onShiftOneOrThree());
+  }
+
   //
   private boolean onShiftOneOrThree() {
     // Shift 1
@@ -148,6 +157,11 @@ public class ShiftTracker extends SubsystemBase {
       return 0.0;
     }
     return (time - 30.0) % 25.0;
+  }
+
+  // Deprecated
+  public void setTimeSlot(boolean timeSlot) {
+    firstTimeSlot = timeSlot;
   }
 
   public boolean getHubActive() {
