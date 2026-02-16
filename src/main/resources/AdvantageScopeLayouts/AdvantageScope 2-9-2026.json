@@ -818,7 +818,7 @@
                 "discreteSources": [
                   {
                     "type": "stripes",
-                    "logKey": "/RealOutputs/Subsystems/ShiftTracker/onShift",
+                    "logKey": "/RealOutputs/Subsystems/ShiftTracker/hubActive",
                     "logType": "Boolean",
                     "visible": true,
                     "options": {

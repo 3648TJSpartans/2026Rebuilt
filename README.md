@@ -49,7 +49,7 @@ private double m_time;
 
 public ShiftTracker() {
   m_firstTimeSlot = false;
-  m_onShift = false;
+  m_hubActive = false;
   m_time = 0.0;
 }
 ```
