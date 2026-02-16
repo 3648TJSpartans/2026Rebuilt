@@ -86,6 +86,8 @@ public class goToConstants {
   public static class PoseConstants {
     public static final Pose2d examplePose = new Pose2d(3.57, 2.75, Rotation2d.fromDegrees(60));
     public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+    // TODO: update this to an actual pose/poses for climbing
+    public static final Pose2d climbPose = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.042;
 

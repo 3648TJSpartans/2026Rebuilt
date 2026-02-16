@@ -45,6 +45,7 @@ import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -177,8 +178,8 @@ public class RobotContainer {
             10);
 
     Logger.recordOutput("Utils/Poses/shouldFlip", AllianceFlipUtil.shouldFlip());
-    Logger.recordOutput("Override", override);
     override = false;
+    Logger.recordOutput("Override", override);
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -320,7 +321,7 @@ public class RobotContainer {
     configureDrive();
     configureShooter();
     configureAlerts();
-    // configureClimber();
+    configureClimber();
     configureIntake();
     configureHopper();
     configureTurret();
@@ -338,7 +339,8 @@ public class RobotContainer {
         .povUp()
         .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
-    m_driveController.rightTrigger().onTrue(new InstantCommand(this::toggleOverride));
+    m_copilotController.povLeft().onTrue(Commands.runOnce(() -> setOverride(false)));
+    m_copilotController.povRight().onTrue(Commands.runOnce(() -> setOverride(true)));
 
     /*
      * m_led.setLedPattern(LedConstants.elevatorHeight, m_led.elevatorBuffer);
@@ -432,6 +434,13 @@ public class RobotContainer {
             m_kicker));
   }
 
+  private void configureClimber() {
+    // We will eventually replace this with a more detailed command that lines the robot up
+    // for its L1 climb
+    // We should also probably make it so it drives to different possible climb poses
+    m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
+  }
+
   private void configureTurret() {
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1,
     // new
@@ -451,6 +460,19 @@ public class RobotContainer {
     // m_testController
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+
+    // TODO: change this to a head-up shot
+    m_driveController.a().whileTrue(new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight,
+            () -> TrajectoryConstants.overhangAspect,
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
+            () -> m_shiftTracker.timeLeft(),
+            () -> m_shiftTracker.timeUntil()));
 
     m_turret.setDefaultCommand(
         Commands.run(
@@ -725,7 +747,7 @@ public class RobotContainer {
             () -> -m_driveController.getLeftY(),
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
-            m_driveController.leftBumper()));
+            m_driveController.rightBumper()));
 
     // Lock to nearest 45° when A button is held
     Rotation2d[] lockpoints = {
@@ -759,24 +781,14 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));
 
-    // Reset gyro to 0° when povLeft button is pressed
+    // Reset gyro to 0° when povUp button is pressed
     m_driveController
-        .povLeft()
+        .povUp()
         .onTrue(
             Commands.runOnce(
                     () ->
                         m_drive.setPose(
                             new Pose2d(m_drive.getPose().getTranslation(), new Rotation2d())),
-                    m_drive)
-                .ignoringDisable(true));
-    m_driveController
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        m_drive.setPose(
-                            new Pose2d(
-                                m_drive.getPose().getTranslation(), new Rotation2d(Math.PI))),
                     m_drive)
                 .ignoringDisable(true));
 
@@ -803,8 +815,8 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public void toggleOverride() {
-    override = !override;
+  public void setOverride(boolean set) {
+    override = set;
     Logger.recordOutput("Override", override);
   }
 
