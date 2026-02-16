@@ -13,8 +13,10 @@ public class TrajectoryConstants {
       new TunableNumber("Trajectory/overhangAspect", 7.0 / 8);
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);
   public static final double maxTilt = Units.degreesToRadians(7.5);
-  public static final double preshotDelay = 0.0;
-  public static final double postshotDelay = 3.0;
+  public static final TunableNumber preshotDelay =
+      new TunableNumber("Trajectory/preshotDelay", 0.0);
+  public static final TunableNumber postshotDelay =
+      new TunableNumber("Trajectory/postshotDelay", 3.0);
   public static final double translationalSpeedThreshold = Double.MAX_VALUE;
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;

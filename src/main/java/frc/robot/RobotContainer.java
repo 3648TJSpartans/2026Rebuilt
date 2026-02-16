@@ -469,8 +469,9 @@ public class RobotContainer {
           double timeTill = m_shiftTracker.timeUntil();
           Trajectory trajectory = shootToHub.getTrajectory();
           return timeTill == 0
-              || trajectory.getHangTime() + TrajectoryConstants.preshotDelay < timeTill
-              || trajectory.getHangTime() < TrajectoryConstants.postshotDelay + timeTill - 25.0;
+              || trajectory.getHangTime() + TrajectoryConstants.preshotDelay.get() < timeTill
+              || trajectory.getHangTime()
+                  < TrajectoryConstants.postshotDelay.get() + timeTill - 25.0;
         };
 
     Command runKickerAndShootToHub =
