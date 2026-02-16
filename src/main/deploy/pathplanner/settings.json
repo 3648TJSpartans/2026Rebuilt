@@ -1,13 +1,13 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.8,
+  "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
     "Nevada"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 4.5,
+  "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
@@ -17,7 +17,7 @@
   "driveWheelRadius": 0.048,
   "driveGearing": 5.143,
   "maxDriveSpeed": 5.45,
-  "driveMotorType": "krakenX60",
+  "driveMotorType": "NEO",
   "driveCurrentLimit": 60.0,
   "wheelCOF": 1.2,
   "flModuleX": 0.273,
@@ -30,5 +30,7 @@
   "brModuleY": -0.273,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.33,\"y\":0.0},\"size\":{\"width\":0.66,\"length\":0.33},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+  ]
 }
