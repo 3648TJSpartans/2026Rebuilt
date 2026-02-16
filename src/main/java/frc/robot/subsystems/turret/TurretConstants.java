@@ -1,6 +1,7 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
@@ -22,4 +23,9 @@ public class TurretConstants {
       new TunableNumber("Subsystems/Turret/maxRotation", Math.PI);
   public static double encoderPositionFactor = Math.PI / 63;
   public static final int zeroSwitchPort = 0;
+
+  public static final double homePower =
+      new TunableNumber("Subsystems/Turret/homePower", 0.1).get();
+  public static final double homeRange =
+      Units.degreesToRadians(new TunableNumber("Subsystems/Turret/homeRange (deg)", 30).get());
 }

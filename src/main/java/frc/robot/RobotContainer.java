@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -453,6 +455,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_turret.setPower(-0.2), m_turret))
         .onFalse(new InstantCommand(m_turret::stop, m_turret));
 
+    m_copilotController.b().whileTrue(new HomeTurretCmd(m_turret));
+
     // TODO: change this to a head-up shot
     m_driveController
         .a()
@@ -570,6 +574,14 @@ public class RobotContainer {
         new StatusCheckLEDCommand(m_leds, m_statusLogger.getStatuses()).ignoringDisable(true);
 
     m_leds.setDefaultCommand(statusCheck);
+    m_copilotController
+        .a()
+        .whileTrue(statusCheck)
+        .onFalse(
+            new ConditionalCommand(
+                new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green),
+                new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red),
+                () -> m_shiftTracker.getOnShift()));
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
   }
