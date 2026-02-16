@@ -139,6 +139,7 @@ public class TrajectoryCalc {
             .toTranslation2d()
             .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
+    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
     return new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0);
   }
 

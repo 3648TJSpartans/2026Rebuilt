@@ -93,4 +93,8 @@ public class RunTrajectoryCmd extends Command {
     m_turret.stop();
     m_hood.stop();
   }
+
+  public Trajectory getTrajectory() {
+    return m_trajectorySupplier.get();
+  }
 }

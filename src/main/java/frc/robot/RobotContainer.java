@@ -294,7 +294,6 @@ public class RobotContainer {
             m_shooter,
             m_kicker,
             m_intake,
-            // m_compressor,
             m_hopper,
             m_drive,
             m_vision,
