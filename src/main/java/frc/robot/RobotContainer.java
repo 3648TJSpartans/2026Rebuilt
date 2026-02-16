@@ -43,8 +43,6 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
-import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
-import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -55,6 +53,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -70,7 +69,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.RangeCalc;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
@@ -457,21 +455,31 @@ public class RobotContainer {
 
     m_copilotController.b().whileTrue(new HomeTurretCmd(m_turret));
 
-    // TODO: change this to a head-up shot
+    // head-up shot
     m_driveController
         .a()
         .whileTrue(
-            new RunDynamicTrajectory(
-                m_turret,
-                m_shooter,
-                m_hood,
-                () -> TrajectoryConstants.overhangHeight,
-                () -> TrajectoryConstants.overhangAspect,
-                () -> TrajectoryConstants.hubPose,
-                () -> RangeCalc.inShootingRange(m_drive.getPose()),
-                () -> m_drive.getTilt(),
-                () -> m_shiftTracker.timeLeft(),
-                () -> m_shiftTracker.timeUntil()));
+            Commands.run(
+                    () -> m_shooter.shootVelocity(ShooterConstants.shootHeadUpSpeed.get()),
+                    m_shooter)
+                .alongWith(
+                    Commands.run(
+                        () -> m_hood.setAngle(new Rotation2d(HoodConstants.headUpAngle.get())),
+                        m_hood))
+                .alongWith(
+                    Commands.run(
+                        () -> m_turret.setFieldRotation(new Rotation2d(Math.PI)), m_turret))
+                .until(
+                    () ->
+                        (m_shooter.speedInTolerance()
+                            && m_hood.positionInTolerance()
+                            && m_turret.positionInTolerance()))
+                .andThen(
+                    Commands.run(
+                            () -> m_kicker.setPower(ShooterConstants.kickerSpeed.get()), m_kicker)
+                        .alongWith(
+                            Commands.run(
+                                () -> m_hopper.setPower(IntakeConstants.hopperSpeed.get())))));
 
     // m_kicker.setDefaultCommand(
     //     Commands.run(

@@ -38,4 +38,6 @@ public class ShooterConstants {
       new TunableNumber("Subsystems/Kicker/kickerSpeed", 1.0);
   public static final TunableNumber kickerSlowSpeed =
       new TunableNumber("Subsystems/Kicker/kickerSpeed", 0);
+  public static final TunableNumber shootHeadUpSpeed =
+      new TunableNumber("Subsystems/Shooter/shootHeadUpSpeed", 300);
 }
