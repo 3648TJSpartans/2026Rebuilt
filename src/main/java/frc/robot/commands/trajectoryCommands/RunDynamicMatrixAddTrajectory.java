@@ -13,8 +13,7 @@ import frc.robot.util.trajectorySolver.TrajectoryCalc;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-public class RunDynamicTrajectory extends RunTrajectoryCmd {
-
+public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
   /*
    * Runs a dynamic trajectory, given a turret, shooter, hood, and kicker.
    * Requires knowledge of the target, if the robot is in range, and how much the
@@ -36,7 +35,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
    * @param robotTiltSupplier - Supplys robot tilt... if tilt is too much, don't
    * shoot.
    */
-  public RunDynamicTrajectory(
+  public RunDynamicMatrixAddTrajectory(
       Turret turret,
       Shooter shooter,
       Hood hood,
@@ -56,7 +55,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
           double[] turretVelocity = turret.getTurretTranslationalVelocity();
           Trajectory traj =
-              TrajectoryCalc.dynamicTrajectory(
+              TrajectoryCalc.matrixTrajectory(
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
           if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
             traj =
@@ -65,7 +64,7 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
                     target,
                     turretVelocity,
                     Units.degreesToRadians(HoodConstants.maxAngle.get()));
-            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
           } else if (traj.getShooterAngle()
               > Units.degreesToRadians(HoodConstants.minAngle.get())) {
             traj =
@@ -74,29 +73,32 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
                     target,
                     turretVelocity,
                     Units.degreesToRadians(HoodConstants.minAngle.get()));
-            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
           } else {
-            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", false);
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", false);
           }
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/trajectory/hangTime", traj.getHangTime());
+              "Commands/RunDynamicMatrixTrajectory/trajectory/hangTime", traj.getHangTime());
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/trajectory/shooterSpeed", traj.getShooterSpeed());
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterSpeed",
+              traj.getShooterSpeed());
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/trajectory/shooterAngle", traj.getShooterAngle());
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterAngle",
+              traj.getShooterAngle());
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/trajectory/turretRotation", traj.getTurretRotation());
+              "Commands/RunDynamicMatrixTrajectory/trajectory/turretRotation",
+              traj.getTurretRotation());
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/trajectory/shooterPose",
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterPose",
               new Pose3d(
                   turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
+              "Commands/RunDynamicMatrixTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/interpolatedTrajectory",
+              "Commands/RunDynamicMatrixTrajectory/interpolatedTrajectory",
               TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));
           Logger.recordOutput(
-              "Commands/RunDynamicTrajectory/interpolatedTrajectory (no velocity)",
+              "Commands/RunDynamicMatrixTrajectory/interpolatedTrajectory (no velocity)",
               TrajectoryCalc.interpolateTrajectory(traj, turretPose));
           return traj;
         });

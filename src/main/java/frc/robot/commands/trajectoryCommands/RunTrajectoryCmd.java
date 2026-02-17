@@ -16,8 +16,7 @@ public class RunTrajectoryCmd extends Command {
   private final Hood m_hood;
   private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
-  private final Supplier<Double> m_timeLeft;
-  private final Supplier<Double> m_timeTill;
+  private Trajectory m_trajectory;
 
   public RunTrajectoryCmd(
       Turret turret,
@@ -25,8 +24,6 @@ public class RunTrajectoryCmd extends Command {
       Hood hood,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
-      Supplier<Double> timeLeft,
-      Supplier<Double> timeTill,
       Supplier<Trajectory> trajectorySupplier) { // TODO include shooter and shooter angle.
     m_trajectorySupplier = trajectorySupplier;
     m_turret = turret;
@@ -34,41 +31,27 @@ public class RunTrajectoryCmd extends Command {
     m_hood = hood;
     m_inRangeSupplier = inRangeSupplier;
     m_robotTiltSupplier = robotTiltSupplier;
-    m_timeLeft = timeLeft;
-    m_timeTill = timeTill;
     addRequirements(turret, shooter, hood);
   }
 
   @Override
   public void execute() {
-    Trajectory trajectory = m_trajectorySupplier.get();
-    Logger.recordOutput("Commands/RunTrajectoryCmd/validTrajectory", trajectory.isValid());
-    if (!trajectory.isValid()) {
+    m_trajectory = m_trajectorySupplier.get();
+    Logger.recordOutput("Commands/RunTrajectoryCmd/validTrajectory", m_trajectory.isValid());
+    if (!m_trajectory.isValid()) {
       return;
     }
     // Use the trajectory to control subsystems
-    m_turret.setFieldRotation(new Rotation2d(trajectory.getTurretAngle()));
-    m_shooter.shootVelocity(trajectory.getShooterSpeed());
-    m_hood.setAngle(new Rotation2d(trajectory.getShooterAngle()));
+    m_turret.setFieldRotation(new Rotation2d(m_trajectory.getTurretAngle()));
+    m_shooter.shootVelocity(m_trajectory.getShooterSpeed());
+    m_hood.setAngle(new Rotation2d(m_trajectory.getShooterAngle()));
   }
 
   public boolean ready() {
-    double timeTill = m_timeTill.get();
-    double timeLeft = m_timeLeft.get();
-    boolean offShiftGood =
-        timeTill > 0
-            && m_trajectorySupplier.get().getHangTime() + TrajectoryConstants.preshotDelay
-                < timeTill;
-    /*
-     * TODO
-     * Theres a world where the shift tracker also rememebrs a 3-second grace period, and keeps shooting after out shift to get balls throughout the grace period.
-     */
-    boolean timeGood = offShiftGood || timeLeft > 0;
     boolean robotInRange = m_inRangeSupplier.get();
     boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
     boolean turretTransSpeedGood =
         m_turret.getTurretTranslationalSpeed() < TrajectoryConstants.translationalSpeedThreshold;
-    Logger.recordOutput("Commands/RunTrajectoryCmd/ready/timeGood", timeGood);
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.positionInTolerance());
     Logger.recordOutput(
@@ -83,7 +66,6 @@ public class RunTrajectoryCmd extends Command {
         && m_hood.positionInTolerance()
         && goodTilt
         && robotInRange
-        && timeGood
         && turretTransSpeedGood;
   }
 
@@ -92,5 +74,9 @@ public class RunTrajectoryCmd extends Command {
     m_shooter.stop();
     m_turret.stop();
     m_hood.stop();
+  }
+
+  public Trajectory getTrajectory() {
+    return m_trajectorySupplier.get();
   }
 }

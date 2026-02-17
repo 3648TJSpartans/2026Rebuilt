@@ -52,6 +52,14 @@ public class Trajectory {
     return m_isValid;
   }
 
+  public Trajectory plus(Trajectory other) {
+    return new Trajectory(
+        m_shooterAngle + other.m_shooterAngle,
+        m_turretAngle + other.m_turretAngle,
+        m_shooterSpeed + other.m_shooterSpeed,
+        m_hangTime + other.m_hangTime);
+  }
+
   public String toString() {
     return "Shooter Angle: "
         + m_shooterAngle

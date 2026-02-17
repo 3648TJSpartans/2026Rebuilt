@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
-public class TunableNumber {
+public class TunableNumber extends Supplier<Double> {
 
   private static TuningUpdater updater = new TuningUpdater();
 

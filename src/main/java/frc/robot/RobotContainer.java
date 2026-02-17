@@ -17,7 +17,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -25,6 +28,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
@@ -41,7 +45,9 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
+import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.RunMatrix;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -75,8 +81,10 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
+import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import java.io.File;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -288,7 +296,6 @@ public class RobotContainer {
             m_shooter,
             m_kicker,
             m_intake,
-            // m_compressor,
             m_hopper,
             m_drive,
             m_vision,
@@ -318,7 +325,7 @@ public class RobotContainer {
     configureAutoChooser();
     configureSimpleMotor();
     configureDrive();
-    configureShooter();
+    // configureShooter();
     configureAlerts();
     // configureClimber();
     configureIntake();
@@ -326,6 +333,7 @@ public class RobotContainer {
     configureTurret();
     configureHood();
     configureKicker();
+    configureSmartShoot();
     Command updateCommand =
         new InstantCommand(
                 () -> {
@@ -432,6 +440,89 @@ public class RobotContainer {
             m_kicker));
   }
 
+  private void configureSmartShoot() {
+
+    RunTrajectoryCmd shootToHub =
+        new RunDynamicMatrixAddTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
+
+    RunTrajectoryCmd shootToField =
+        new RunDynamicMatrixAddTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
+
+    BooleanSupplier shootTimeGood =
+        () -> {
+          double timeTill = m_shiftTracker.timeUntil();
+          Trajectory trajectory = shootToHub.getTrajectory();
+          boolean good =
+              timeTill == 0
+                  || trajectory.getHangTime() + TrajectoryConstants.preshotDelay.get() < timeTill
+                  || trajectory.getHangTime()
+                      < TrajectoryConstants.postshotDelay.get() + timeTill - 25.0;
+
+          Logger.recordOutput("Commands/SmartShoot/timeToHubGood", good);
+          return good;
+        };
+
+    Command runKickerAndShootToHub =
+        shootToHub
+            .alongWith(
+                Commands.run(
+                        () -> {
+                          if (shootToHub.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        }))
+            .onlyWhile(shootTimeGood);
+    Command runKickerAndShootToField =
+        shootToField.alongWith(
+            Commands.run(
+                    () -> {
+                      if (shootToField.ready()) {
+                        m_kicker.setPower(1.0);
+                        m_hopper.setPower(-.5);
+                      }
+                    },
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
+    Command smartShootCommand =
+        new ConditionalCommand(
+            runKickerAndShootToHub,
+            runKickerAndShootToField,
+            () -> {
+              boolean inRange = RangeCalc.inShootingRange(m_drive.getPose());
+              Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
+              return inRange;
+            });
+
+    m_driveController.rightTrigger().whileFalse(smartShootCommand);
+  }
+
   private void configureTurret() {
     // m_turret.setDefaultCommand(new TurretFollowCmd(m_turret,()-> new Pose2d(1,1,
     // new
@@ -455,19 +546,46 @@ public class RobotContainer {
     m_turret.setDefaultCommand(
         Commands.run(
             () ->
-                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 3.0),
             m_turret));
-    m_test3Controller
-        .a()
-        .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
-                    },
-                    m_turret)
-                .finallyDo(() -> m_turret.stop()));
+    // m_test3Controller
+    //     .a()
+    //     .whileTrue(
+    //         Commands.run(
+    //                 () -> {
+    //                   m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d());
+    //                 },
+    //                 m_turret)
+    //             .finallyDo(() -> m_turret.stop()));
     m_test3Controller.b().onTrue(Commands.runOnce(m_turret::setZeroHeading, m_turret));
+    TunableNumber xTarget = new TunableNumber("Testing/testTraj/xTarget", 1.0);
+    TunableNumber yTarget = new TunableNumber("Testing/testTraj/yTarget", 0);
 
+    TunableNumber xOffset = new TunableNumber("Testing/testTraj/xOffset", 0.0);
+    TunableNumber yOffset = new TunableNumber("Testing/testTraj/yOffset", 0);
+    TunableNumber testAspect = new TunableNumber("Testing/testTraj/Aspect", .5);
+    TunableNumber height = new TunableNumber("Testing/testTraj/Height", 1.5);
+
+    RunTrajectoryCmd calTraj =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> height.get(),
+            () -> testAspect.get(),
+            () ->
+                m_turret
+                    .getTurretFieldPose()
+                    .plus(
+                        new Transform3d(
+                            xTarget.get() + xOffset.get(),
+                            yTarget.get() + yOffset.get(),
+                            -m_turret.getTurretFieldPose().getZ(),
+                            new Rotation3d()))
+                    .getTranslation(),
+            () -> true,
+            () -> 0.0);
+    m_test3Controller.povUp().onTrue(Commands.runOnce(() -> m_hood.setEncoder(0), m_hood));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -486,13 +604,11 @@ public class RobotContainer {
             m_turret,
             m_shooter,
             m_hood,
-            () -> TrajectoryConstants.overhangHeight,
-            () -> TrajectoryConstants.overhangAspect,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil());
+            () -> m_drive.getTilt());
     TunableNumber aspect = new TunableNumber("Trajectory/testTrajHeight", 1.5);
     RunTrajectoryCmd dynamicTestTrajectory =
         new RunDynamicTrajectory(
@@ -501,14 +617,16 @@ public class RobotContainer {
             m_hood,
             () -> aspect.get(),
             () -> .5,
-            () -> TrajectoryConstants.hubPose,
+            () ->
+                TrajectoryConstants.hubPose.plus(
+                    new Translation3d(xOffset.get(), yOffset.get(), 0.0)),
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil());
+            () -> m_drive.getTilt());
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     // m_driveController.povLeft().whileTrue(dynamicTrajectory);
 
+    RunMatrix matrixTraj =
+        new RunMatrix(m_turret, m_shooter, m_hood, () -> TrajectoryConstants.hubPose);
     RunTrajectoryCmd feedAlliance =
         new RunDynamicTrajectory(
             m_turret,
@@ -528,10 +646,8 @@ public class RobotContainer {
                   default -> PoseConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeUntil() - TrajectoryConstants.allianceFeedingCutoffTime,
-            () -> m_shiftTracker.timeLeft());
-
+            () -> m_drive.getTilt());
+    TunableNumber fixedHoodAngle = new TunableNumber("Trajectory/fixedHoodAngle", 0.0);
     m_test3Controller
         .y()
         .whileTrue(
@@ -549,7 +665,23 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-
+    m_test3Controller
+        .a()
+        .whileTrue(
+            matrixTraj.alongWith(
+                Commands.run(
+                        () -> {
+                          if (matrixTraj.isReady()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
     // m_kicker.setDefaultCommand(
     //     Commands.run(
     //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
@@ -631,8 +763,8 @@ public class RobotContainer {
 
     m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
     m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
-    m_testController
-        .y()
+    m_driveController
+        .leftTrigger()
         .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
 
@@ -642,10 +774,10 @@ public class RobotContainer {
                 m_intake)
             .finallyDo(m_intake::stopRollers));
 
-    m_driveController
-        .y()
-        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+    // m_driveController
+    //     .leftTrigger()
+    //     .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
+    //     .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
   public void configureHopper() {
@@ -726,7 +858,6 @@ public class RobotContainer {
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
             m_driveController.leftBumper()));
-
     // Lock to nearest 45° when A button is held
     Rotation2d[] lockpoints = {
       new Rotation2d(Math.PI / 4),
