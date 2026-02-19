@@ -58,12 +58,13 @@ public class RunTrajectoryCmd extends Command {
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.positionInTolerance());
     Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/shooterSpeed", m_shooter.speedInTolerance());
+        "Commands/RunTrajectoryCmd/ready/shooterSpeed",
+        m_shooter.getLeaderMotor().speedInTolerance());
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/tiltInRange", goodTilt);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/robotInRange", robotInRange);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/translationalSpeed", turretTransSpeedGood);
     return m_turret.getRelEncoder().positionInTolerance()
-        && m_shooter.speedInTolerance()
+        && m_shooter.getLeaderMotor().speedInTolerance()
         && m_hood.positionInTolerance()
         && goodTilt
         && robotInRange

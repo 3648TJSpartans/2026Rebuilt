@@ -148,7 +148,6 @@ public class RobotContainer {
     m_shiftTracker = new ShiftTracker();
     m_climber = new Climber();
     m_hood = new Hood();
-    m_shooter = new Shooter();
     m_kicker = new Kicker();
     m_hopper = new Hopper();
     // m_compressor = new CompressorIO("Compressor");
@@ -198,7 +197,10 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         m_intake =
             new Intake(new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
-
+        m_shooter =
+            new Shooter(
+                new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig),
+                new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
         m_drive =
             new Drive(
                 new GyroIONavX(),
@@ -261,6 +263,11 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+
+        m_shooter =
+            new Shooter(
+                new RelEncoderSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
+                new RelEncoderSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_intake =
             new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
         m_turret =
@@ -288,6 +295,10 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intake = new Intake(new SingleSolenoidSim(0, null));
+        m_shooter =
+            new Shooter(
+                new RelEncoderSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
+                new RelEncoderSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_turret =
             new Turret(
                 new RelEncoderSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
@@ -724,7 +735,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       m_shooter.runFFVelocity(shootSpeed.get());
-                      if (m_shooter.speedInTolerance()) {
+                      if (m_shooter.getLeaderMotor().speedInTolerance()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                         m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                       } else {
@@ -771,7 +782,7 @@ public class RobotContainer {
         FFCharacterizationCmd.characterizeSystem(
                 m_shooter,
                 speed -> m_shooter.runCharacterization(speed),
-                m_shooter::getFFCharacterizationVelocity)
+                () -> m_shooter.getLeaderMotor().getFFCharacterizationVelocity())
             .finallyDo(m_shooter::stop));
   }
 

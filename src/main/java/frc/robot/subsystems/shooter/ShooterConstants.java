@@ -23,7 +23,8 @@ public class ShooterConstants {
           .idleMode(IdleMode.kCoast);
   //   .follow(10)
   //   .isInverted(true);
-
+  public static final TunableNumber shooterSimKV =
+      new TunableNumber("Subsystems/Shooter/kV", 6000.0);
   public static MotorConfig kKickerMotorConfig =
       new MotorConfig("Subsystems/Kicker/MotorIO").motorCan(13).Ks(0).Kv(0).speedTolerance(0.0);
 
