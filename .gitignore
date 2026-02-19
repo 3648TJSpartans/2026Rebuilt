@@ -185,6 +185,7 @@ compile_commands.json
 
 # AdvantageScope
 src/main/java/frc/robot/BuildConstants.java
+src/main/resources/AdvantageScopeResources/*
 *.wpilog
 
 # Eclipse generated file for annotation processors
