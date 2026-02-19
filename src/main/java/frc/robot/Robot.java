@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.turret.TurretConstants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -21,7 +25,7 @@ import org.littletonrobotics.urcl.URCL;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
-
+  private double time = 0;
   private final RobotContainer m_robotContainer;
 
   /**
@@ -97,6 +101,15 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
+    time += 0.2;
+    Logger.recordOutput(
+        "Test/Simulation/turretManipulationPose0",
+        new Pose3d[] {
+          new Pose3d(0, 0, 0, new Rotation3d()), new Pose3d(0, 0, 0, new Rotation3d())
+        });
+    Logger.recordOutput(
+        "Test/Simulation/turretManipulation",
+        new Pose3d(TurretConstants.kTurretOffset, new Rotation3d(new Rotation2d(time / 4.0))));
     CommandScheduler.getInstance().run();
   }
 
