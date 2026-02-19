@@ -38,10 +38,11 @@ public class RunMatrix extends Command {
 
   public boolean isReady() {
     Logger.recordOutput(
-        "Commands/RunMatrix/ready/turretPositioned", m_turret.positionInTolerance());
+        "Commands/RunMatrix/ready/turretPositioned",
+        m_turret.getRelEncoder().positionInTolerance());
     Logger.recordOutput("Commands/RunMatrix/ready/hoodPositioned", m_hood.positionInTolerance());
     Logger.recordOutput("Commands/RunMatrix/ready/shooterSpeed", m_shooter.speedInTolerance());
-    return m_turret.positionInTolerance()
+    return m_turret.getRelEncoder().positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance();
   }

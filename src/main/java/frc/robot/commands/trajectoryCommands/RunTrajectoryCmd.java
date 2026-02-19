@@ -53,7 +53,8 @@ public class RunTrajectoryCmd extends Command {
     boolean turretTransSpeedGood =
         m_turret.getTurretTranslationalSpeed() < TrajectoryConstants.translationalSpeedThreshold;
     Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.positionInTolerance());
+        "Commands/RunTrajectoryCmd/ready/turretPositioned",
+        m_turret.getRelEncoder().positionInTolerance());
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.positionInTolerance());
     Logger.recordOutput(
@@ -61,7 +62,7 @@ public class RunTrajectoryCmd extends Command {
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/tiltInRange", goodTilt);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/robotInRange", robotInRange);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/translationalSpeed", turretTransSpeedGood);
-    return m_turret.positionInTolerance()
+    return m_turret.getRelEncoder().positionInTolerance()
         && m_shooter.speedInTolerance()
         && m_hood.positionInTolerance()
         && goodTilt
@@ -72,7 +73,7 @@ public class RunTrajectoryCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.stop();
-    m_turret.stop();
+    m_turret.getRelEncoder().stop();
     m_hood.stop();
   }
 

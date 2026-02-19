@@ -8,14 +8,16 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.motorUtil.RelEncoderIO;
+import frc.robot.util.statusableUtils.Statusable;
 import frc.robot.util.statusableUtils.StatusableDigitalInput;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Turret extends RelEncoderSparkMax {
+public class Turret extends SubsystemBase implements Statusable {
   private final Translation3d m_turretOffset;
   private final Supplier<Pose2d> m_robotPoseSupplier;
   private final Supplier<double[]> m_robotVelocitySupplier;
@@ -23,9 +25,13 @@ public class Turret extends RelEncoderSparkMax {
   private double[] turretTranslationalVelocity;
   private final StatusableDigitalInput m_zeroSwitch;
   private boolean isHomed;
+  private RelEncoderIO m_relEncoder;
 
-  public Turret(Supplier<Pose2d> robotPoseSupplier, Supplier<double[]> robotVelocitySupplier) {
-    super(TurretConstants.kTurretMotorConfig);
+  public Turret(
+      RelEncoderIO relEncoder,
+      Supplier<Pose2d> robotPoseSupplier,
+      Supplier<double[]> robotVelocitySupplier) {
+    m_relEncoder = relEncoder;
     m_turretOffset = TurretConstants.kTurretOffset;
     m_robotPoseSupplier = robotPoseSupplier;
     m_robotVelocitySupplier = robotVelocitySupplier;
@@ -38,12 +44,12 @@ public class Turret extends RelEncoderSparkMax {
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
   public Rotation2d getTurretRotation() {
-    return new Rotation2d(getPosition() * TurretConstants.encoderPositionFactor);
+    return new Rotation2d(m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor);
   }
 
   @Override
   public void periodic() {
-    super.periodic();
+    m_relEncoder.periodic();
     updateInputs();
     checkHeading();
   }
@@ -74,7 +80,7 @@ public class Turret extends RelEncoderSparkMax {
     // If we go that direction, update code. Use floor function as fix.
     if (zeroSwitchState) {
       // Allows us to rotate turret 360 degrees and get our encoder offset value.
-      Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", getPosition());
+      Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", m_relEncoder.getPosition());
       setZeroHeading();
     }
   }
@@ -100,7 +106,11 @@ public class Turret extends RelEncoderSparkMax {
 
   public void setZeroHeading() {
     isHomed = true;
-    setEncoder(TurretConstants.turretZeroingOffset.get());
+    m_relEncoder.setEncoder(TurretConstants.turretZeroingOffset.get());
+  }
+
+  public RelEncoderIO getRelEncoder() {
+    return m_relEncoder;
   }
 
   // sets rotation in robot space
@@ -114,7 +124,7 @@ public class Turret extends RelEncoderSparkMax {
             rotationRads,
             TurretConstants.kTurretMinRotation.get(),
             TurretConstants.kTurretMaxRotation.get());
-    setPosition(rotationRads / TurretConstants.encoderPositionFactor);
+    m_relEncoder.setPosition(rotationRads / TurretConstants.encoderPositionFactor);
   }
 
   // Sets the roation in field space
@@ -140,9 +150,9 @@ public class Turret extends RelEncoderSparkMax {
 
   @Override
   public Status getStatus() {
-    if (super.getStatus() != Status.OK) {
+    if (m_relEncoder.getStatus() != Status.OK) {
       Logger.recordOutput("Debug/Subsystems/Turret/error", "Motor not attatched");
-      return super.getStatus();
+      return m_relEncoder.getStatus();
     }
     if (!isHomed) {
       Logger.recordOutput("Debug/Subsystems/Turret/warning", "Not Homed");

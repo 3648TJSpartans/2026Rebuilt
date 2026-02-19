@@ -70,6 +70,7 @@ import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -80,6 +81,8 @@ import frc.robot.util.SimLogger;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.motorUtil.RelEncoderSim;
+import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.solenoids.SingleSolenoidSim;
 import frc.robot.util.statusableUtils.GenericStatusable;
@@ -203,6 +206,11 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
+        m_turret =
+            new Turret(
+                new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
+                m_drive::getPose,
+                m_drive::getVelocity);
         // new Drive(
         //     new GyroIONavX(),
         //     new ModuleIO() {},
@@ -255,6 +263,11 @@ public class RobotContainer {
                 new ModuleIOSim());
         m_intake =
             new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+        m_turret =
+            new Turret(
+                new RelEncoderSim("Subsystems/Turret/MotorIO"),
+                m_drive::getPose,
+                m_drive::getVelocity);
         m_vision =
             new Vision(
                 m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
@@ -275,6 +288,11 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intake = new Intake(new SingleSolenoidSim(0, null));
+        m_turret =
+            new Turret(
+                new RelEncoderSim("Subsystems/Turret/MotorIO"),
+                m_drive::getPose,
+                m_drive::getVelocity);
         m_vision =
             new Vision(
                 m_drive::addVisionMeasurement,
@@ -283,7 +301,6 @@ public class RobotContainer {
         break;
     }
 
-    m_turret = new Turret(m_drive::getPose, m_drive::getVelocity);
     // TODO update as subsystems are made
     m_trajectoryLogger =
         new TrajectoryLogger(
@@ -553,7 +570,9 @@ public class RobotContainer {
     m_turret.setDefaultCommand(
         Commands.run(
             () ->
-                m_turret.setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 3.0),
+                m_turret
+                    .getRelEncoder()
+                    .setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 3.0),
             m_turret));
     // m_test3Controller
     //     .a()
