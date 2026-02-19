@@ -10,7 +10,7 @@ public class TrajectoryConstants {
   public static final TunableNumber overhangHeight =
       new TunableNumber("Trajectory/overhangHeight", 2.1);
   public static final TunableNumber overhangAspect =
-      new TunableNumber("Trajectory/overhangAspect", 7.0 / 8);
+      new TunableNumber("Trajectory/overhangAspect", .5);
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);
   public static final double maxTilt = Units.degreesToRadians(7.5);
   public static final TunableNumber preshotDelay =
