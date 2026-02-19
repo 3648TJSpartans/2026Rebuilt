@@ -424,7 +424,14 @@ public class RobotContainer {
             );
   }
 
-  private void configureKicker() {}
+  private void configureKicker() {
+
+    TunableNumber kickerTestPower = new TunableNumber("Subsystems/Kicker/KickerTestPower", 0.2);
+    m_testController
+        .a()
+        .onTrue(Commands.run(() -> m_kicker.setPower(kickerTestPower.get()), m_kicker))
+        .onFalse(Commands.run(() -> m_kicker.stop(), m_kicker));
+  }
 
   private void configureClimber() {
     // We will eventually replace this with a more detailed command that lines the robot up
@@ -568,6 +575,19 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
+
+    TunableNumber hopperTestPower = new TunableNumber("Subsystems/Hopper/testPower", 0.2);
+    m_testController
+        .b()
+        .onTrue(Commands.run(() -> m_hopper.setPower(hopperTestPower.get()), m_kicker))
+        .onFalse(Commands.run(() -> m_hopper.stop(), m_kicker));
+
+    TunableNumber intakeRollerTestPower =
+        new TunableNumber("Subsystems/Intake/rollerTestPower", 0.2);
+    m_testController
+        .y()
+        .onTrue(Commands.run(() -> m_intake.setRollers(intakeRollerTestPower.get()), m_kicker))
+        .onFalse(Commands.run(() -> m_intake.stopRollers(), m_kicker));
   }
 
   public void configureHopper() {}
