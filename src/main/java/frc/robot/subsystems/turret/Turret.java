@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.Status;
-import frc.robot.util.motorUtil.RelEncoderIO;
+import frc.robot.util.motorUtil.SparkIO;
 import frc.robot.util.statusableUtils.Statusable;
 import frc.robot.util.statusableUtils.StatusableDigitalInput;
 import java.util.function.Supplier;
@@ -27,10 +27,10 @@ public class Turret extends SubsystemBase implements Statusable {
   private double[] turretTranslationalVelocity;
   private final StatusableDigitalInput m_zeroSwitch;
   private boolean isHomed;
-  private RelEncoderIO m_relEncoder;
+  private SparkIO m_relEncoder;
 
   public Turret(
-      RelEncoderIO relEncoder,
+      SparkIO relEncoder,
       Supplier<Pose2d> robotPoseSupplier,
       Supplier<double[]> robotVelocitySupplier) {
     m_relEncoder = relEncoder;
@@ -115,7 +115,7 @@ public class Turret extends SubsystemBase implements Statusable {
     m_relEncoder.setEncoder(TurretConstants.turretZeroingOffset.get());
   }
 
-  public RelEncoderIO getRelEncoder() {
+  public SparkIO getRelEncoder() {
     return m_relEncoder;
   }
 

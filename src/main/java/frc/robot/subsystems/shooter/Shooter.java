@@ -1,16 +1,16 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.motorUtil.RelEncoderIO;
+import frc.robot.util.motorUtil.SparkIO;
 import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase implements Statusable {
-  private final RelEncoderIO leader;
-  private final RelEncoderIO follower;
+  private final SparkIO leader;
+  private final SparkIO follower;
 
-  public Shooter(RelEncoderIO leader, RelEncoderIO follower) {
+  public Shooter(SparkIO leader, SparkIO follower) {
     this.leader = leader;
     this.follower = follower;
   }
@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase implements Statusable {
     follower.stop();
   }
 
-  public RelEncoderIO getLeaderMotor() {
+  public SparkIO getLeaderMotor() {
     return leader;
   }
 }

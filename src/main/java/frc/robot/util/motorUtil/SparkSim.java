@@ -3,13 +3,13 @@ package frc.robot.util.motorUtil;
 import frc.robot.Constants.Status;
 import frc.robot.util.TunableNumber;
 
-public class RelEncoderSim extends RelEncoderIO {
+public class SparkSim extends SparkIO {
   private double m_position = 0.0;
   private double m_speed = 0.0;
   private double m_power = 0.0;
   private final TunableNumber kV;
 
-  public RelEncoderSim(String name, TunableNumber kV) {
+  public SparkSim(String name, TunableNumber kV) {
     super(name);
     this.kV = kV;
   }

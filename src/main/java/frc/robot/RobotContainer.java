@@ -60,6 +60,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMK4Spark;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -80,9 +81,10 @@ import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
+import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 import frc.robot.util.motorUtil.MotorIO;
-import frc.robot.util.motorUtil.RelEncoderSim;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.motorUtil.SparkSim;
 import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.solenoids.SingleSolenoidSim;
 import frc.robot.util.statusableUtils.GenericStatusable;
@@ -147,7 +149,6 @@ public class RobotContainer {
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
     m_climber = new Climber();
-    m_hood = new Hood();
     m_kicker = new Kicker();
     m_hopper = new Hopper();
     // m_compressor = new CompressorIO("Compressor");
@@ -201,6 +202,7 @@ public class RobotContainer {
             new Shooter(
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig),
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
+        m_hood = new Hood(new AbsEncoderSparkMax(HoodConstants.motorConfig));
         m_drive =
             new Drive(
                 new GyroIONavX(),
@@ -263,16 +265,16 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-
+        m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
             new Shooter(
-                new RelEncoderSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
-                new RelEncoderSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
+                new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
+                new SparkSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_intake =
             new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
         m_turret =
             new Turret(
-                new RelEncoderSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
+                new SparkSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
                 m_drive::getPose,
                 m_drive::getVelocity);
         m_vision =
@@ -295,13 +297,14 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intake = new Intake(new SingleSolenoidSim(0, null));
+        m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
             new Shooter(
-                new RelEncoderSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
-                new RelEncoderSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
+                new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
+                new SparkSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_turret =
             new Turret(
-                new RelEncoderSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
+                new SparkSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
                 m_drive::getPose,
                 m_drive::getVelocity);
         m_vision =
@@ -622,7 +625,9 @@ public class RobotContainer {
                     .getTranslation(),
             () -> true,
             () -> 0.0);
-    m_test3Controller.povUp().onTrue(Commands.runOnce(() -> m_hood.setEncoder(0), m_hood));
+    m_test3Controller
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_hood.getMotor().setEncoder(0), m_hood));
     // Random rand = new Random();
     // TunableNumber targetX =
     // new TunableNumber("Subsystems/Turret/testTargeting/x", rand.nextDouble() *
@@ -876,18 +881,25 @@ public class RobotContainer {
   private void configureHood() {
     m_test3Controller
         .povUp()
-        .whileTrue(Commands.run(() -> m_hood.setPower(0.05), m_hood).finallyDo(m_hood::stop));
+        .whileTrue(
+            Commands.run(() -> m_hood.getMotor().setPower(0.05), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     m_test3Controller
         .povDown()
-        .whileTrue(Commands.run(() -> m_hood.setPower(-0.05), m_hood).finallyDo(m_hood::stop));
+        .whileTrue(
+            Commands.run(() -> m_hood.getMotor().setPower(-0.05), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
     m_test3Controller
         .leftBumper()
         .whileTrue(
-            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood).finallyDo(m_hood::stop));
+            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     m_test3Controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(m_hood::stop));
+        .whileTrue(
+            Commands.run(() -> m_hood.setPosition(0.5), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
   }
 
   public void configureDrive() {

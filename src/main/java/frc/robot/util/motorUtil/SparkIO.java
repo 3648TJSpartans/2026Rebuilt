@@ -2,9 +2,9 @@ package frc.robot.util.motorUtil;
 
 import frc.robot.Constants.Status;
 
-public abstract class RelEncoderIO extends MotorIO {
+public abstract class SparkIO extends MotorIO {
 
-  public RelEncoderIO(String name) {
+  public SparkIO(String name) {
     super(name);
   }
 
