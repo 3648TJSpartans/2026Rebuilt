@@ -76,6 +76,7 @@ import frc.robot.subsystems.vision.Neural;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
@@ -280,10 +281,7 @@ public class RobotContainer {
         m_vision =
             new Vision(
                 m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
-                // new VisionIOLimelight(VisionConstants.camera0Name,
-                // m_drive::getRotation),
-                // new VisionIOLimelight(VisionConstants.camera1Name,
-                // m_drive::getRotation)
+                ,new VisionIOPhotonVisionSim("SimCamera",VisionConstants.robotToCamera0,m_drive::getPose)
                 );
         break;
 
@@ -309,9 +307,9 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_vision =
             new Vision(
-                m_drive::addVisionMeasurement,
-                m_drive::addTargetSpaceVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, m_drive::getRotation));
+                m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
+                ,new VisionIOPhotonVisionSim("SimCamera",VisionConstants.robotToCamera0,m_drive::getPose)
+                );
         break;
     }
 
