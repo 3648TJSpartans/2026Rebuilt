@@ -1,26 +1,17 @@
-package frc.robot.util.motorUtil;
+package frc.robot.util.solenoids;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.statusableUtils.Statusable;
-import org.littletonrobotics.junction.Logger;
 
-public class DoubleSolenoidIO extends SubsystemBase implements Statusable {
+public class DoubleSolenoidIO extends SolenoidIO {
 
   private DoubleSolenoid m_solenoid;
-  private String name;
 
   public DoubleSolenoidIO(int solenoidChannel1, int solenoidChannel2, String name) {
+    super(name);
     m_solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, solenoidChannel1, solenoidChannel2);
-    this.name = name;
-  }
-
-  @Override
-  public final String getName() {
-    return name;
   }
 
   public void setSolenoidForward() {
@@ -55,20 +46,28 @@ public class DoubleSolenoidIO extends SubsystemBase implements Statusable {
     return !m_solenoid.isRevSolenoidDisabled();
   }
 
-  public void updateValues() {
-    Logger.recordOutput(name + "/getForwardSolenoidOn", getForwardSolenoidOn());
-    Logger.recordOutput(name + "/getReverseSolenoidOn", getReverseSolenoidOn());
-    Logger.recordOutput(name + "/getForwardSolenoidEnabled", getForwardSolenoidEnabled());
-    Logger.recordOutput(name + "/getReverseSolenoidEnabled", getReverseSolenoidEnabled());
-  }
-
-  @Override
-  public void periodic() {
-    updateValues();
-  }
-
   // Returns WARNING because getStatus() has not been configured (this method should be overwritten)
   public Status getStatus() {
     return Status.WARNING;
+  }
+
+  @Override
+  public void setSolenoid(boolean on) {
+    // TODO Auto-generated method stub
+    if (on) {
+      setSolenoidForward();
+      return;
+    }
+    setSolenoidReverse();
+  }
+
+  @Override
+  public boolean getSolenoidOn() {
+    return getForwardSolenoidEnabled();
+  }
+
+  @Override
+  public boolean getSolenoidEnabled() {
+    return getForwardSolenoidEnabled() || getReverseSolenoidEnabled();
   }
 }

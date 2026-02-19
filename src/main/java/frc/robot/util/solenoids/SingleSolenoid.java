@@ -1,25 +1,17 @@
-package frc.robot.util.motorUtil;
+package frc.robot.util.solenoids;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
-import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
 
-public class SingleSolenoidIO extends SubsystemBase implements Statusable {
+public class SingleSolenoid extends SolenoidIO {
 
   private Solenoid m_solenoid;
-  private String name;
 
-  public SingleSolenoidIO(int channel, String name) {
+  public SingleSolenoid(int channel, String name) {
+    super(name);
     m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, channel);
-    this.name = name;
-  }
-
-  @Override
-  public final String getName() {
-    return name;
   }
 
   public void setSolenoid(boolean on) {
@@ -38,21 +30,11 @@ public class SingleSolenoidIO extends SubsystemBase implements Statusable {
     return !m_solenoid.isDisabled();
   }
 
-  public void updateValues() {
-    Logger.recordOutput(name + "/getSolenoidOn", getSolenoidOn());
-    Logger.recordOutput(name + "/getSolenoidEnabled", getSolenoidEnabled());
-  }
-
-  @Override
-  public void periodic() {
-    updateValues();
-  }
-
   public Status getStatus() {
     Status localStatus = Status.OK;
     if (!getSolenoidEnabled()) {
       localStatus = Status.WARNING;
-      Logger.recordOutput("Debug/Subsystems/" + name + "/warning", "Solenoid Disabled");
+      Logger.recordOutput("Debug/Subsystems/" + getName() + "/warning", "Solenoid Disabled");
     }
     return localStatus;
   }

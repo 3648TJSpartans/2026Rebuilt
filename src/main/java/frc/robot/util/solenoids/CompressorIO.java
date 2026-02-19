@@ -1,4 +1,4 @@
-package frc.robot.util.motorUtil;
+package frc.robot.util.solenoids;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;

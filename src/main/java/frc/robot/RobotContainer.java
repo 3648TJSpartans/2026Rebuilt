@@ -80,6 +80,7 @@ import frc.robot.util.SimLogger;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
+import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
@@ -145,7 +146,6 @@ public class RobotContainer {
     m_hood = new Hood();
     m_shooter = new Shooter();
     m_kicker = new Kicker();
-    m_intake = new Intake();
     m_hopper = new Hopper();
     // m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
@@ -192,6 +192,9 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
+        m_intake =
+            new Intake(new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+
         m_drive =
             new Drive(
                 new GyroIONavX(),
