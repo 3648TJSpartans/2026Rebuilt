@@ -81,6 +81,7 @@ public class Turret extends SubsystemBase implements Statusable {
     // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
     // If we go that direction, update code. Use floor function as fix.
     if (Constants.currentMode == Mode.SIM) {
+      isHomed = true;
       return;
     }
     if (zeroSwitchState) {

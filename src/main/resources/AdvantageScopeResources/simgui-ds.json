@@ -1,5 +1,5 @@
 {
-  "Keyboard 0 Settings": {
+  "Keyboard 1 Settings": {
     "window": {
       "visible": true
     }
@@ -8,20 +8,20 @@
     {
       "axisConfig": [
         {
-          "decKey": 68,
-          "incKey": 65
+          "decKey": 65,
+          "incKey": 68
         },
         {
-          "decKey": 83,
-          "incKey": 87
+          "decKey": 87,
+          "incKey": 83
         },
         {
           "decayRate": 0.0,
+          "incKey": 82,
           "keyRate": 0.009999999776482582
         },
         {},
         {
-          "decKey": 81,
           "incKey": 69
         }
       ],
@@ -57,7 +57,7 @@
         77,
         44,
         46,
-        47
+        78
       ],
       "povCount": 0
     },

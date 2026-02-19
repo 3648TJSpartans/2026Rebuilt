@@ -18,6 +18,7 @@ public class RelEncoderSim extends RelEncoderIO {
   public void periodic() {
     m_speed = m_power * kV.get();
     m_position += m_speed * 0.02;
+    super.periodic();
   }
 
   @Override
