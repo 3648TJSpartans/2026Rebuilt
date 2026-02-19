@@ -489,7 +489,7 @@ public class RobotContainer {
   private void configureSmartShoot() {
 
     RunTrajectoryCmd shootToHub =
-        new RunDynamicMatrixAddTrajectory(
+        new RunDynamicTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -499,15 +499,24 @@ public class RobotContainer {
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
-    RunTrajectoryCmd shootToField =
-        new RunDynamicMatrixAddTrajectory(
+    RunTrajectoryCmd shootToField = new RunDynamicTrajectory(
             m_turret,
             m_shooter,
             m_hood,
-            () -> TrajectoryConstants.overhangHeight.get(),
-            () -> TrajectoryConstants.overhangAspect.get(),
-            () -> TrajectoryConstants.hubPose,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () ->
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
+                  case 1 -> PoseConstants.overhangMiddle;
+                  default -> PoseConstants.overhangSide;
+                },
+            () -> .5,
+            () ->
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
+                  case 0 -> PoseConstants.feedRight;
+                  case 1 -> PoseConstants.feedMiddle;
+                  case 2 -> PoseConstants.feedLeft;
+                  default -> PoseConstants.feedMiddle;
+                },
+            () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
     BooleanSupplier shootTimeGood =
@@ -556,17 +565,20 @@ public class RobotContainer {
                       m_kicker.stop();
                       m_hopper.stop();
                     }));
-    Command smartShootCommand =
-        new ConditionalCommand(
-            runKickerAndShootToHub,
-            runKickerAndShootToField,
-            () -> {
+    BooleanSupplier rangeGood =() -> {
               boolean inRange = RangeCalc.inShootingRange(m_drive.getPose());
               Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
               return inRange;
-            });
+            };
+    // Command smartShootCommand =
+    //     new ConditionalCommand(
+    //         runKickerAndShootToHub,
+    //         runKickerAndShootToField,
+    //         rangeGood);
+    
 
-    m_driveController.rightTrigger().whileFalse(smartShootCommand);
+    new Trigger(()->DriverStation.isTeleopEnabled() && !m_driveController.rightTrigger().getAsBoolean() && rangeGood.getAsBoolean()).whileTrue(runKickerAndShootToHub);
+    new Trigger(()->DriverStation.isTeleopEnabled() && !m_driveController.rightTrigger().getAsBoolean() && !rangeGood.getAsBoolean()).whileTrue(runKickerAndShootToField);
   }
 
   private void configureTurret() {
