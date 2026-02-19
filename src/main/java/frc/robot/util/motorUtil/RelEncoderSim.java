@@ -1,20 +1,22 @@
 package frc.robot.util.motorUtil;
 
 import frc.robot.Constants.Status;
-import frc.robot.subsystems.turret.TurretConstants;
+import frc.robot.util.TunableNumber;
 
 public class RelEncoderSim extends RelEncoderIO {
   private double m_position = 0.0;
   private double m_speed = 0.0;
   private double m_power = 0.0;
+  private final TunableNumber kV;
 
-  public RelEncoderSim(String name) {
+  public RelEncoderSim(String name, TunableNumber kV) {
     super(name);
+    this.kV = kV;
   }
 
   @Override
   public void periodic() {
-    m_speed = m_power * TurretConstants.kVSim;
+    m_speed = m_power * kV.get();
     m_position += m_speed * 0.02;
   }
 

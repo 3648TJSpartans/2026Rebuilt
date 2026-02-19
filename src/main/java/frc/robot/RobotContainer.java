@@ -265,7 +265,7 @@ public class RobotContainer {
             new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
         m_turret =
             new Turret(
-                new RelEncoderSim("Subsystems/Turret/MotorIO"),
+                new RelEncoderSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
                 m_drive::getPose,
                 m_drive::getVelocity);
         m_vision =
@@ -290,7 +290,7 @@ public class RobotContainer {
         m_intake = new Intake(new SingleSolenoidSim(0, null));
         m_turret =
             new Turret(
-                new RelEncoderSim("Subsystems/Turret/MotorIO"),
+                new RelEncoderSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
                 m_drive::getPose,
                 m_drive::getVelocity);
         m_vision =
