@@ -76,6 +76,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
+import frc.robot.util.SimLogger;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
@@ -116,6 +117,7 @@ public class RobotContainer {
   private final GenericStatusable m_usbStatus;
   private final GenericStatusable m_batteryStatus;
   private final StatusLogger m_statusLogger;
+  private final SimLogger m_simLogger;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -301,7 +303,7 @@ public class RobotContainer {
             m_vision,
             m_usbStatus,
             m_batteryStatus);
-
+    m_simLogger = new SimLogger(m_turret, m_intake);
     configureAutos();
 
     // Set up auto routines

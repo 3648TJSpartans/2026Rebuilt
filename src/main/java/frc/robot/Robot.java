@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.turret.TurretConstants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -103,13 +104,17 @@ public class Robot extends LoggedRobot {
     // block in order for anything in the Command-based framework to work.
     time += 0.2;
     Logger.recordOutput(
-        "Test/Simulation/turretManipulationPose0",
+        "Test/Simulation/ManipulationPose0",
         new Pose3d[] {
           new Pose3d(0, 0, 0, new Rotation3d()), new Pose3d(0, 0, 0, new Rotation3d())
         });
     Logger.recordOutput(
-        "Test/Simulation/turretManipulation",
-        new Pose3d(TurretConstants.kTurretOffset, new Rotation3d(new Rotation2d(time / 4.0))));
+        "Test/Simulation/zeroPoses",
+        new Pose3d[] {
+          new Pose3d(TurretConstants.kTurretOffset, new Rotation3d(new Rotation2d(time / 4.0))),
+          new Pose3d(
+              IntakeConstants.intakeOffset, new Rotation3d(0.0, (time / 16.0) % (Math.PI / 2), 0.0))
+        });
     CommandScheduler.getInstance().run();
   }
 
