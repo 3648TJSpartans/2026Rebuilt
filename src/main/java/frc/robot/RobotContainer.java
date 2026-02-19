@@ -17,10 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -38,7 +35,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
-import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -46,7 +42,6 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
-import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -70,6 +65,8 @@ import frc.robot.subsystems.shiftTracker.ShiftTracker;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.theClaw.TheClaw;
+import frc.robot.subsystems.theClaw.TheClawstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.vision.Neural;
@@ -126,6 +123,7 @@ public class RobotContainer {
   private final GenericStatusable m_batteryStatus;
   private final StatusLogger m_statusLogger;
   private final SimLogger m_simLogger;
+  private final TheClaw m_claw;
   // Controller
   private final CommandXboxController m_driveController =
       new CommandXboxController(Constants.kDriverControllerPort);
@@ -204,6 +202,7 @@ public class RobotContainer {
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig),
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
         m_hood = new Hood(new AbsEncoderSparkMax(HoodConstants.motorConfig));
+        m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
         m_drive =
             new Drive(
                 new GyroIONavX(),
@@ -267,6 +266,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
+        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_shooter =
             new Shooter(
                 new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
@@ -280,9 +280,10 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_vision =
             new Vision(
-                m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
-                ,new VisionIOPhotonVisionSim("SimCamera",VisionConstants.robotToCamera0,m_drive::getPose)
-                );
+                m_drive::addVisionMeasurement,
+                m_drive::addTargetSpaceVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "SimCamera", VisionConstants.robotToCamera0, m_drive::getPose));
         break;
 
       default:
@@ -294,6 +295,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_intake = new Intake(new SingleSolenoidSim(0, null));
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
@@ -307,9 +309,10 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_vision =
             new Vision(
-                m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
-                ,new VisionIOPhotonVisionSim("SimCamera",VisionConstants.robotToCamera0,m_drive::getPose)
-                );
+                m_drive::addVisionMeasurement,
+                m_drive::addTargetSpaceVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "SimCamera", VisionConstants.robotToCamera0, m_drive::getPose));
         break;
     }
 
@@ -336,7 +339,8 @@ public class RobotContainer {
             m_drive,
             m_vision,
             m_usbStatus,
-            m_batteryStatus);
+            m_batteryStatus,
+            m_claw);
     m_simLogger = new SimLogger(m_turret, m_intake);
     configureAutos();
 
@@ -477,13 +481,10 @@ public class RobotContainer {
     // We should also probably make it so it drives to different possible climb poses
     // m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
-    m_climber.setDefaultCommand(
+    m_claw.setDefaultCommand(
         Commands.run(
-                () ->
-                    m_climber.setPower(
-                        MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1)),
-                m_climber)
-            .onlyWhile(() -> override));
+            () -> m_claw.setPower(MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1)),
+            m_claw));
   }
 
   private void configureSmartShoot() {
@@ -499,7 +500,8 @@ public class RobotContainer {
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
-    RunTrajectoryCmd shootToField = new RunDynamicTrajectory(
+    RunTrajectoryCmd shootToField =
+        new RunDynamicTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -565,20 +567,30 @@ public class RobotContainer {
                       m_kicker.stop();
                       m_hopper.stop();
                     }));
-    BooleanSupplier rangeGood =() -> {
-              boolean inRange = RangeCalc.inShootingRange(m_drive.getPose());
-              Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
-              return inRange;
-            };
+    BooleanSupplier rangeGood =
+        () -> {
+          boolean inRange = RangeCalc.inShootingRange(m_drive.getPose());
+          Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
+          return inRange;
+        };
     // Command smartShootCommand =
     //     new ConditionalCommand(
     //         runKickerAndShootToHub,
     //         runKickerAndShootToField,
     //         rangeGood);
-    
 
-    new Trigger(()->DriverStation.isTeleopEnabled() && !m_driveController.rightTrigger().getAsBoolean() && rangeGood.getAsBoolean()).whileTrue(runKickerAndShootToHub);
-    new Trigger(()->DriverStation.isTeleopEnabled() && !m_driveController.rightTrigger().getAsBoolean() && !rangeGood.getAsBoolean()).whileTrue(runKickerAndShootToField);
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && rangeGood.getAsBoolean())
+        .whileTrue(runKickerAndShootToHub);
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && !rangeGood.getAsBoolean())
+        .whileTrue(runKickerAndShootToField);
   }
 
   private void configureTurret() {
@@ -586,12 +598,12 @@ public class RobotContainer {
         .rightBumper()
         .and(() -> override)
         .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.2), m_turret))
-        .onFalse(new InstantCommand(()->m_turret.getRelEncoder().stop(), m_turret));
+        .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
     m_copilotController
         .leftBumper()
         .and(() -> override)
         .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.2), m_turret))
-        .onFalse(new InstantCommand(()->m_turret.getRelEncoder().stop(), m_turret));
+        .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
 
     // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     // m_testController
@@ -601,7 +613,9 @@ public class RobotContainer {
     m_turret.setDefaultCommand(
         Commands.run(
             () ->
-                m_turret.getRelEncoder().setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
+                m_turret
+                    .getRelEncoder()
+                    .setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
             m_turret));
     m_test3Controller
         .a()
@@ -758,8 +772,12 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)));
-    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)));
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     m_testController
         .y()
         .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
@@ -804,18 +822,25 @@ public class RobotContainer {
   private void configureHood() {
     m_copilotController
         .povUp()
-        .whileTrue(Commands.run(() -> m_hood.getMotor().setPower(0.05), m_hood).finallyDo(()->m_hood.getMotor().stop()));
+        .whileTrue(
+            Commands.run(() -> m_hood.getMotor().setPower(0.05), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     m_test3Controller
         .povDown()
-        .whileTrue(Commands.run(() -> m_hood.getMotor().setPower(-0.05), m_hood).finallyDo(()->m_hood.getMotor().stop()));
+        .whileTrue(
+            Commands.run(() -> m_hood.getMotor().setPower(-0.05), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
     m_test3Controller
         .leftBumper()
         .whileTrue(
-            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood).finallyDo(()->m_hood.getMotor().stop()));
+            Commands.run(() -> m_hood.setPosition(testPose.get()), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
     m_test3Controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> m_hood.setPosition(0.5), m_hood).finallyDo(()->m_hood.getMotor().stop()));
+        .whileTrue(
+            Commands.run(() -> m_hood.setPosition(0.5), m_hood)
+                .finallyDo(() -> m_hood.getMotor().stop()));
   }
 
   public void configureDrive() {
