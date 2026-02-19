@@ -1,11 +1,12 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.solenoids.SolenoidIO;
 import frc.robot.util.statusableUtils.Statusable;
 
-public class Intake implements Statusable {
+public class Intake extends SubsystemBase implements Statusable {
 
   private final RelEncoderSparkMax roller;
   private final SolenoidIO m_solenoid;

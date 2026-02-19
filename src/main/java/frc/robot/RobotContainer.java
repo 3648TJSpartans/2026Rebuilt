@@ -81,6 +81,7 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.solenoids.SingleSolenoid;
+import frc.robot.util.solenoids.SingleSolenoidSim;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
@@ -252,7 +253,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-
+        m_intake =
+            new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
         m_vision =
             new Vision(
                 m_drive::addVisionMeasurement, m_drive::addTargetSpaceVisionMeasurement
@@ -272,7 +274,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-
+        m_intake = new Intake(new SingleSolenoidSim(0, null));
         m_vision =
             new Vision(
                 m_drive::addVisionMeasurement,
@@ -766,8 +768,12 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController.povDown().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(true)));
-    m_testController.povUp().onTrue(Commands.runOnce(() -> m_intake.setSolenoid(false)));
+    m_testController
+        .povDown()
+        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)));
+    m_testController
+        .povUp()
+        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     m_driveController
         .leftTrigger()
         .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))

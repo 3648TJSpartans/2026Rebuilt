@@ -1,9 +1,4 @@
 {
-  "Keyboard 2 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -70,6 +65,12 @@
         261,
         269,
         267
+      ],
+      "povConfig": [
+        {
+          "key0": 265,
+          "key180": 264
+        }
       ],
       "povCount": 1
     },

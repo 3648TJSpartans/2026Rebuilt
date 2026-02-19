@@ -16,7 +16,7 @@ public class SingleSolenoidSim extends SolenoidIO {
   }
 
   public void setSolenoid(boolean on) {
-    on = true;
+    this.on = on;
   }
 
   public void toggleSolenoid() {
