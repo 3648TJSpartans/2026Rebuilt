@@ -16,10 +16,10 @@ public class SparkSim extends SparkIO {
 
   @Override
   public void periodic() {
-    // if (m_power != 0.0) {
-    //   m_speed = m_power * kV.get();
-    //   m_position += m_speed * 0.02;
-    // }
+    if (m_power != 0.0) {
+      m_speed = m_power * kV.get();
+      m_position += m_speed * 0.02;
+    }
     super.periodic();
   }
 

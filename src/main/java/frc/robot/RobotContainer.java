@@ -483,7 +483,7 @@ public class RobotContainer {
 
     m_claw.setDefaultCommand(
         Commands.run(
-            () -> m_claw.setPower(MathUtil.applyDeadband(0, m_copilotController.getRightY(), 0.1)),
+            () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getLeftY(), 0.1)),
             m_claw));
   }
 
