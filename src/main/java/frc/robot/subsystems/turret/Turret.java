@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderIO;
 import frc.robot.util.statusableUtils.Statusable;
@@ -78,6 +80,9 @@ public class Turret extends SubsystemBase implements Statusable {
     Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
     // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
     // If we go that direction, update code. Use floor function as fix.
+    if (Constants.currentMode == Mode.SIM) {
+      return;
+    }
     if (zeroSwitchState) {
       // Allows us to rotate turret 360 degrees and get our encoder offset value.
       Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", m_relEncoder.getPosition());

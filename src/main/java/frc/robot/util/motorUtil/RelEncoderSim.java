@@ -1,6 +1,7 @@
 package frc.robot.util.motorUtil;
 
 import frc.robot.Constants.Status;
+import frc.robot.subsystems.turret.TurretConstants;
 
 public class RelEncoderSim extends RelEncoderIO {
   private double m_position = 0.0;
@@ -9,6 +10,12 @@ public class RelEncoderSim extends RelEncoderIO {
 
   public RelEncoderSim(String name) {
     super(name);
+  }
+
+  @Override
+  public void periodic() {
+    m_speed = m_power * TurretConstants.kVSim;
+    m_position += m_speed * 0.02;
   }
 
   @Override
