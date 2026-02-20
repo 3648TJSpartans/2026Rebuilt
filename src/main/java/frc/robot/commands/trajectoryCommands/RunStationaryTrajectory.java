@@ -25,8 +25,6 @@ public class RunStationaryTrajectory extends RunTrajectoryCmd {
         hood,
         inRangeSupplier,
         robotTiltSupplier,
-        timeLeft,
-        timeTill,
         () -> {
           Translation3d target = targetSupplier.get();
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();

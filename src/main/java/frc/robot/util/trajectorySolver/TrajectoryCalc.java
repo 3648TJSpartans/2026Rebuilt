@@ -1,6 +1,10 @@
 package frc.robot.util.trajectorySolver;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
+import frc.robot.subsystems.turret.TurretConstants;
+import frc.robot.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryCalc {
@@ -122,6 +126,23 @@ public class TrajectoryCalc {
     return new Trajectory(thetas, thetat, vs, hangTime);
   }
 
+  public static Trajectory matrixTrajectory(
+      Translation3d current,
+      Translation3d target,
+      double[] robotVelocity,
+      double overhangRatio,
+      double zOverhang) {
+    Trajectory traj = dynamicTrajectory(current, target, robotVelocity, overhangRatio, zOverhang);
+    double distance =
+        target
+            .minus(current)
+            .toTranslation2d()
+            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .getNorm();
+    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    return new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0);
+  }
+
   public static Translation3d trajectoryAtTime(
       double time, Trajectory traj, double[] turretVelocity, Translation3d turretTranslation) {
     return new Translation3d(
@@ -157,5 +178,26 @@ public class TrajectoryCalc {
       out[i] = trajectoryAtTime(dt * i, traj, new double[] {0.0, 0.0}, turretTranslation);
     }
     return out;
+  }
+
+  public static double maxHeight(Trajectory traj) {
+    double tmax = traj.getShooterSpeed() * Math.sin(traj.getShooterAngle()) / g;
+    return traj.getShooterSpeed() * Math.sin(traj.getShooterAngle()) * tmax
+        - 0.5 * g * tmax * tmax
+        + TurretConstants.kTurretOffset.getZ();
+  }
+
+  private static double linearInterpolate(double distance, TunableNumber[] matrix) {
+    int index = (int) (distance / 0.5);
+    double remainder = distance % 0.5;
+    if (index < 0) {
+      index = 0;
+    } else if (index >= matrix.length) {
+      index = matrix.length - 1;
+    }
+
+    double lowerValue = matrix[index].get();
+    double upperValue = matrix[Math.min(index + 1, matrix.length - 1)].get();
+    return lowerValue + (upperValue - lowerValue) * (remainder / 0.5);
   }
 }

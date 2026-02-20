@@ -23,6 +23,9 @@ public class StatusCheckLEDCommand extends Command {
   @Override
   public void execute() {
     for (int i = 0; i < m_statuses.length; i++) {
+      if (m_statuses[i].getStatus() == null) {
+        continue;
+      }
       switch (m_statuses[i].getStatus()) {
         case OK -> {
           m_leds.setSingleLed(0, 255, 0, i);
@@ -33,7 +36,7 @@ public class StatusCheckLEDCommand extends Command {
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "WARNING");
         }
         case UNKNOWN -> {
-          m_leds.setSingleLed(255, 0, 175, i);
+          m_leds.setSingleLed(255, 255, 255, i);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "UNKNOWN");
         }
         case ERROR -> {

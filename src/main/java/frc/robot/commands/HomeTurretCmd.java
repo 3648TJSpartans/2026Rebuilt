@@ -21,7 +21,7 @@ public class HomeTurretCmd extends Command {
   public void initialize() {
     Logger.recordOutput("Commands/HomeTurret/power", power);
     Logger.recordOutput("Commands/HomeTurret/range", range);
-    m_turret.setPower(power);
+    m_turret.getRelEncoder().setPower(power);
   }
 
   @Override
@@ -29,17 +29,17 @@ public class HomeTurretCmd extends Command {
     double turretRot = m_turret.getTurretRotation().getRadians();
     Logger.recordOutput("Commands/HomeTurret/turretRotation", turretRot);
     if (turretRot > range) {
-      m_turret.setPower(-power);
+      m_turret.getRelEncoder().setPower(-power);
       return;
     }
     if (turretRot < -range) {
-      m_turret.setPower(power);
+      m_turret.getRelEncoder().setPower(power);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_turret.stop();
+    m_turret.getRelEncoder().stop();
   }
 
   @Override

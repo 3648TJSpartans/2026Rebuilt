@@ -3,6 +3,7 @@ package frc.robot.commands.trajectoryCommands;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.shooter.Shooter;
@@ -43,17 +44,13 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
       Supplier<Double> overhangAspect,
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
-      Supplier<Double> robotTiltSupplier,
-      Supplier<Double> timeLeft,
-      Supplier<Double> timeTill) {
+      Supplier<Double> robotTiltSupplier) {
     super(
         turret,
         shooter,
         hood,
         inRangeSupplier,
         robotTiltSupplier,
-        timeLeft,
-        timeTill,
         () -> {
           Translation3d target = targetSupplier.get();
           Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
@@ -61,15 +58,22 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           Trajectory traj =
               TrajectoryCalc.dynamicTrajectory(
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
-          if (traj.getShooterAngle() < HoodConstants.maxAngle.getRadians()) {
+          if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
             traj =
                 TrajectoryCalc.dynamicTrajectory(
-                    turretPose, target, turretVelocity, HoodConstants.maxAngle.getRadians());
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.maxAngle.get()));
             Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
-          } else if (traj.getShooterAngle() < HoodConstants.minAngle.getRadians()) {
+          } else if (traj.getShooterAngle()
+              > Units.degreesToRadians(HoodConstants.minAngle.get())) {
             traj =
                 TrajectoryCalc.dynamicTrajectory(
-                    turretPose, target, turretVelocity, HoodConstants.minAngle.getRadians());
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.minAngle.get()));
             Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
           } else {
             Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", false);
@@ -86,6 +90,8 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
               "Commands/RunDynamicTrajectory/trajectory/shooterPose",
               new Pose3d(
                   turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/interpolatedTrajectory",
               TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));

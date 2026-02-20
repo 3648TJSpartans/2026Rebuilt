@@ -53,7 +53,7 @@ private double m_time;
 
 public ShiftTracker() {
   m_firstTimeSlot = false;
-  m_onShift = false;
+  onShift = false;
   m_time = 0.0;
 }
 ```

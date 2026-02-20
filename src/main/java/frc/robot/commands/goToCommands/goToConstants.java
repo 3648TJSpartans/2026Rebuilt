@@ -88,16 +88,16 @@ public class goToConstants {
     public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
     // TODO: update this to an actual pose/poses for climbing
     public static final Pose2d climbPose = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
-    public static final double fieldLength = 17.548;
+    public static final double fieldLength = 16.540988;
     public static final double fieldWidth = 8.042;
 
     public static final double shootCutoff = 4.282694;
 
     public static final double zone1 = 3;
     public static final double zone2 = 5.042;
-    public static final Translation3d feedRight = new Translation3d(1.0, 1.5, 0.0);
-    public static final Translation3d feedMiddle = new Translation3d(1.0, 4.021, 0.0);
-    public static final Translation3d feedLeft = new Translation3d(1.0, 6.542, 0.0);
+    public static final Translation3d feedRight = AllianceFlipUtil.apply(new Translation3d(1.0, 1.5, 0.0));
+    public static final Translation3d feedMiddle = AllianceFlipUtil.apply(new Translation3d(1.0, 4.021, 0.0));
+    public static final Translation3d feedLeft =AllianceFlipUtil.apply( new Translation3d(1.0, 6.542, 0.0));
     public static final double overhangMiddle = 3.5;
     public static final double overhangSide = 1.5;
 
