@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -360,7 +361,42 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureAutos() {}
+  private void configureAutos() {
+    RunTrajectoryCmd dynamicTrajectory =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight,
+            () -> TrajectoryConstants.overhangAspect,
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
+            () -> m_shiftTracker.timeLeft(),
+            () -> m_shiftTracker.timeUntil());
+
+    Command shootToHubCommand =
+        dynamicTrajectory.alongWith(
+            Commands.run(
+                    () -> {
+                      if (dynamicTrajectory.ready()) {
+                        m_kicker.setPower(1.0);
+                        m_hopper.setPower(-.5);
+                      }
+                    },
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
+
+    Command intake =
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
+            .finallyDo(m_intake::setSolenoidAndRollerUp);
+    NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
+    NamedCommands.registerCommand("Intake", intake);
+  }
 
   private void configureButtonBindings() {
     // configureAutos();
