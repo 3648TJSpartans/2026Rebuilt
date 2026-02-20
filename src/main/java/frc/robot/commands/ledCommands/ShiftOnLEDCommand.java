@@ -28,7 +28,8 @@ public class ShiftOnLEDCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_leds.setGlobalPattern(
+    m_leds.setPattern(
+        m_leds.leftBuffer,
         m_pattern.mask(LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeLeft() / 25)));
   }
 

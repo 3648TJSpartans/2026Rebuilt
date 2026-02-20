@@ -10,23 +10,15 @@ public final class LedConstants {
   // Values //
   public static int ledLength = 25;
   public static final int ledPWMID = 1;
-  public static final int buffer1StartLeft = 0;
-  public static final int buffer1EndLeft = 14;
-  public static final int buffer2StartLeft = 15;
-  public static final int buffer2EndLeft = 29;
-  public static final int buffer3StartLeft = 30;
-  public static final int buffer3EndLeft = 44;
-  public static final int buffer4StartLeft = 45;
-  public static final int buffer4EndLeft = 59;
-  // right side
-  public static final int buffer1StartRight = 60;
-  public static final int buffer1EndRight = 74;
-  public static final int buffer2StartRight = 75;
-  public static final int buffer2EndRight = 89;
-  public static final int buffer3StartRight = 90;
-  public static final int buffer3EndRight = 104;
-  public static final int buffer4StartRight = 105;
-  public static final int buffer4EndRight = 119;
+
+  public static int leftBufferStart = 0;
+  public static int leftBufferEnd = 8;
+  public static int centerBufferStart = leftBufferStart + leftBufferEnd;
+  public static int centerBufferEnd = 9;
+  public static int rightBufferStart = centerBufferStart + centerBufferEnd;
+  public static int rightBufferEnd = 8;
+
+  public static int statusCheckOffset = 0;
   // Colors & Patterns //
 
   // Solid Colors
