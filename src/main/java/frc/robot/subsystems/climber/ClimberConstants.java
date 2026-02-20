@@ -12,7 +12,7 @@ public class ClimberConstants {
 
   public static final MotorConfig leadMotorConfig =
       new MotorConfig("Subsystems/Climber/MotorIOs/Leads")
-          .motorCan(20)
+          .motorCan(19)
           .p(0)
           .i(0)
           .d(0)
