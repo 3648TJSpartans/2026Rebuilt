@@ -1,6 +1,7 @@
 ## Important Checks
-- [ ] Does it build?
-- [ ] Has it been tested?
+- [ ] Has it been tested...
+  - [ ] In sim?
+  - [ ] On a robot?
 - [ ] Does it work?
 - [ ] Have you ticked these without reading them?
 
