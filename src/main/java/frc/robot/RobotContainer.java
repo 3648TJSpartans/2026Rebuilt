@@ -211,7 +211,7 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
-        m_turret  = 
+        m_turret =
             new Turret(
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
@@ -482,7 +482,7 @@ public class RobotContainer {
     // We will eventually replace this with a more detailed command that lines the robot up
     // for its L1 climb
     // We should also probably make it so it drives to different possible climb poses
-    // m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
+    m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
     m_claw.setDefaultCommand(
         Commands.run(
@@ -793,7 +793,7 @@ public class RobotContainer {
             .finallyDo(m_intake::stopRollers));
 
     m_driveController
-        .y()
+        .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
