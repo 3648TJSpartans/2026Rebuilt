@@ -200,7 +200,7 @@ public class RobotContainer {
             new Intake(new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
         m_shooter =
             new Shooter(
-                new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig),
+                new RelEncoderSparkMax(ShooterConstants.kLeaderMotorConfig),
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
         m_hood = new Hood(new AbsEncoderSparkMax(HoodConstants.motorConfig));
         m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
@@ -211,7 +211,7 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
-        m_turret =
+        m_turret  = 
             new Turret(
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
