@@ -13,10 +13,10 @@ public final class LedConstants {
 
   public static int leftBufferStart = 0;
   public static int leftBufferEnd = 8;
-  public static int centerBufferStart = leftBufferStart + leftBufferEnd;
-  public static int centerBufferEnd = 9;
-  public static int rightBufferStart = centerBufferStart + centerBufferEnd;
-  public static int rightBufferEnd = 8;
+  public static int centerBufferStart = 9;
+  public static int centerBufferEnd = 18;
+  public static int rightBufferStart = 19;
+  public static int rightBufferEnd = 25;
 
   public static int statusCheckOffset = 0;
   // Colors & Patterns //
