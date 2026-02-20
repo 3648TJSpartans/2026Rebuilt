@@ -3,7 +3,9 @@ package frc.robot.util.statusableUtils;
 import frc.robot.Constants.Status;
 
 public interface Statusable {
-  public abstract Status getStatus();
+  public default Status getStatus() {
+    return Status.UNKNOWN;
+  }
 
   public abstract String getName();
 }

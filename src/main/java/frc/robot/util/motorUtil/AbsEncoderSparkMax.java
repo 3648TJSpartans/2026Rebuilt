@@ -14,7 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.Status;
 import org.littletonrobotics.junction.Logger;
 
-public class AbsEncoderSparkMax extends MotorIO {
+public class AbsEncoderSparkMax extends SparkIO {
 
   private MotorConfig m_motorConfig;
   private SparkMax motor;
@@ -118,5 +118,23 @@ public class AbsEncoderSparkMax extends MotorIO {
     }
     Logger.recordOutput("Debug/" + name + "/revError", motor.getLastError().toString());
     return Status.ERROR;
+  }
+
+  @Override
+  public void runFFVelocity(double velocityRadPerSec) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'runFFVelocity'");
+  }
+
+  @Override
+  public double getFFCharacterizationVelocity() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getFFCharacterizationVelocity'");
+  }
+
+  @Override
+  public void runCharacterization(double output) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'runCharacterization'");
   }
 }
