@@ -275,6 +275,7 @@ public class SmartController extends CommandXboxController implements Statusable
   @Override
   public Status getStatus() {
     if (!isConnected()) {
+      Logger.recordOutput("Debug/" + m_name + "/Connection/", "Not connected.");
       return Status.ERROR;
     }
     return m_status;
