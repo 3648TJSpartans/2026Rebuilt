@@ -77,6 +77,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
+import frc.robot.util.SmartController;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
@@ -125,13 +126,13 @@ public class RobotContainer {
   private final SimLogger m_simLogger;
   private final TheClaw m_claw;
   // Controller
-  private final CommandXboxController m_driveController =
-      new CommandXboxController(Constants.kDriverControllerPort);
-  private final CommandXboxController m_copilotController =
-      new CommandXboxController(Constants.kCopilotControllerPort);
+  private final SmartController m_driveController =
+      new SmartController("driveController", Constants.kDriverControllerPort);
+  private final SmartController m_copilotController =
+      new SmartController("copilotController", Constants.kCopilotControllerPort);
   private final CommandXboxController m_testController =
-      new CommandXboxController(Constants.kTestControllerPort);
-  private final CommandXboxController m_test3Controller = new CommandXboxController(3);
+      new SmartController("testController", Constants.kTestControllerPort);
+  private final SmartController m_test3Controller = new SmartController("test3controller", 3);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -340,7 +341,9 @@ public class RobotContainer {
             m_vision,
             m_usbStatus,
             m_batteryStatus,
-            m_claw);
+            m_claw,
+            m_driveController,
+            m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
     configureAutos();
 
