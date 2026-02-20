@@ -15,7 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.Status;
 import org.littletonrobotics.junction.Logger;
 
-public class RelEncoderSparkMax extends MotorIO {
+public class RelEncoderSparkMax extends SparkIO {
 
   private SparkMax motor;
   private RelativeEncoder encoder;

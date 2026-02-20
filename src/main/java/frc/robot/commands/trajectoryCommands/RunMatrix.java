@@ -38,12 +38,15 @@ public class RunMatrix extends Command {
 
   public boolean isReady() {
     Logger.recordOutput(
-        "Commands/RunMatrix/ready/turretPositioned", m_turret.positionInTolerance());
-    Logger.recordOutput("Commands/RunMatrix/ready/hoodPositioned", m_hood.positionInTolerance());
-    Logger.recordOutput("Commands/RunMatrix/ready/shooterSpeed", m_shooter.speedInTolerance());
-    return m_turret.positionInTolerance()
-        && m_shooter.speedInTolerance()
-        && m_hood.positionInTolerance();
+        "Commands/RunMatrix/ready/turretPositioned",
+        m_turret.getRelEncoder().positionInTolerance());
+    Logger.recordOutput(
+        "Commands/RunMatrix/ready/hoodPositioned", m_hood.getMotor().positionInTolerance());
+    Logger.recordOutput(
+        "Commands/RunMatrix/ready/shooterSpeed", m_shooter.getLeaderMotor().speedInTolerance());
+    return m_turret.getRelEncoder().positionInTolerance()
+        && m_shooter.getLeaderMotor().speedInTolerance()
+        && m_hood.getMotor().positionInTolerance();
   }
 
   private MatrixTrajectory stationaryTrajectory() {

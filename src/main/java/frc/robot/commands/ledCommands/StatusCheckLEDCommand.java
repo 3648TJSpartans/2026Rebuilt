@@ -23,6 +23,9 @@ public class StatusCheckLEDCommand extends Command {
   @Override
   public void execute() {
     for (int i = 0; i < m_statuses.length; i++) {
+      if (m_statuses[i].getStatus() == null) {
+        continue;
+      }
       switch (m_statuses[i].getStatus()) {
         case OK -> {
           m_leds.setSingleLed(0, 255, 0, i);

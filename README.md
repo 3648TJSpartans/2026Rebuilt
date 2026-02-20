@@ -3,6 +3,10 @@ This is our team's repository for the 2026 FRC Rebuilt competition.
 
 ## Resources
 
+### Control Schemes
+![Drive controller](src/main/resources/readme/drivecontroller.png)
+![Copilot controller](src/main/resources/readme/copilotcontroller.png)
+
 ### Troubleshooting Guide
 A troubleshooting guide for LED statuses can be found at [Troubleshooting Guide](src/main/resources/statusableList/TROUBLESHOOTING.md).
 
