@@ -54,13 +54,16 @@ public class TheClaw extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
-    return m_motor.getStatus();
+    if(m_motor.getStatus() != Status.OK){
+      return m_motor.getStatus();
+    }
+    return bottomSwitch.getStatus();
   }
-
   public void setPower(double power) {
     if(bottomSwitch.get()){
-      if(power<0){
-        m_motor.setPower(0.0);
+      if(power>0.0){
+        m_motor.stop();
+        return;
       }
     }
     m_motor.setPower(power);
