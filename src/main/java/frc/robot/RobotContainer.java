@@ -212,7 +212,7 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
-        m_turret  = 
+        m_turret =
             new Turret(
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
@@ -367,13 +367,11 @@ public class RobotContainer {
             m_turret,
             m_shooter,
             m_hood,
-            () -> TrajectoryConstants.overhangHeight,
-            () -> TrajectoryConstants.overhangAspect,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt(),
-            () -> m_shiftTracker.timeLeft(),
-            () -> m_shiftTracker.timeUntil());
+            () -> m_drive.getTilt());
 
     Command shootToHubCommand =
         dynamicTrajectory.alongWith(
