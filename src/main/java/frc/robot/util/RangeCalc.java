@@ -14,7 +14,7 @@ public class RangeCalc {
    * zone 2 left
    */
   public static int zoneCalc(Pose2d robotPose) {
-    double x = robotPose.getX();
+    double x = AllianceFlipUtil.applyY(robotPose.getY());
     if (x < PoseConstants.zone1) {
       return 0;
     }

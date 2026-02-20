@@ -1,5 +1,6 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
@@ -33,7 +34,10 @@ public class HoodConstants {
   //           78)); // This ends up being the max angle we shoot, the min angle the hood is at.
   public static final TunableNumber maxAngle =
       new TunableNumber("Subsystems/Hood/maxAngle (deg)", 60);
+  public static final TunableNumber simKV = new TunableNumber("Subsystems/Hood/maxAngle (deg)", 1);
   //   new Rotation2d(Units.degreesToRadians(60));
   public static final DoubleSupplier hoodEncoderFactor =
       () -> maxPosition.get() / (Units.degreesToRadians(maxAngle.get() - minAngle.get()));
+  public static final TunableNumber headUpAngle =
+      new TunableNumber("Subsystems/Hood/headUpAngle", 0.2);
 }

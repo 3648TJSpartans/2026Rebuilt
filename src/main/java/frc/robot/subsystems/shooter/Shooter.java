@@ -1,21 +1,22 @@
 package frc.robot.subsystems.shooter;
 
-import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.motorUtil.SparkIO;
+import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends RelEncoderSparkMax {
+public class Shooter extends SubsystemBase implements Statusable {
+  private final SparkIO leader;
+  private final SparkIO follower;
 
-  private static RelEncoderSparkMax follower;
-
-  public Shooter() {
-    super(ShooterConstants.kLeaderMotorConfig);
-    follower = new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig);
+  public Shooter(SparkIO leader, SparkIO follower) {
+    this.leader = leader;
+    this.follower = follower;
   }
 
-  @Override
   public void setPower(double power) {
-    super.setPower(power);
+    leader.setPower(power);
     follower.setPower(-power);
   }
 
@@ -30,24 +31,26 @@ public class Shooter extends RelEncoderSparkMax {
 
   @AutoLogOutput(key = "Subsystems/Shooter/getVelocity")
   public double getVelocity() {
-    return (getSpeed() - ShooterConstants.rpmThreshold.get())
+    return (leader.getSpeed() - ShooterConstants.rpmThreshold.get())
         / ShooterConstants.kShooterVelocityFactor.get();
   }
 
   public void runCharacterization(double output) {
-    super.runCharacterization(output);
+    leader.runCharacterization(output);
     follower.runCharacterization(-output);
   }
 
-  @Override
   public void runFFVelocity(double speed) {
-    super.runFFVelocity(speed);
+    leader.runFFVelocity(speed);
     follower.runFFVelocity(-speed);
   }
 
-  @Override
   public void stop() {
-    super.stop();
+    leader.stop();
     follower.stop();
+  }
+
+  public SparkIO getLeaderMotor() {
+    return leader;
   }
 }
