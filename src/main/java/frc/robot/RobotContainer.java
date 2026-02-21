@@ -127,6 +127,7 @@ public class RobotContainer {
   private final StatusLogger m_statusLogger;
   private final SimLogger m_simLogger;
   private final TheClaw m_claw;
+  private final TuningUpdater m_tuningUpdater;
   // Controller
   private final SmartController m_driveController =
       new SmartController("driveController", Constants.kDriverControllerPort);
@@ -153,6 +154,7 @@ public class RobotContainer {
     m_climber = new Climber();
     m_kicker = new Kicker();
     m_hopper = new Hopper();
+    m_tuningUpdater = new TuningUpdater();
     // m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
@@ -671,6 +673,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+        .and((BooleanSupplier) Constants.turretWorking)
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->

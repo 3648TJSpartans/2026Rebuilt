@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.util.TunableBoolean;
 import java.util.Arrays;
 
 /**
@@ -28,6 +29,11 @@ public final class Constants {
 
   public static final double batteryGoodThreshold = 12.5;
   public static final double batteryWarningThreshold = 12.0;
+
+  public static final TunableBoolean turretWorking =
+      new TunableBoolean("Overrides/turretWorking", true);
+  public static final TunableBoolean hoodWorking =
+      new TunableBoolean("Overrides/hoodWorking", true);
 
   public static final long usbFreeThreshold = 100000000; // 100MB File
 
