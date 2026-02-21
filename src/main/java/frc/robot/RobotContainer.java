@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -44,6 +45,7 @@ import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
+import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -589,6 +591,19 @@ public class RobotContainer {
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
+    RunTrajectoryCmd shootToHubFixedTurret =
+        new RunDynamicMatrixAddTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt(),
+            true,
+            false);
+
     RunTrajectoryCmd shootToField =
         new RunDynamicTrajectory(
             m_turret,
@@ -644,13 +659,40 @@ public class RobotContainer {
                             m_hopper.setPower(-.5);
                           }
                         },
-                        m_kicker)
+                        m_kicker,
+                        m_hopper)
                     .finallyDo(
                         () -> {
                           m_kicker.stop();
                           m_hopper.stop();
                         }))
             .onlyWhile(shootTimeGood);
+
+    Command runKickerAndShootToHubFixedTurret =
+        new ParallelCommandGroup(
+            aimDriveAtHub,
+            shootToHubFixedTurret,
+            Commands.run(
+                    () -> {
+                      if (shootToHub.ready()
+                          && m_drive
+                                  .getPose()
+                                  .getTranslation()
+                                  .minus(TrajectoryConstants.hubPose.toTranslation2d())
+                                  .getAngle()
+                                  .getDegrees()
+                              < 1.0) {
+                        m_kicker.setPower(1.0);
+                        m_hopper.setPower(-.5);
+                      }
+                    },
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
+    // .onlyWhile(shootTimeGood);
     Command runKickerAndShootToField =
         shootToField.alongWith(
             Commands.run(
@@ -701,9 +743,9 @@ public class RobotContainer {
             () ->
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
-                    && !rangeGood.getAsBoolean())
+                    && rangeGood.getAsBoolean())
         .and(() -> !Constants.turretWorking.get())
-        .whileTrue(aimDriveAtHub);
+        .whileTrue(runKickerAndShootToHubFixedTurret);
   }
 
   private void configureTurret() {

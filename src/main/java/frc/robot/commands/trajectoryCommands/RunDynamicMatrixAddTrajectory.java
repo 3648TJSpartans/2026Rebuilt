@@ -59,7 +59,7 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
           if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
             traj =
-                TrajectoryCalc.dynamicTrajectory(
+                TrajectoryCalc.matrixTrajectory(
                     turretPose,
                     target,
                     turretVelocity,
@@ -68,7 +68,7 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           } else if (traj.getShooterAngle()
               > Units.degreesToRadians(HoodConstants.minAngle.get())) {
             traj =
-                TrajectoryCalc.dynamicTrajectory(
+                TrajectoryCalc.matrixTrajectory(
                     turretPose,
                     target,
                     turretVelocity,
