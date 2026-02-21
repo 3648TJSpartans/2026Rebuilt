@@ -21,4 +21,6 @@ public class TheClawstants {
           .minPower(-0.3);
 
   public static final TunableNumber simKv = new TunableNumber("Subsystems/Claw/simKv", 1.0);
+  public static final TunableNumber homePower =
+      new TunableNumber("Subsystems/Claw/homePower", -0.1);
 }

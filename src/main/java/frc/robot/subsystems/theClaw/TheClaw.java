@@ -38,6 +38,10 @@ public class TheClaw extends SubsystemBase implements Statusable {
     }
   }
 
+  public boolean isHomed() {
+    return isHomed;
+  }
+
   public void setZero() {
     isHomed = true;
     m_motor.setEncoder(TheClawstants.minPosition.get());
@@ -76,15 +80,13 @@ public class TheClaw extends SubsystemBase implements Statusable {
   }
 
   public void setPower(double power) {
-    if (isHomed) {
-      if (bottomSwitch.get()) {
-        if (power > 0.0) {
-          m_motor.stop();
-          return;
-        }
+    if (bottomSwitch.get()) {
+      if (power > 0.0) {
+        m_motor.stop();
+        return;
       }
-      m_motor.setPower(power);
     }
+    m_motor.setPower(power);
   }
 
   public void stop() {
