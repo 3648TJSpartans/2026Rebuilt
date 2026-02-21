@@ -85,4 +85,10 @@ public class SparkSim extends SparkIO {
   public Status getStatus() {
     return Status.UNKNOWN;
   }
+
+  @Override
+  public void stop() {
+    super.stop();
+    setSpeed(0.0);
+  }
 }

@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 0.46333080150463024,
-        "y": 5.3181451822916666
+        "y": 2.7603185763888893
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.4059871961805559,
-        "y": 2.8009971064814816
+        "x": 0.4633308015046303,
+        "y": 1.7232082750274995
       },
       "isLocked": false,
-      "linkedName": "RightOfDepot"
+      "linkedName": "T2"
     },
     {
       "anchor": {
@@ -20,36 +20,18 @@
         "y": 0.7084803964120374
       },
       "prevControl": {
-        "x": 0.5946830873842597,
-        "y": 1.3685879629629631
+        "x": 1.0499545717592595,
+        "y": 1.6679283555247473
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Outpost"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.4001396209839357,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ShootToHub",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 0.12340580250596649,
-      "command": null
-    },
-    {
-      "name": "ShootToHub",
-      "waypointRelativePos": 0.45,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 4.5,
@@ -63,9 +45,9 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "DriveToOutpost",
+  "folder": "UnderTower",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": -90.0
   },
   "useDefaultConstraints": true

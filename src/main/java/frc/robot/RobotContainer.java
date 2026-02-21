@@ -410,6 +410,7 @@ public class RobotContainer {
     configureHood();
     configureKicker();
     configureSmartShoot();
+    configureTestBindings();
     Command updateCommand =
         new InstantCommand(
                 () -> {
@@ -430,6 +431,29 @@ public class RobotContainer {
      * m_led.setLedPattern(LedConstants.teal, m_led.leftGuideBuffer);
      * m_led.setLedPattern(LedConstants.yellow, m_led.rightGuideBuffer);
      */
+  }
+
+  private void configureTestBindings() {
+    new Trigger(() -> m_test3Controller.getRightY() > 0.2)
+        .whileTrue(
+            Commands.run(() -> m_shooter.setPower(m_test3Controller.getRightY()), m_shooter)
+                .finallyDo(m_shooter::stop));
+    new Trigger(() -> m_test3Controller.getLeftY() > 0.2)
+        .whileTrue(
+            Commands.run(
+                    () -> m_turret.getRelEncoder().setPower(m_test3Controller.getLeftY() / 4.0),
+                    m_turret)
+                .finallyDo(m_turret.getRelEncoder()::stop));
+    m_test3Controller
+        .rightTrigger()
+        .whileTrue(
+            Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
+                .finallyDo(m_kicker::stop));
+    m_test3Controller
+        .leftTrigger()
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(m_test3Controller.getLeftTriggerAxis()), m_hopper)
+                .finallyDo(m_hopper::stop));
   }
 
   private void configureAlerts() {
@@ -647,13 +671,6 @@ public class RobotContainer {
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () ->
-                m_turret
-                    .getRelEncoder()
-                    .setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
-            m_turret));
     m_test3Controller
         .a()
         .whileTrue(

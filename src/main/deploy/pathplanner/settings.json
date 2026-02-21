@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "DriveToOutpost",
-    "ToDepot",
-    "NeutralZone"
+    "NeutralZone",
+    "UnderTower",
+    "ToDepot"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,
