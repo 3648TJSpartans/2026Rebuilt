@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -394,6 +395,7 @@ public class RobotContainer {
             .finallyDo(m_intake::setSolenoidAndRollerUp);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("Intake", intake);
+    NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
   }
 
   private void configureButtonBindings() {
