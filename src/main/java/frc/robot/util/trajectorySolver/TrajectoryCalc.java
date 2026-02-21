@@ -140,7 +140,22 @@ public class TrajectoryCalc {
             .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
     Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
-    return new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0);
+    return traj.plus(
+        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+  }
+
+  public static Trajectory matrixTrajectory(
+      Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
+    Trajectory traj = dynamicTrajectory(current, target, robotVelocity, shootAngle);
+    double distance =
+        target
+            .minus(current)
+            .toTranslation2d()
+            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .getNorm();
+    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    return traj.plus(
+        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
   }
 
   public static Translation3d trajectoryAtTime(

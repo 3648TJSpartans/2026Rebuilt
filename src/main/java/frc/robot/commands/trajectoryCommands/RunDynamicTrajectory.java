@@ -101,4 +101,87 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
           return traj;
         });
   }
+
+  public RunDynamicTrajectory(
+      Turret turret,
+      Shooter shooter,
+      Hood hood,
+      Supplier<Double> overhangHeight,
+      Supplier<Double> overhangAspect,
+      Supplier<Translation3d> targetSupplier,
+      Supplier<Boolean> inRangeSupplier,
+      Supplier<Double> robotTiltSupplier,
+      boolean turretBroken,
+      boolean hoodBroken) {
+    super(
+        turret,
+        shooter,
+        hood,
+        inRangeSupplier,
+        robotTiltSupplier,
+        () -> {
+          Translation3d target = targetSupplier.get();
+          Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
+          double[] turretVelocity = turret.getTurretTranslationalVelocity();
+          Trajectory traj =
+              TrajectoryCalc.dynamicTrajectory(
+                  turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
+          if (hoodBroken) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.minAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/hoodBroken", true);
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+          } else if (traj.getShooterAngle()
+              < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.maxAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/hoodBroken", false);
+          } else if (traj.getShooterAngle()
+              > Units.degreesToRadians(HoodConstants.minAngle.get())) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.minAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", true);
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/hoodBroken", false);
+          } else {
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/endCapped", false);
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/hoodBroken", false);
+          }
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/trajectory/hangTime", traj.getHangTime());
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/trajectory/shooterSpeed", traj.getShooterSpeed());
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/trajectory/shooterAngle", traj.getShooterAngle());
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/trajectory/turretRotation", traj.getTurretRotation());
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/trajectory/shooterPose",
+              new Pose3d(
+                  turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/interpolatedTrajectory",
+              TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));
+          Logger.recordOutput(
+              "Commands/RunDynamicTrajectory/interpolatedTrajectory (no velocity)",
+              TrajectoryCalc.interpolateTrajectory(traj, turretPose));
+          return traj;
+        },
+        turretBroken,
+        hoodBroken);
+  }
 }

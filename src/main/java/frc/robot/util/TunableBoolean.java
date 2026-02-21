@@ -7,25 +7,25 @@ package frc.robot.util;
 import static frc.robot.util.TuningUpdater.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.util.function.DoubleSupplier;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
-public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
+public class TunableBoolean extends Supplier<Boolean> implements BooleanSupplier {
 
   private String key;
-  private double defaultValue;
-  private double lastHasChangedValue = defaultValue;
+  private boolean defaultValue;
+  private boolean lastHasChangedValue = defaultValue;
 
   /**
    * Create a new TunableNumber
    *
    * @param dashboardKey Key on dashboard
    */
-  public TunableNumber(String dashboardKey) {
+  public TunableBoolean(String dashboardKey) {
     this.key = TABLE_KEY + "/" + dashboardKey;
   }
 
@@ -35,7 +35,7 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
    * @param dashboardKey Key on dashboard
    * @param defaultValue Default value
    */
-  public TunableNumber(String dashboardKey, double defaultValue) {
+  public TunableBoolean(String dashboardKey, boolean defaultValue) {
     this(dashboardKey);
     setDefault(defaultValue);
   }
@@ -45,7 +45,7 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
    *
    * @return The default value
    */
-  public double getDefault() {
+  public boolean getDefault() {
     return defaultValue;
   }
 
@@ -54,11 +54,11 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
    *
    * @param defaultValue The default value
    */
-  public void setDefault(double defaultValue) {
+  public void setDefault(boolean defaultValue) {
     this.defaultValue = defaultValue;
     if (TUNING_MODE) {
       // This makes sure the data is on NetworkTables but will not change it
-      SmartDashboard.putNumber(key, SmartDashboard.getNumber(key, defaultValue));
+      SmartDashboard.putBoolean(key, SmartDashboard.getBoolean(key, defaultValue));
     }
   }
 
@@ -67,10 +67,10 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
    *
    * @return The current value
    */
-  public double get() {
+  public boolean get() {
     Logger.recordOutput(
-        key, TUNING_MODE ? SmartDashboard.getNumber(key, defaultValue) : defaultValue);
-    return TUNING_MODE ? SmartDashboard.getNumber(key, defaultValue) : defaultValue;
+        key, TUNING_MODE ? SmartDashboard.getBoolean(key, defaultValue) : defaultValue);
+    return TUNING_MODE ? SmartDashboard.getBoolean(key, defaultValue) : defaultValue;
   }
 
   /**
@@ -80,7 +80,7 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
    *     otherwise
    */
   public boolean hasChanged() {
-    double currentValue = get();
+    boolean currentValue = get();
     if (currentValue != lastHasChangedValue) {
       lastHasChangedValue = currentValue;
       return true;
@@ -89,7 +89,8 @@ public class TunableNumber extends Supplier<Double> implements DoubleSupplier {
     return false;
   }
 
-  public double getAsDouble() {
+  @Override
+  public boolean getAsBoolean() {
     return get();
   }
 }

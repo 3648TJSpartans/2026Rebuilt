@@ -16,23 +16,39 @@ public class RunMatrix extends Command {
   private final Shooter m_shooter;
   private final Hood m_hood;
   private final Supplier<Translation3d> m_targetSupplier;
-  ;
+  private final boolean m_turretBroken;
+  private final boolean m_hoodBroken;
 
   public RunMatrix(
       Turret turret, Shooter shooter, Hood hood, Supplier<Translation3d> targetSupplier) {
+    this(turret, shooter, hood, targetSupplier, false, false);
+  }
+
+  public RunMatrix(
+      Turret turret,
+      Shooter shooter,
+      Hood hood,
+      Supplier<Translation3d> targetSupplier,
+      boolean turretBroken,
+      boolean hoodBroken) {
     m_turret = turret;
     m_shooter = shooter;
     m_hood = hood;
     m_targetSupplier = targetSupplier;
+    m_turretBroken = turretBroken;
+    m_hoodBroken = hoodBroken;
     addRequirements(m_hood, m_shooter, m_turret);
   }
 
   @Override
   public void execute() {
     MatrixTrajectory trajectory = movingTrajectory();
-
-    m_turret.setFieldRotation(new Rotation2d(trajectory.turretAngle()));
-    m_hood.setPosition(trajectory.hoodPose());
+    if (!m_turretBroken) {
+      m_turret.setFieldRotation(new Rotation2d(trajectory.turretAngle()));
+    }
+    if (!m_hoodBroken) {
+      m_hood.setPosition(trajectory.hoodPose());
+    }
     m_shooter.runFFVelocity(trajectory.shooterRPM());
   }
 
@@ -44,9 +60,9 @@ public class RunMatrix extends Command {
         "Commands/RunMatrix/ready/hoodPositioned", m_hood.getMotor().positionInTolerance());
     Logger.recordOutput(
         "Commands/RunMatrix/ready/shooterSpeed", m_shooter.getLeaderMotor().speedInTolerance());
-    return m_turret.getRelEncoder().positionInTolerance()
+    return (m_turret.getRelEncoder().positionInTolerance() || m_turretBroken)
         && m_shooter.getLeaderMotor().speedInTolerance()
-        && m_hood.getMotor().positionInTolerance();
+        && (m_hood.getMotor().positionInTolerance() || m_turretBroken);
   }
 
   private MatrixTrajectory stationaryTrajectory() {
