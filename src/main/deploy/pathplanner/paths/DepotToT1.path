@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.46333080150463024,
+        "y": 5.3181451822916666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 0.4735004340277783,
+        "y": 4.850670138888888
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightOfDepot"
     },
     {
       "anchor": {
-        "x": 6.432357819905214,
-        "y": 7.129976303317535
+        "x": 0.46333080150463024,
+        "y": 4.497291811342593
       },
       "prevControl": {
-        "x": 5.432357819905214,
-        "y": 7.129976303317535
+        "x": 0.46333080150463024,
+        "y": 5.015106597824806
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "T1"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 2.0,
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "UnderTower",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

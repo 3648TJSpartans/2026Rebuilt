@@ -57,3 +57,81 @@ public ShiftTracker() {
   m_time = 0.0;
 }
 ```
+
+## Final Bot Checklist
+### Analog Test Everything (30 mins).
+
+- [ ] Drive
+  - Zero swerve if needed
+  - Drive Left X,Y Axis
+  - Drive Y Axis
+- [ ] Intake
+  - Controller two.LeftY
+- [ ] Climb
+  - Copilot, left y
+- [ ] Hopper
+  - Test three controller left Trigger
+- [ ] Shooter
+  - Test3 controller, right y. 
+- [ ] Kicker
+  - Test three controller right trigger
+- [ ] Turret
+  - Test 3 controller, left y.
+- [ ] Pneumatics
+  - Test 3 Controller POV Up and Down
+
+### Tune Camera (30 mins)
+  - Offsets
+    - Limelight-foura.local:5801 – 10.36.48.67
+    - Limelight-fourb.local:5801 – 10.36.48.68
+    - Limelight-fourc.local:5801 – 10.36.48.69
+    - Limelight-three.local:5801 – 10.36.48.70
+  - /AdvantageKit/RealOutputs/Subsystems/Vision
+
+
+### Tune Turret Encoder Factor (10 min)
+- /AdvantageKit/RealOutputs/Subsystems/Turret/MotorIO/getPosition
+- Test 3 controller, left y.
+
+
+### Get Climb constants. (30 min)
+- [ ] Low climb pose
+- [ ] High generic pose
+- [ ] P
+- [ ] Extended pose.
+- Copilot, left y
+- /AdvantageKit/RealOutputs/Subsystems/Claw/MotorIO/getPosition
+
+### FF Characterize shooter, tune. (15 min)
+- Run Auto: Shooter simple FF identification
+- Read console: FF
+- /AdvantageKit/RealOutputs/Utils/FFCharacterizer/kSResult
+- /AdvantageKit/RealOutputs/Utils/FFCharacterizer/kVResult
+- [ ] kV
+- [ ] kS
+- Test:
+  - m_testController.x, sets speed to 
+  - /SmartDashboard/TunableNumbers/Test/Subsystems/Shooter/testShootRPM
+### Option 1: Dumb matrix -- Get Matrix values (angle, speed, hangtime) (30 min)
+- Shoot .5m-8m.
+
+### Test Intake
+- Solenoids + Rollers
+- m_driveController.y
+
+### Neural Network
+- Drive while running intake. 
+- m_driveController.leftBumper()
+### Option 2: Smart Shooter Angle
+- Get shooter angle (low speed) (15 min)
+- Get basic velocity factor (20 min)
+- Shoto 1 m
+- Shoot 2 m
+- Shoot 3 m
+- Shoot 4 m
+- Get Matrix values (velocity) (30 min)
+- Shoot .5m-8m.
+
+
+### Extra - FF drive characterization. (10 min)
+- Auto: Drive Simple FF Identification

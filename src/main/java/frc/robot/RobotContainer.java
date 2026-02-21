@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
+import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -211,7 +213,7 @@ public class RobotContainer {
                 new ModuleIOMK4Spark(1),
                 new ModuleIOMK4Spark(2),
                 new ModuleIOMK4Spark(3));
-        m_turret  = 
+        m_turret =
             new Turret(
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
@@ -360,7 +362,41 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureAutos() {}
+  private void configureAutos() {
+    RunTrajectoryCmd dynamicTrajectory =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> TrajectoryConstants.overhangHeight.get(),
+            () -> TrajectoryConstants.overhangAspect.get(),
+            () -> TrajectoryConstants.hubPose,
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
+
+    Command shootToHubCommand =
+        dynamicTrajectory.alongWith(
+            Commands.run(
+                    () -> {
+                      if (dynamicTrajectory.ready()) {
+                        m_kicker.setPower(1.0);
+                        m_hopper.setPower(-.5);
+                      }
+                    },
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
+
+    Command intake =
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
+            .finallyDo(m_intake::setSolenoidAndRollerUp);
+    NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
+    NamedCommands.registerCommand("Intake", intake);
+    NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
+  }
 
   private void configureButtonBindings() {
     // configureAutos();
@@ -376,6 +412,7 @@ public class RobotContainer {
     configureHood();
     configureKicker();
     configureSmartShoot();
+    configureTestBindings();
     Command updateCommand =
         new InstantCommand(
                 () -> {
@@ -396,6 +433,53 @@ public class RobotContainer {
      * m_led.setLedPattern(LedConstants.teal, m_led.leftGuideBuffer);
      * m_led.setLedPattern(LedConstants.yellow, m_led.rightGuideBuffer);
      */
+  }
+
+  private void configureTestBindings() {
+    new Trigger(() -> m_test3Controller.getRightY() > 0.2)
+        .whileTrue(
+            Commands.run(() -> m_shooter.setPower(m_test3Controller.getRightY()), m_shooter)
+                .finallyDo(m_shooter::stop));
+    new Trigger(() -> m_test3Controller.getLeftY() > 0.2)
+        .whileTrue(
+            Commands.run(
+                    () -> m_turret.getRelEncoder().setPower(m_test3Controller.getLeftY() / 4.0),
+                    m_turret)
+                .finallyDo(m_turret.getRelEncoder()::stop));
+    m_test3Controller
+        .rightTrigger()
+        .whileTrue(
+            Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
+                .finallyDo(m_kicker::stop));
+    m_test3Controller
+        .leftTrigger()
+        .whileTrue(
+            Commands.run(() -> m_hopper.setPower(m_test3Controller.getLeftTriggerAxis()), m_hopper)
+                .finallyDo(m_hopper::stop));
+
+    TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
+    m_testController
+        .x()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_shooter.runFFVelocity(shootSpeed.get());
+                      if (m_shooter.getLeaderMotor().speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                      } else {
+                        m_kicker.stop();
+                        m_hopper.stop();
+                      }
+                    },
+                    m_shooter,
+                    m_kicker,
+                    m_hopper)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
   }
 
   private void configureAlerts() {
@@ -613,13 +697,6 @@ public class RobotContainer {
     //     .rightTrigger()
     //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
 
-    m_turret.setDefaultCommand(
-        Commands.run(
-            () ->
-                m_turret
-                    .getRelEncoder()
-                    .setPower(MathUtil.applyDeadband(m_test3Controller.getLeftY(), 0.1) / 10.0),
-            m_turret));
     m_test3Controller
         .a()
         .whileTrue(
@@ -716,29 +793,6 @@ public class RobotContainer {
   }
 
   private void configureShooter() {
-    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootRPM", 500);
-    m_testController
-        .x()
-        .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_shooter.runFFVelocity(shootSpeed.get());
-                      if (m_shooter.getLeaderMotor().speedInTolerance()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
-                      } else {
-                        m_kicker.stop();
-                        m_hopper.stop();
-                      }
-                    },
-                    m_shooter,
-                    m_kicker,
-                    m_hopper)
-                .finallyDo(
-                    () -> {
-                      m_shooter.stop();
-                      m_kicker.stop();
-                    }));
 
     m_shooter.setDefaultCommand(
         Commands.run(

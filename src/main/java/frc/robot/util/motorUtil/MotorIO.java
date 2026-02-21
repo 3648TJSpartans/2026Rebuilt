@@ -63,6 +63,7 @@ public abstract class MotorIO extends SubsystemBase implements Statusable {
 
   public void stop() {
     setPower(0.0);
+    m_powerSetpoint = 0.0;
     m_speedSetpoint = 0.0;
   }
 
