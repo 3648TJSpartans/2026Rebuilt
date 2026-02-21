@@ -9,6 +9,7 @@ import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.SparkIO;
 import frc.robot.util.statusableUtils.Statusable;
 import frc.robot.util.statusableUtils.StatusableDigitalInput;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class TheClaw extends SubsystemBase implements Statusable {
@@ -38,6 +39,7 @@ public class TheClaw extends SubsystemBase implements Statusable {
     }
   }
 
+  @AutoLogOutput(key = "Subsystems/Claw/homed")
   public boolean isHomed() {
     return isHomed;
   }
@@ -68,7 +70,6 @@ public class TheClaw extends SubsystemBase implements Statusable {
   public void updateInputs() {
     Logger.recordOutput("Subsystems/Claw/position", getTranslation());
     Logger.recordOutput("Subsystems/Claw/limitSwitch", bottomSwitch.get());
-    Logger.recordOutput("Subsystems/Claw/isHomed", isHomed);
   }
 
   @Override
