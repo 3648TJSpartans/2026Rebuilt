@@ -1,6 +1,7 @@
 package frc.robot.commands.ledCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.Logger;
@@ -28,19 +29,19 @@ public class StatusCheckLEDCommand extends Command {
       }
       switch (m_statuses[i].getStatus()) {
         case OK -> {
-          m_leds.setSingleLed(0, 255, 0, i);
+          m_leds.setSingleLed(0, 255, 0, i + LedConstants.statusCheckOffset);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "OK");
         }
         case WARNING -> {
-          m_leds.setSingleLed(255, 0, 255, i);
+          m_leds.setSingleLed(255, 0, 255, i + LedConstants.statusCheckOffset);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "WARNING");
         }
         case UNKNOWN -> {
-          m_leds.setSingleLed(255, 255, 255, i);
+          m_leds.setSingleLed(255, 255, 255, i + LedConstants.statusCheckOffset);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "UNKNOWN");
         }
         case ERROR -> {
-          m_leds.setSingleLed(255, 0, 0, i);
+          m_leds.setSingleLed(255, 0, 0, i + LedConstants.statusCheckOffset);
           Logger.recordOutput("Utils/Statusable/" + m_statuses[i].getName(), "ERROR");
         }
       }
@@ -48,7 +49,7 @@ public class StatusCheckLEDCommand extends Command {
   }
 
   @Override
-  public void end(boolean interupted) {
+  public void end(boolean interrupted) {
     Logger.recordOutput("Commands/LED/StatusCheckLEDCommand/running", false);
   }
 }

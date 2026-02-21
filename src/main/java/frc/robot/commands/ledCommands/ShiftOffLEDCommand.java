@@ -27,9 +27,16 @@ public class ShiftOffLEDCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_leds.setGlobalPattern(
+  public void
+      execute() { // TODO: I was thinking we would have the countdown on both left and right sides,
+                  // but we could also do it on the center or on the whole strip
+    m_leds.setPattern(
+        m_leds.leftBuffer,
         m_pattern.mask(LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeUntil() / 25)));
+
+    m_leds.setPattern(
+        m_leds.rightBuffer,
+        m_pattern.mask(LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeLeft() / 25)));
   }
 
   // Called once the command ends or is interrupted.
