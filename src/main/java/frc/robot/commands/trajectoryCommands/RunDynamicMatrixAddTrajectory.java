@@ -103,4 +103,77 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           return traj;
         });
   }
+
+  public RunDynamicMatrixAddTrajectory(
+      Turret turret,
+      Shooter shooter,
+      Hood hood,
+      Supplier<Double> overhangHeight,
+      Supplier<Double> overhangAspect,
+      Supplier<Translation3d> targetSupplier,
+      Supplier<Boolean> inRangeSupplier,
+      Supplier<Double> robotTiltSupplier,
+      boolean turretWorking,
+      boolean hoodWorking) {
+    super(
+        turret,
+        shooter,
+        hood,
+        inRangeSupplier,
+        robotTiltSupplier,
+        () -> {
+          Translation3d target = targetSupplier.get();
+          Translation3d turretPose = turret.getTurretFieldPose().getTranslation();
+          double[] turretVelocity = turret.getTurretTranslationalVelocity();
+          Trajectory traj =
+              TrajectoryCalc.matrixTrajectory(
+                  turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
+          if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.maxAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
+          } else if (traj.getShooterAngle()
+              > Units.degreesToRadians(HoodConstants.minAngle.get())) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.minAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
+          } else {
+            Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", false);
+          }
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/hangTime", traj.getHangTime());
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterSpeed",
+              traj.getShooterSpeed());
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterAngle",
+              traj.getShooterAngle());
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/turretRotation",
+              traj.getTurretRotation());
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/shooterPose",
+              new Pose3d(
+                  turretPose, new Rotation3d(0, -traj.getShooterAngle(), traj.getTurretAngle())));
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/maxHeight", TrajectoryCalc.maxHeight(traj));
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/interpolatedTrajectory",
+              TrajectoryCalc.interpolateTrajectory(traj, turretVelocity, turretPose));
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/interpolatedTrajectory (no velocity)",
+              TrajectoryCalc.interpolateTrajectory(traj, turretPose));
+          return traj;
+        },
+        turretWorking,
+        hoodWorking);
+  }
 }

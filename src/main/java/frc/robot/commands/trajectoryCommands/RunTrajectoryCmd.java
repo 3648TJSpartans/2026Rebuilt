@@ -17,6 +17,28 @@ public class RunTrajectoryCmd extends Command {
   private final Supplier<Boolean> m_inRangeSupplier;
   private final Supplier<Double> m_robotTiltSupplier;
   private Trajectory m_trajectory;
+  private final boolean m_turretBroken;
+  private final boolean m_hoodBroken;
+
+  public RunTrajectoryCmd(
+      Turret turret,
+      Shooter shooter,
+      Hood hood,
+      Supplier<Boolean> inRangeSupplier,
+      Supplier<Double> robotTiltSupplier,
+      Supplier<Trajectory> trajectorySupplier,
+      Boolean turretBroken,
+      Boolean hoodBroken) { // TODO include shooter and shooter angle.
+    m_trajectorySupplier = trajectorySupplier;
+    m_turret = turret;
+    m_shooter = shooter;
+    m_hood = hood;
+    m_inRangeSupplier = inRangeSupplier;
+    m_robotTiltSupplier = robotTiltSupplier;
+    m_turretBroken = turretBroken;
+    m_hoodBroken = hoodBroken;
+    addRequirements(turret, shooter, hood);
+  }
 
   public RunTrajectoryCmd(
       Turret turret,
@@ -25,13 +47,15 @@ public class RunTrajectoryCmd extends Command {
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
       Supplier<Trajectory> trajectorySupplier) { // TODO include shooter and shooter angle.
-    m_trajectorySupplier = trajectorySupplier;
-    m_turret = turret;
-    m_shooter = shooter;
-    m_hood = hood;
-    m_inRangeSupplier = inRangeSupplier;
-    m_robotTiltSupplier = robotTiltSupplier;
-    addRequirements(turret, shooter, hood);
+    this(
+        turret,
+        shooter,
+        hood,
+        inRangeSupplier,
+        robotTiltSupplier,
+        trajectorySupplier,
+        false,
+        false);
   }
 
   @Override
@@ -43,8 +67,12 @@ public class RunTrajectoryCmd extends Command {
     }
     // Use the trajectory to control subsystems
     m_turret.setFieldRotation(new Rotation2d(m_trajectory.getTurretAngle()));
-    m_shooter.shootVelocity(m_trajectory.getShooterSpeed());
-    m_hood.setAngle(new Rotation2d(m_trajectory.getShooterAngle()));
+    if (!m_turretBroken) {
+      m_shooter.shootVelocity(m_trajectory.getShooterSpeed());
+    }
+    if (!m_hoodBroken) {
+      m_hood.setAngle(new Rotation2d(m_trajectory.getShooterAngle()));
+    }
   }
 
   public boolean ready() {
@@ -63,9 +91,9 @@ public class RunTrajectoryCmd extends Command {
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/tiltInRange", goodTilt);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/robotInRange", robotInRange);
     Logger.recordOutput("Commands/RunTrajectoryCmd/ready/translationalSpeed", turretTransSpeedGood);
-    return m_turret.getRelEncoder().positionInTolerance()
+    return (m_turret.getRelEncoder().positionInTolerance() || m_turretBroken)
         && m_shooter.getLeaderMotor().speedInTolerance()
-        && m_hood.getMotor().positionInTolerance()
+        && (m_hood.getMotor().positionInTolerance() || m_hoodBroken)
         && goodTilt
         && robotInRange
         && turretTransSpeedGood;

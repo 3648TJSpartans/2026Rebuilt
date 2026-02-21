@@ -623,7 +623,17 @@ public class RobotContainer {
           Logger.recordOutput("Commands/SmartShoot/timeToHubGood", good);
           return good;
         };
-
+    Command aimDriveAtHub =
+        DriveCommands.joystickDriveAtAngle(
+            m_drive,
+            () -> -m_driveController.getLeftY(),
+            () -> -m_driveController.getLeftX(),
+            () ->
+                m_drive
+                    .getPose()
+                    .getTranslation()
+                    .minus(TrajectoryConstants.hubPose.toTranslation2d())
+                    .getAngle());
     Command runKickerAndShootToHub =
         shootToHub
             .alongWith(
@@ -662,25 +672,38 @@ public class RobotContainer {
           Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
           return inRange;
         };
-    // Command smartShootCommand =
-    //     new ConditionalCommand(
-    //         runKickerAndShootToHub,
-    //         runKickerAndShootToField,
-    //         rangeGood);
 
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
-        .and((BooleanSupplier) Constants.turretWorking)
+        .and(Constants.turretWorking)
+        .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
+        .and(Constants.turretWorking)
+        .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToField);
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && rangeGood.getAsBoolean())
+        .and(Constants.turretWorking)
+        .and(Constants.hoodWorking)
+        .whileTrue(runKickerAndShootToHub);
+    new Trigger(
+            () ->
+                DriverStation.isTeleopEnabled()
+                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && !rangeGood.getAsBoolean())
+        .and(() -> !Constants.turretWorking.get())
+        .whileTrue(aimDriveAtHub);
   }
 
   private void configureTurret() {
