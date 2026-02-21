@@ -454,6 +454,30 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_hopper.setPower(m_test3Controller.getLeftTriggerAxis()), m_hopper)
                 .finallyDo(m_hopper::stop));
+
+    TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
+    m_testController
+        .x()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_shooter.runFFVelocity(shootSpeed.get());
+                      if (m_shooter.getLeaderMotor().speedInTolerance()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                      } else {
+                        m_kicker.stop();
+                        m_hopper.stop();
+                      }
+                    },
+                    m_shooter,
+                    m_kicker,
+                    m_hopper)
+                .finallyDo(
+                    () -> {
+                      m_shooter.stop();
+                      m_kicker.stop();
+                    }));
   }
 
   private void configureAlerts() {
@@ -767,29 +791,6 @@ public class RobotContainer {
   }
 
   private void configureShooter() {
-    TunableNumber shootSpeed = new TunableNumber("Subsystems/Shooter/testShootRPM", 500);
-    m_testController
-        .x()
-        .whileTrue(
-            Commands.run(
-                    () -> {
-                      m_shooter.runFFVelocity(shootSpeed.get());
-                      if (m_shooter.getLeaderMotor().speedInTolerance()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
-                      } else {
-                        m_kicker.stop();
-                        m_hopper.stop();
-                      }
-                    },
-                    m_shooter,
-                    m_kicker,
-                    m_hopper)
-                .finallyDo(
-                    () -> {
-                      m_shooter.stop();
-                      m_kicker.stop();
-                    }));
 
     m_shooter.setDefaultCommand(
         Commands.run(
