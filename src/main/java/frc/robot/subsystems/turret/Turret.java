@@ -46,6 +46,9 @@ public class Turret extends SubsystemBase implements Statusable {
 
   @AutoLogOutput(key = "Subsystems/Turret/TurretAngle")
   public Rotation2d getTurretRotation() {
+    if (!Constants.turretWorking.getAsBoolean()) {
+      return new Rotation2d();
+    }
     return new Rotation2d(m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor);
   }
 

@@ -113,8 +113,8 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
       Supplier<Translation3d> targetSupplier,
       Supplier<Boolean> inRangeSupplier,
       Supplier<Double> robotTiltSupplier,
-      boolean turretWorking,
-      boolean hoodWorking) {
+      boolean turretBroken,
+      boolean hoodBroken) {
     super(
         turret,
         shooter,
@@ -128,7 +128,16 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           Trajectory traj =
               TrajectoryCalc.matrixTrajectory(
                   turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
-          if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
+          if (hoodBroken) {
+            traj =
+                TrajectoryCalc.dynamicTrajectory(
+                    turretPose,
+                    target,
+                    turretVelocity,
+                    Units.degreesToRadians(HoodConstants.minAngle.get()));
+            Logger.recordOutput("Commands/RunDynamicTrajectory/trajectory/hoofBroken", true);
+          } else if (traj.getShooterAngle()
+              < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
             traj =
                 TrajectoryCalc.dynamicTrajectory(
                     turretPose,
@@ -173,7 +182,7 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
               TrajectoryCalc.interpolateTrajectory(traj, turretPose));
           return traj;
         },
-        turretWorking,
-        hoodWorking);
+        turretBroken,
+        hoodBroken);
   }
 }

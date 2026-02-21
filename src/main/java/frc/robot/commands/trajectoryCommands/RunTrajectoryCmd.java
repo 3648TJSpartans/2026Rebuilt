@@ -66,9 +66,10 @@ public class RunTrajectoryCmd extends Command {
       return;
     }
     // Use the trajectory to control subsystems
-    m_turret.setFieldRotation(new Rotation2d(m_trajectory.getTurretAngle()));
+
+    m_shooter.shootVelocity(m_trajectory.getShooterSpeed());
     if (!m_turretBroken) {
-      m_shooter.shootVelocity(m_trajectory.getShooterSpeed());
+      m_turret.setFieldRotation(new Rotation2d(m_trajectory.getTurretAngle()));
     }
     if (!m_hoodBroken) {
       m_hood.setAngle(new Rotation2d(m_trajectory.getShooterAngle()));

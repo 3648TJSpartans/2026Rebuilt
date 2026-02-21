@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.SparkIO;
 import frc.robot.util.statusableUtils.Statusable;
@@ -23,6 +24,9 @@ public class Hood extends SubsystemBase implements Statusable {
 
   @AutoLogOutput(key = "Subsystems/Hood/getAngle")
   public double getAngle() {
+    if (!Constants.hoodWorking.get()) {
+      return Units.degreesToRadians(HoodConstants.minAngle.get());
+    }
     return motor.getPosition() / HoodConstants.hoodEncoderFactor.getAsDouble()
         + Units.degreesToRadians(HoodConstants.minAngle.get());
   }
