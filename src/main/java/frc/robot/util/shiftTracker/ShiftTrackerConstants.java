@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shiftTracker;
+package frc.robot.util.shiftTracker;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 

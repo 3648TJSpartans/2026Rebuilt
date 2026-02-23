@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shiftTracker;
+package frc.robot.util.shiftTracker;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -146,6 +146,9 @@ public class ShiftTracker extends SubsystemBase {
   }
 
   public double timeLeft() {
+    if (time < 30.0) {
+      return time;
+    }
     if (!onShift) {
       return 0.0;
     }
@@ -153,6 +156,10 @@ public class ShiftTracker extends SubsystemBase {
   }
 
   public double timeUntil() {
+    if (time < 30.0) {
+      return 0.0;
+    }
+
     if (onShift) {
       return 0.0;
     }
