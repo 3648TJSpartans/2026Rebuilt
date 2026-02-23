@@ -23,4 +23,6 @@ public class TheClawstants {
   public static final TunableNumber simKv = new TunableNumber("Subsystems/Claw/simKv", 1.0);
   public static final TunableNumber homePower =
       new TunableNumber("Subsystems/Claw/homePower", -0.1);
+  public static final TunableNumber climbPosition =
+      new TunableNumber("Subsystems/Claw/climbPosition", 0.2);
 }

@@ -8,6 +8,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class goToConstants {
 
@@ -86,8 +88,20 @@ public class goToConstants {
   public static class PoseConstants {
     public static final Pose2d examplePose = new Pose2d(3.57, 2.75, Rotation2d.fromDegrees(60));
     public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
-    // TODO: update this to an actual pose/poses for climbing
-    public static final Pose2d climbPose = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+    // TODO: update this to actual poses for climbing.
+    // These poses were found in sim, which, besides the obvious inaccuracy, also probably sport
+    // orientation issues
+    public static final Pose2d l1PoseLeft = new Pose2d(1.378, 4.62, Rotation2d.fromDegrees(90));
+    public static final Pose2d l1PoseMiddle = new Pose2d(1.378, 3.6, Rotation2d.fromDegrees(90));
+    public static final Pose2d l1PoseRight = new Pose2d(1.378, 2.827, Rotation2d.fromDegrees(-90));
+    public static final ArrayList<Pose2d> l1Poses =
+        new ArrayList<Pose2d>(Arrays.asList(l1PoseLeft, l1PoseMiddle, l1PoseRight));
+
+    public static final Pose2d l3PoseLeft = new Pose2d(1.545, 4.800, Rotation2d.fromDegrees(90));
+    public static final Pose2d l3PoseRight = new Pose2d(1.454, 2.739, Rotation2d.fromDegrees(-90));
+    public static final ArrayList<Pose2d> l3Poses =
+        new ArrayList<Pose2d>(Arrays.asList(l3PoseLeft, l3PoseRight));
+
     public static final double fieldLength = 16.540988;
     public static final double fieldWidth = 8.042;
 
@@ -95,19 +109,14 @@ public class goToConstants {
 
     public static final double zone1 = 3;
     public static final double zone2 = 5.042;
-    public static final Translation3d feedRight = AllianceFlipUtil.apply(new Translation3d(1.0, 1.5, 0.0));
-    public static final Translation3d feedMiddle = AllianceFlipUtil.apply(new Translation3d(1.0, 4.021, 0.0));
-    public static final Translation3d feedLeft =AllianceFlipUtil.apply( new Translation3d(1.0, 6.542, 0.0));
+    public static final Translation3d feedRight =
+        AllianceFlipUtil.apply(new Translation3d(1.0, 1.5, 0.0));
+    public static final Translation3d feedMiddle =
+        AllianceFlipUtil.apply(new Translation3d(1.0, 4.021, 0.0));
+    public static final Translation3d feedLeft =
+        AllianceFlipUtil.apply(new Translation3d(1.0, 6.542, 0.0));
     public static final double overhangMiddle = 3.5;
     public static final double overhangSide = 1.5;
-
-    private static Pose2d[] examplePoseListBlue =
-        new Pose2d[] {
-          new Pose2d(2, 2, Rotation2d.fromDegrees(180)),
-          new Pose2d(3, 3, Rotation2d.fromDegrees(270))
-        };
-
-    public static final Pose2d[] examplePoseList = AllianceFlipUtil.apply(examplePoseListBlue);
 
     public static enum AutonState {
       EXAMPLE1,

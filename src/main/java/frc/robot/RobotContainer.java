@@ -37,6 +37,7 @@ import frc.robot.Constants.Status;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FFCharacterizationCmd;
 import frc.robot.commands.HomeTurretCmd;
+import frc.robot.commands.climberCommands.AutoClimb;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
@@ -48,6 +49,7 @@ import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -564,10 +566,18 @@ public class RobotContainer {
   private void configureKicker() {}
 
   private void configureClimber() {
-    // We will eventually replace this with a more detailed command that lines the robot up
-    // for its L1 climb
-    // We should also probably make it so it drives to different possible climb poses
-    m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
+    m_driveController
+        .b()
+        .whileTrue(
+            new DriveTo(m_drive, () -> m_drive.getPose().nearest(PoseConstants.l1Poses))
+                .andThen(Commands.run(() -> m_claw.setHeight(TheClawstants.climbPosition.get()))));
+
+    m_driveController
+        .y()
+        .whileTrue(
+            new DriveTo(m_drive, () -> m_drive.getPose().nearest(PoseConstants.l3Poses))
+                // .andThen(/* push out the pneumatic */)
+                .andThen(new AutoClimb(m_climber, () -> ClimberConstants.tunableGoal.get())));
 
     m_claw.setDefaultCommand(
         Commands.run(
