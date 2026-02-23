@@ -22,7 +22,7 @@ public class ShiftTracker extends SubsystemBase {
   @Override
   public void periodic() {
     boolean teleopEnabled = DriverStation.isTeleopEnabled();
-    Logger.recordOutput("Subsystems/ShiftTracker/teleopEnabled", teleopEnabled);
+    Logger.recordOutput("Utils/ShiftTracker/teleopEnabled", teleopEnabled);
     if (teleopEnabled) {
       updateInputs();
       return;
@@ -38,10 +38,10 @@ public class ShiftTracker extends SubsystemBase {
     timeLeft = timeLeft();
     timeUntil = timeUntil();
 
-    Logger.recordOutput("Subsystems/ShiftTracker/time", time);
-    Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
-    Logger.recordOutput("Subsystems/ShiftTracker/timeLeft", timeLeft);
-    Logger.recordOutput("Subsystems/ShiftTracker/timeUntil", timeUntil);
+    Logger.recordOutput("Utils/ShiftTracker/time", time);
+    Logger.recordOutput("Utils/ShiftTracker/onShift", onShift);
+    Logger.recordOutput("Utils/ShiftTracker/timeLeft", timeLeft);
+    Logger.recordOutput("Utils/ShiftTracker/timeUntil", timeUntil);
   }
 
   private void overrideInputs() {
@@ -50,10 +50,10 @@ public class ShiftTracker extends SubsystemBase {
     timeLeft = 25.0;
     timeUntil = 0.0;
 
-    Logger.recordOutput("Subsystems/ShiftTracker/time", time);
-    Logger.recordOutput("Subsystems/ShiftTracker/onShift", onShift);
-    Logger.recordOutput("Subsystems/ShiftTracker/timeLeft", timeLeft);
-    Logger.recordOutput("Subsystems/ShiftTracker/timeUntil", timeUntil);
+    Logger.recordOutput("Utils/ShiftTracker/time", time);
+    Logger.recordOutput("Utils/ShiftTracker/onShift", onShift);
+    Logger.recordOutput("Utils/ShiftTracker/timeLeft", timeLeft);
+    Logger.recordOutput("Utils/ShiftTracker/timeUntil", timeUntil);
   }
 
   public boolean isOnShift() {
