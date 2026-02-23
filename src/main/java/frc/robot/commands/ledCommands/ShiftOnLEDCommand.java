@@ -7,7 +7,7 @@ package frc.robot.commands.ledCommands;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.leds.*;
-import frc.robot.subsystems.shiftTracker.ShiftTracker;
+import frc.robot.util.shiftTracker.ShiftTracker;
 
 public class ShiftOnLEDCommand extends Command {
   private final LedSubsystem m_leds;
@@ -29,7 +29,7 @@ public class ShiftOnLEDCommand extends Command {
   @Override
   public void
       execute() { // TODO: I was thinking we would have the countdown on both left and right sides,
-                  // but we could also do it on the center or on the whole strip
+    // but we could also do it on the center or on the whole strip
     m_leds.setPattern(
         m_leds.leftBuffer,
         m_pattern.mask(LEDPattern.progressMaskLayer(() -> m_shiftTracker.timeLeft() / 25)));
