@@ -70,4 +70,8 @@ public class Trajectory {
         + "\nHang Time: "
         + m_hangTime;
   }
+
+  public Trajectory copy() {
+    return new Trajectory(m_shooterAngle, m_turretAngle, m_shooterSpeed, m_hangTime);
+  }
 }

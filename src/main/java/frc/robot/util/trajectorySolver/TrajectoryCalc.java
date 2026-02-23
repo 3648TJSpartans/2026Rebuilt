@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryCalc {
   public static final double g = 9.79; // m/s^2
-  public static final int movingtargetIts = 1;
+  public static final int movingtargetIts = 20;
   public static final int interpolationPoints = 20;
 
   public static void main(String[] args) {
