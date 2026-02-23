@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Status;
@@ -116,14 +117,32 @@ public class SmartController extends CommandXboxController implements Statusable
     super(port);
     m_name = name;
     m_status = Status.OK;
+    Logger.recordOutput(m_name + "/rumbling?", false);
+  }
+
+  public void rumble(double value) {
+    Logger.recordOutput(m_name + "/rumbling?", value != 0 ? true : false);
+    getHID().setRumble(RumbleType.kBothRumble, value);
+  }
+
+  public void rumble() {
+    Logger.recordOutput(m_name + "/rumbling?", true);
+    getHID().setRumble(RumbleType.kBothRumble, 1);
+  }
+
+  public void stopRumble() {
+    Logger.recordOutput(m_name + "/rumbling?", false);
+    getHID().setRumble(RumbleType.kBothRumble, 0);
   }
 
   private Trigger getButton(SmartButton button) {
     if (button.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/ButtonAllocation/", button + " is allocated multiple times.");
+          "Debug/" + m_name + "/ButtonAllocation/" + button,
+          button + " is allocated multiple times.");
     }
+    System.out.println(m_name + " allocated at " + button);
 
     button.allocated = true;
     return super.button(button.value);
@@ -133,7 +152,7 @@ public class SmartController extends CommandXboxController implements Statusable
     if (pov.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/PovAllocation/", pov + " is allocated multiple times.");
+          "Debug/" + m_name + "/PovAllocation/" + pov, pov + " is allocated multiple times.");
     }
     pov.allocated = true;
     return super.pov(pov.angle);
@@ -143,9 +162,8 @@ public class SmartController extends CommandXboxController implements Statusable
     if (axis.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/AxisAllocation/", axis + " is allocated multiple times.");
+          "Debug/" + m_name + "/AxisAllocation/" + axis, axis + " is allocated multiple times.");
     }
-
     axis.allocated = true;
     return super.getRawAxis(axis.value);
   }
