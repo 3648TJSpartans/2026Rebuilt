@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Status;
@@ -11,104 +13,61 @@ public class SmartController extends CommandXboxController implements Statusable
   private Status m_status;
   private final String m_name;
 
-  public enum SmartButton {
-    /** A button. */
-    kA(1),
-    /** B button. */
-    kB(2),
-    /** X button. */
-    kX(3),
-    /** Y button. */
-    kY(4),
-    /** Left bumper button. */
-    kLeftBumper(5),
-    /** Right bumper button. */
-    kRightBumper(6),
-    /** Back button. */
-    kBack(7),
-    /** Start button. */
-    kStart(8),
-    /** Left stick button. */
-    kLeftStick(9),
-    /** Right stick button. */
-    kRightStick(10),
-    /** Left Stick X */
-    kLeftX(11),
-    /** Left Stick Y */
-    kLeftY(12),
-    /** Right Stick X */
-    kRightX(13),
-    /** Right Stick Y */
-    kRightY(14);
+  private SmartButton[] buttonArray;
+  private SmartPOV[] povArray;
+  private SmartAxis[] axisArray;
 
-    /** Button value. */
-    public final int value;
+  private class SmartButton {
 
     public boolean allocated;
+    public int value;
+    private String name;
 
-    SmartButton(int value) {
+    public SmartButton(String name, int value) {
+      this.name = name;
       this.value = value;
       this.allocated = false;
     }
 
     @Override
     public String toString() {
-      // Remove leading `k`
-      return this.name().substring(1) + "Button";
+      return name + " button";
     }
   }
 
-  public enum SmartPOV {
-    kPOVUp(0),
-    kPOVRight(90),
-    kPOVDown(180),
-    kPOVLeft(270);
+  private class SmartPOV {
 
-    public int angle;
     public boolean allocated;
+    public int angle;
+    private String name;
 
-    SmartPOV(int angle) {
+    public SmartPOV(String name, int angle) {
+      this.name = name;
       this.angle = angle;
       this.allocated = false;
     }
 
     @Override
     public String toString() {
-      return this.name().substring(1); // removing leading k
+      return "POV " + name;
     }
   }
 
-  public enum SmartAxis {
-    /** Left X axis. */
-    kLeftX(0),
-    /** Right X axis. */
-    kRightX(4),
-    /** Left Y axis. */
-    kLeftY(1),
-    /** Right Y axis. */
-    kRightY(5),
-    /** Left trigger. */
-    kLeftTrigger(2),
-    /** Right trigger. */
-    kRightTrigger(3);
-
-    /** Axis value. */
-    public final int value;
+  private class SmartAxis {
 
     public boolean allocated;
+    public int value;
+    private String name;
 
-    SmartAxis(int value) {
+    public SmartAxis(String name, int value) {
+      this.name = name;
       this.value = value;
       this.allocated = false;
     }
 
     @Override
     public String toString() {
-      var name = this.name().substring(1); // Remove leading `k`
-      if (name.endsWith("Trigger")) {
-        return name + "Axis";
-      }
-      return name;
+      return name + " axis";
     }
   }
 
@@ -116,14 +75,62 @@ public class SmartController extends CommandXboxController implements Statusable
     super(port);
     m_name = name;
     m_status = Status.OK;
+    buttonArray =
+        new SmartButton[] {
+          new SmartButton("Placeholder", 0),
+          new SmartButton("A", 1),
+          new SmartButton("B", 2),
+          new SmartButton("X", 3),
+          new SmartButton("Y", 4),
+          new SmartButton("leftBumper", 5),
+          new SmartButton("rightBumper", 6),
+          new SmartButton("back", 7),
+          new SmartButton("start", 8),
+          new SmartButton("leftStick", 9),
+          new SmartButton("rightStick", 10)
+        };
+    povArray =
+        new SmartPOV[] {
+          new SmartPOV("Up", 0),
+          new SmartPOV("Right", 90),
+          new SmartPOV("Down", 180),
+          new SmartPOV("Left", 270)
+        };
+    axisArray =
+        new SmartAxis[] {
+          new SmartAxis("leftX", 0),
+          new SmartAxis("leftY", 1),
+          new SmartAxis("leftTrigger", 2),
+          new SmartAxis("rightTrigger", 3),
+          new SmartAxis("rightX", 4),
+          new SmartAxis("rightY", 5)
+        };
+    Logger.recordOutput(m_name + "/rumbling?", false);
+  }
+
+  public void rumble(double value) {
+    Logger.recordOutput(m_name + "/rumbling?", value != 0 ? true : false);
+    getHID().setRumble(RumbleType.kBothRumble, value);
+  }
+
+  public void rumble() {
+    Logger.recordOutput("Utils/" + m_name + "/rumbling?", true);
+    getHID().setRumble(RumbleType.kBothRumble, 1);
+  }
+
+  public void stopRumble() {
+    Logger.recordOutput("Utils/" + m_name + "/rumbling?", false);
+    getHID().setRumble(RumbleType.kBothRumble, 0);
   }
 
   private Trigger getButton(SmartButton button) {
     if (button.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/ButtonAllocation/", button + " is allocated multiple times.");
+          "Debug/" + m_name + "/ButtonAllocation/" + button,
+          button + " is allocated multiple times.");
     }
+    System.out.println(m_name + " allocated at " + button);
 
     button.allocated = true;
     return super.button(button.value);
@@ -133,7 +140,7 @@ public class SmartController extends CommandXboxController implements Statusable
     if (pov.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/PovAllocation/", pov + " is allocated multiple times.");
+          "Debug/" + m_name + "/PovAllocation/" + pov, pov + " is allocated multiple times.");
     }
     pov.allocated = true;
     return super.pov(pov.angle);
@@ -143,133 +150,132 @@ public class SmartController extends CommandXboxController implements Statusable
     if (axis.allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
-          "Debug/" + m_name + "/AxisAllocation/", axis + " is allocated multiple times.");
+          "Debug/" + m_name + "/AxisAllocation/" + axis, axis + " is allocated multiple times.");
     }
-
     axis.allocated = true;
     return super.getRawAxis(axis.value);
   }
 
   @Override
   public Trigger a() {
-    return getButton(SmartButton.kA);
+    return getButton(buttonArray[XboxController.Button.kA.value]);
   }
 
   @Override
   public Trigger b() {
-    return getButton(SmartButton.kB);
+    return getButton(buttonArray[XboxController.Button.kB.value]);
   }
 
   @Override
   public Trigger x() {
-    return getButton(SmartButton.kX);
+    return getButton(buttonArray[XboxController.Button.kX.value]);
   }
 
   @Override
   public Trigger y() {
-    return getButton(SmartButton.kY);
+    return getButton(buttonArray[XboxController.Button.kY.value]);
   }
 
   @Override
   public Trigger leftBumper() {
-    return getButton(SmartButton.kLeftBumper);
+    return getButton(buttonArray[XboxController.Button.kLeftBumper.value]);
   }
 
   @Override
   public Trigger rightBumper() {
-    return getButton(SmartButton.kRightBumper);
+    return getButton(buttonArray[XboxController.Button.kRightBumper.value]);
   }
 
   @Override
   public Trigger back() {
-    return getButton(SmartButton.kBack);
+    return getButton(buttonArray[XboxController.Button.kBack.value]);
   }
 
   @Override
   public Trigger start() {
-    return getButton(SmartButton.kStart);
+    return getButton(buttonArray[XboxController.Button.kStart.value]);
   }
 
   @Override
   public Trigger leftStick() {
-    return getButton(SmartButton.kLeftStick);
+    return getButton(buttonArray[XboxController.Button.kLeftStick.value]);
   }
 
   @Override
   public Trigger rightStick() {
-    return getButton(SmartButton.kRightStick);
+    return getButton(buttonArray[XboxController.Button.kRightStick.value]);
   }
 
   @Override
   public Trigger povUp() {
-    return getPOV(SmartPOV.kPOVUp);
+    return getPOV(povArray[0]);
   }
 
   @Override
   public Trigger povRight() {
-    return getPOV(SmartPOV.kPOVRight);
+    return getPOV(povArray[1]);
   }
 
   @Override
   public Trigger povDown() {
-    return getPOV(SmartPOV.kPOVDown);
+    return getPOV(povArray[2]);
   }
 
   @Override
   public Trigger povLeft() {
-    return getPOV(SmartPOV.kPOVLeft);
+    return getPOV(povArray[3]);
   }
 
   @Override
   public Trigger leftTrigger() {
-    if (SmartAxis.kLeftTrigger.allocated) {
+    if (axisArray[XboxController.Axis.kLeftTrigger.value].allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/AxisAllocation/",
-          SmartAxis.kLeftTrigger.allocated + " is allocated multiple times.");
+          axisArray[XboxController.Axis.kLeftTrigger.value] + " is allocated multiple times.");
     }
     return super.leftTrigger();
   }
 
   @Override
   public Trigger rightTrigger() {
-    if (SmartAxis.kRightTrigger.allocated) {
+    if (axisArray[XboxController.Axis.kRightTrigger.value].allocated) {
       m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/AxisAllocation/",
-          SmartAxis.kRightTrigger.allocated + " is allocated multiple times.");
+          axisArray[XboxController.Axis.kRightTrigger.value] + " is allocated multiple times.");
     }
     return super.leftTrigger();
   }
 
   @Override
   public double getLeftX() {
-    return getAxis(SmartAxis.kLeftX);
+    return getAxis(axisArray[XboxController.Axis.kLeftX.value]);
   }
 
   @Override
   public double getLeftY() {
-    return getAxis(SmartAxis.kLeftY);
+    return getAxis(axisArray[XboxController.Axis.kLeftY.value]);
   }
 
   @Override
   public double getRightX() {
-    return getAxis(SmartAxis.kRightX);
+    return getAxis(axisArray[XboxController.Axis.kRightX.value]);
   }
 
   @Override
   public double getRightY() {
-    return getAxis(SmartAxis.kRightY);
+    return getAxis(axisArray[XboxController.Axis.kRightY.value]);
   }
 
   @Override
   public double getLeftTriggerAxis() {
-    return getAxis(SmartAxis.kLeftTrigger);
+    return getAxis(axisArray[XboxController.Axis.kLeftTrigger.value]);
   }
 
   @Override
   public double getRightTriggerAxis() {
-    return getAxis(SmartAxis.kRightTrigger);
+    return getAxis(axisArray[XboxController.Axis.kRightTrigger.value]);
   }
 
   @Override
