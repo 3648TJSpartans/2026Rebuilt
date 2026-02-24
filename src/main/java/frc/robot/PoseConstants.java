@@ -30,19 +30,12 @@ public class PoseConstants {
   public static final Rectangle test =
       new Rectangle("testZone", new Translation2d(0, 0), new Translation2d(1, 1));
   public static final Polygon testPolygon =
-      AllianceFlipUtil.shouldFlip()
-          ? AllianceFlipUtil.apply(
-              new Polygon(
-                  "testPolygon",
-                  new Translation2d(0, 0),
-                  new Translation2d(2, 4),
-                  new Translation2d(4, 0)))
-          : AllianceFlipUtil.apply(
-              new Polygon(
-                  "testPolygon",
-                  new Translation2d(0, 0),
-                  new Translation2d(2, 4),
-                  new Translation2d(4, 0)));
+      AllianceFlipUtil.apply(
+          new Polygon(
+              "testPolygon",
+              new Translation2d(0, 0),
+              new Translation2d(2, 4),
+              new Translation2d(4, 0)));
   public static final Polygon behindHub =
       new Polygon(
           "BehindHub",
