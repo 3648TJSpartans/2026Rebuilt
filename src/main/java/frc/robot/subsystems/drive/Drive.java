@@ -424,7 +424,10 @@ public class Drive extends SubsystemBase implements Statusable {
   }
 
   public Polygon getPolygon() {
-    Pose2d pose = getPose();
+    return getPolygon(getPose());
+  }
+
+  public Polygon getPolygon(Pose2d pose) {
     Translation2d frontLeft =
         DriveConstants.frontLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
     Translation2d frontRight =

@@ -74,6 +74,37 @@ public class Polygon {
     return false;
   }
 
+  /** Returns true only if the 'other' polygon is entirely inside this polygon. */
+  public boolean fullyContains(Polygon other) {
+    Translation2d[] thisCorners = this.getCorners();
+    Translation2d[] otherCorners = other.getCorners();
+
+    // 1. Every corner of the other polygon MUST be inside this polygon
+    for (Translation2d p : otherCorners) {
+      if (!this.contains(p)) {
+        return false;
+      }
+    }
+
+    // 2. No edges can intersect.
+    // If they do, the other polygon is "poking out" or crossing a boundary.
+    for (int i = 0; i < thisCorners.length; i++) {
+      Translation2d a = thisCorners[i];
+      Translation2d b = thisCorners[(i + 1) % thisCorners.length];
+
+      for (int j = 0; j < otherCorners.length; j++) {
+        Translation2d c = otherCorners[j];
+        Translation2d d = otherCorners[(j + 1) % otherCorners.length];
+
+        if (doEdgesIntersect(a, b, c, d)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   /** Helper to see if line segment ab intersects line segment cd. */
   private boolean doEdgesIntersect(
       Translation2d a, Translation2d b, Translation2d c, Translation2d d) {

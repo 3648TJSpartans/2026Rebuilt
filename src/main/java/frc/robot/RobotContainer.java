@@ -443,6 +443,9 @@ public class RobotContainer {
                   Logger.recordOutput(
                       "Utils/ZoneCalc/testing/robotInPolygon",
                       PoseConstants.testPolygon.contains(m_drive.getPolygon()));
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/robotFullyInPolygon",
+                      PoseConstants.testPolygon.fullyContains(m_drive.getPolygon()));
                 }));
     new Trigger(() -> m_test3Controller.getRightY() > 0.2)
         .whileTrue(

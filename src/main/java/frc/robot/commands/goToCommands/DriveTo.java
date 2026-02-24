@@ -34,7 +34,7 @@ public class DriveTo extends Command {
 
     Logger.recordOutput("Commands/DriveTo/RobotPose", robotPose);
     Logger.recordOutput("Commands/DriveTo/TargetPose", targetPose);
-    if (goToConstants.inFieldConstraint) {
+    if (goToConstants.inFieldConstraint.get()) {
       if (!RangeCalc.inField(targetPose)) {
         Logger.recordOutput("Commands/DriveTo/TargetInField", false);
         return;
