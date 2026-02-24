@@ -28,6 +28,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -49,6 +50,7 @@ import frc.robot.Constants.Status;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.statusableUtils.Statusable;
+import frc.robot.util.zoneCalc.Polygon;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -63,6 +65,7 @@ public class Drive extends SubsystemBase implements Statusable {
   private final SysIdRoutine sysId;
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+  private Polygon m_polygon;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -91,6 +94,7 @@ public class Drive extends SubsystemBase implements Statusable {
     modules[3] = new Module(brModuleIO, 3);
 
     setName("Subsystems/Drive");
+    updatePolygon();
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
@@ -145,6 +149,7 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public void periodic() {
+    updatePolygon();
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -419,5 +424,25 @@ public class Drive extends SubsystemBase implements Statusable {
   @AutoLogOutput(key = "Subsystems/Drive/Lean/Pitch")
   public double getPitch() {
     return gyroInputs.pitch;
+  }
+
+  private void updatePolygon() {
+    m_polygon = getPolygon(getPose());
+  }
+
+  public Polygon getPolygon() {
+    return m_polygon;
+  }
+
+  public Polygon getPolygon(Pose2d pose) {
+    Translation2d frontLeft =
+        DriveConstants.frontLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d frontRight =
+        DriveConstants.frontRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d backLeft =
+        DriveConstants.backLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d backRight =
+        DriveConstants.backRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    return new Polygon(getName(), frontLeft, frontRight, backRight, backLeft);
   }
 }

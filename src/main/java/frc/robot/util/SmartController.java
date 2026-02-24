@@ -105,21 +105,22 @@ public class SmartController extends CommandXboxController implements Statusable
           new SmartAxis("rightX", 4),
           new SmartAxis("rightY", 5)
         };
-    Logger.recordOutput(m_name + "/rumbling?", false);
+    Logger.recordOutput("Utils/SmartController/" + m_name + "/rumbling?", false);
   }
 
   public void rumble(double value) {
-    Logger.recordOutput(m_name + "/rumbling?", value != 0 ? true : false);
+    Logger.recordOutput(
+        "Utils/SmartController/" + m_name + "/rumbling?", value != 0 ? true : false);
     getHID().setRumble(RumbleType.kBothRumble, value);
   }
 
   public void rumble() {
-    Logger.recordOutput("Utils/" + m_name + "/rumbling?", true);
+    Logger.recordOutput("Utils/SmartController/" + m_name + "/rumbling?", true);
     getHID().setRumble(RumbleType.kBothRumble, 1);
   }
 
   public void stopRumble() {
-    Logger.recordOutput("Utils/" + m_name + "/rumbling?", false);
+    Logger.recordOutput("Utils/SmartController/" + m_name + "/rumbling?", false);
     getHID().setRumble(RumbleType.kBothRumble, 0);
   }
 

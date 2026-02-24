@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-
 // Copyright (c) 2025 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
@@ -17,7 +16,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 // org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.ModuleForce;
 // import
 // org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.VehicleState;
-import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
+import frc.robot.PoseConstants;
+import frc.robot.util.zoneCalc.Polygon;
 
 public class AllianceFlipUtil {
   public static double applyX(double x) {
@@ -55,12 +55,24 @@ public class AllianceFlipUtil {
     return new Pose3d(apply(pose.getTranslation()), apply(pose.getRotation()));
   }
 
+  public static Translation2d[] apply(Translation2d[] poses) {
+    Translation2d[] out = new Translation2d[poses.length];
+    for (int i = 0; i < poses.length; i++) {
+      out[i] = apply(poses[i]);
+    }
+    return out;
+  }
+
   public static Pose2d[] apply(Pose2d[] poses) {
     Pose2d[] out = new Pose2d[poses.length];
     for (int i = 0; i < poses.length; i++) {
       out[i] = apply(poses[i]);
     }
     return out;
+  }
+
+  public static Polygon apply(Polygon polygon) {
+    return new Polygon(polygon.getName(), apply(polygon.getCorners()));
   }
 
   // @AutoLogOutput(key = "shouldFlip")

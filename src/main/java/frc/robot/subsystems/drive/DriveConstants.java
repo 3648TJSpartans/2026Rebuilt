@@ -233,7 +233,11 @@ public class DriveConstants {
   public static final double wheelRadiusMeters = Units.inchesToMeters(2);
   public static final double driveMotorReduction = 6.75; // L2 MKI4
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
-
+  public static final double width = Units.inchesToMeters(27.0);
+  public static final Translation2d frontRightCorner = new Translation2d(width / 2, width / 2);
+  public static final Translation2d frontLeftCorner = new Translation2d(-width / 2, width / 2);
+  public static final Translation2d backRightCorner = new Translation2d(width / 2, -width / 2);
+  public static final Translation2d backLeftCorner = new Translation2d(-width / 2, -width / 2);
   // Drive encoder configuration
   public static final double driveEncoderPositionFactor =
       2 * Math.PI / driveMotorReduction; // Rotor

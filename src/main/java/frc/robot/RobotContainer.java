@@ -40,7 +40,6 @@ import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
-import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
@@ -115,7 +114,6 @@ public class RobotContainer {
   private final ShiftTracker m_shiftTracker;
   private final Climber m_climber;
   private boolean override;
-  private boolean endgameClosed = true;
   private final Shooter m_shooter;
   private final Turret m_turret;
   private final Kicker m_kicker;
@@ -200,8 +198,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        m_intake =
-            new Intake(new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+
         m_shooter =
             new Shooter(
                 new RelEncoderSparkMax(ShooterConstants.kLeaderMotorConfig),
@@ -220,6 +217,10 @@ public class RobotContainer {
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
                 m_drive::getVelocity);
+        m_intake =
+            new Intake(
+                new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                m_drive::getPose);
         // new Drive(
         //     new GyroIONavX(),
         //     new ModuleIO() {},
@@ -277,7 +278,9 @@ public class RobotContainer {
                 new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
                 new SparkSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_intake =
-            new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+            new Intake(
+                new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                m_drive::getPose);
         m_turret =
             new Turret(
                 new SparkSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
@@ -301,7 +304,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
-        m_intake = new Intake(new SingleSolenoidSim(0, null));
+        m_intake = new Intake(new SingleSolenoidSim(0, null), m_drive::getPose);
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
             new Shooter(
@@ -437,6 +440,29 @@ public class RobotContainer {
   }
 
   private void configureTestBindings() {
+    new Trigger(DriverStation::isTeleopEnabled)
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  long startTime = System.nanoTime();
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/intakeInPolygon",
+                      PoseConstants.testPolygon.contains(m_intake.getPolygon()));
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/robotInPolygon",
+                      PoseConstants.testPolygon.contains(m_drive.getPolygon()));
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/robotFullyInPolygon",
+                      PoseConstants.testPolygon.fullyContains(m_drive.getPolygon()));
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/turretBehindHub",
+                      PoseConstants.behindHub.contains(
+                              m_turret.getTurretFieldPose().getTranslation().toTranslation2d())
+                          || PoseConstants.behindOtherHub.contains(
+                              m_turret.getTurretFieldPose().getTranslation().toTranslation2d()));
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/timeCost", (startTime - System.nanoTime()) * 1e-9);
+                }));
     new Trigger(() -> m_test3Controller.getRightY() > 0.2)
         .whileTrue(
             Commands.run(() -> m_shooter.setPower(m_test3Controller.getRightY()), m_shooter)
@@ -1255,7 +1281,6 @@ public class RobotContainer {
                         .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
         .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
 
-    Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));
     Command alignToTagRight =
