@@ -191,3 +191,5 @@ src/main/resources/AdvantageScopeResources/userAssets/
 
 # Eclipse generated file for annotation processors
 .factorypath
+
+simgui-ds.json
