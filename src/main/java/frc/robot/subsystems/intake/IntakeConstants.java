@@ -41,4 +41,5 @@ public class IntakeConstants {
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
   public static final Rotation3d intakeUpRotation = new Rotation3d();
+  public static final Translation3d[] cornersDown = new 
 }
