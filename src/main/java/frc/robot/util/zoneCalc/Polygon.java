@@ -125,4 +125,8 @@ public class Polygon {
 
     return (t >= 0 && t <= 1) && (u >= 0 && u <= 1);
   }
+
+  public String getName() {
+    return name;
+  }
 }
