@@ -446,6 +446,9 @@ public class RobotContainer {
                 () -> {
                   long startTime = System.nanoTime();
                   Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/intakeInPolygon",
+                      PoseConstants.testPolygon.contains(m_intake.getPolygon()));
+                  Logger.recordOutput(
                       "Utils/ZoneCalc/testing/robotInPolygon",
                       PoseConstants.testPolygon.contains(m_drive.getPolygon()));
                   Logger.recordOutput(
