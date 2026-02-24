@@ -45,7 +45,7 @@ public class PoseConstants {
                   new Translation2d(4, 0)));
   public static final Polygon behindHub =
       new Polygon(
-          "BehindTheHub",
+          "BehindHub",
           AllianceFlipUtil.apply(
               new Translation2d[] {
                 new Translation2d(5.189, 3.23),
@@ -54,7 +54,7 @@ public class PoseConstants {
               }));
   public static final Polygon behindOtherHub =
       new Polygon(
-          "BehindTheHub",
+          "BehindOtherHub",
           AllianceFlipUtil.apply(
               new Translation2d[] {
                 new Translation2d(5.189 + 7.29, 3.23),
