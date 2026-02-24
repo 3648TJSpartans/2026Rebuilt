@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
@@ -41,5 +42,18 @@ public class IntakeConstants {
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
   public static final Rotation3d intakeUpRotation = new Rotation3d();
-  public static final Translation3d[] cornersDown = new 
+  public static final Translation2d[] cornersDown =
+      new Translation2d[] {
+        new Translation2d(0.595665, -0.301625),
+        new Translation2d(0.595665, 0.301625),
+        new Translation2d(0.343, 0.301625),
+        new Translation2d(0.343, -0.301625)
+      };
+  public static final Translation2d[] cornersUp =
+      new Translation2d[] {
+        new Translation2d(0.243, -0.301625),
+        new Translation2d(0.243, 0.301625),
+        new Translation2d(0.343, 0.301625),
+        new Translation2d(0.343, -0.301625)
+      };
 }

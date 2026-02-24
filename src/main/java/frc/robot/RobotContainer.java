@@ -114,7 +114,6 @@ public class RobotContainer {
   private final ShiftTracker m_shiftTracker;
   private final Climber m_climber;
   private boolean override;
-  private boolean endgameClosed = true;
   private final Shooter m_shooter;
   private final Turret m_turret;
   private final Kicker m_kicker;
@@ -199,8 +198,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        m_intake =
-            new Intake(new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+
         m_shooter =
             new Shooter(
                 new RelEncoderSparkMax(ShooterConstants.kLeaderMotorConfig),
@@ -219,6 +217,10 @@ public class RobotContainer {
                 new RelEncoderSparkMax(TurretConstants.kTurretMotorConfig),
                 m_drive::getPose,
                 m_drive::getVelocity);
+        m_intake =
+            new Intake(
+                new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                m_drive::getPose);
         // new Drive(
         //     new GyroIONavX(),
         //     new ModuleIO() {},
@@ -276,7 +278,9 @@ public class RobotContainer {
                 new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
                 new SparkSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_intake =
-            new Intake(new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"));
+            new Intake(
+                new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                m_drive::getPose);
         m_turret =
             new Turret(
                 new SparkSim("Subsystems/Turret/MotorIO", TurretConstants.kVSim),
@@ -300,7 +304,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
-        m_intake = new Intake(new SingleSolenoidSim(0, null));
+        m_intake = new Intake(new SingleSolenoidSim(0, null), m_drive::getPose);
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
             new Shooter(
