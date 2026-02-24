@@ -40,7 +40,6 @@ import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
-import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
@@ -437,6 +436,14 @@ public class RobotContainer {
   }
 
   private void configureTestBindings() {
+    new Trigger(DriverStation::isTeleopEnabled)
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  Logger.recordOutput(
+                      "Utils/ZoneCalc/testing/robotInPolygon",
+                      PoseConstants.testPolygon.contains(m_drive.getPolygon()));
+                }));
     new Trigger(() -> m_test3Controller.getRightY() > 0.2)
         .whileTrue(
             Commands.run(() -> m_shooter.setPower(m_test3Controller.getRightY()), m_shooter)
@@ -1255,7 +1262,6 @@ public class RobotContainer {
                         .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
         .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
 
-    Command driveTest = new DriveTo(m_drive, () -> PoseConstants.examplePose);
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));
     Command alignToTagRight =

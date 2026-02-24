@@ -1,12 +1,8 @@
 package frc.robot.commands.goToCommands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 
 public class goToConstants {
@@ -81,39 +77,5 @@ public class goToConstants {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     driveController.setGoal(0.0);
     thetaController.setGoal(0.0);
-  }
-
-  public static class PoseConstants {
-    public static final Pose2d examplePose = new Pose2d(3.57, 2.75, Rotation2d.fromDegrees(60));
-    public static final Pose2d examplePose2 = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
-    // TODO: update this to an actual pose/poses for climbing
-    public static final Pose2d climbPose = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
-    public static final double fieldLength = 16.540988;
-    public static final double fieldWidth = 8.042;
-
-    public static final double shootCutoff = 4.282694;
-
-    public static final double zone1 = 3;
-    public static final double zone2 = 5.042;
-    public static final Translation3d feedRight = AllianceFlipUtil.apply(new Translation3d(1.0, 1.5, 0.0));
-    public static final Translation3d feedMiddle = AllianceFlipUtil.apply(new Translation3d(1.0, 4.021, 0.0));
-    public static final Translation3d feedLeft =AllianceFlipUtil.apply( new Translation3d(1.0, 6.542, 0.0));
-    public static final double overhangMiddle = 3.5;
-    public static final double overhangSide = 1.5;
-
-    private static Pose2d[] examplePoseListBlue =
-        new Pose2d[] {
-          new Pose2d(2, 2, Rotation2d.fromDegrees(180)),
-          new Pose2d(3, 3, Rotation2d.fromDegrees(270))
-        };
-
-    public static final Pose2d[] examplePoseList = AllianceFlipUtil.apply(examplePoseListBlue);
-
-    public static enum AutonState {
-      EXAMPLE1,
-      EXAMPLE2,
-      EXAMPLE3,
-      DEFAULT
-    }
   }
 }

@@ -28,6 +28,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -49,6 +50,7 @@ import frc.robot.Constants.Status;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.statusableUtils.Statusable;
+import frc.robot.util.zoneCalc.Polygon;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -419,5 +421,18 @@ public class Drive extends SubsystemBase implements Statusable {
   @AutoLogOutput(key = "Subsystems/Drive/Lean/Pitch")
   public double getPitch() {
     return gyroInputs.pitch;
+  }
+
+  public Polygon getPolygon() {
+    Pose2d pose = getPose();
+    Translation2d frontLeft =
+        DriveConstants.frontLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d frontRight =
+        DriveConstants.frontRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d backLeft =
+        DriveConstants.backLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    Translation2d backRight =
+        DriveConstants.backRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    return new Polygon(getName(), frontLeft, frontRight, backRight, backLeft);
   }
 }

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 // org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.ModuleForce;
 // import
 // org.littletonrobotics.vehicletrajectoryservice.VehicleTrajectoryServiceOuterClass.VehicleState;
-import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
+import frc.robot.PoseConstants;
 
 public class AllianceFlipUtil {
   public static double applyX(double x) {
