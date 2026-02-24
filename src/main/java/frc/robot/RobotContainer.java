@@ -449,8 +449,10 @@ public class RobotContainer {
                       PoseConstants.testPolygon.fullyContains(m_drive.getPolygon()));
                   Logger.recordOutput(
                       "Utils/ZoneCalc/testing/turretBehindHub",
-                      PoseConstants.behindTheHub.contains(
-                          m_turret.getTurretFieldPose().getTranslation().toTranslation2d()));
+                      PoseConstants.behindHub.contains(
+                              m_turret.getTurretFieldPose().getTranslation().toTranslation2d())
+                          || PoseConstants.behindOtherHub.contains(
+                              m_turret.getTurretFieldPose().getTranslation().toTranslation2d()));
                   Logger.recordOutput(
                       "Utils/ZoneCalc/testing/timeCost", (startTime - System.nanoTime()) * 1e-9);
                 }));
