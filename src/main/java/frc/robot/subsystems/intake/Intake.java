@@ -18,6 +18,7 @@ public class Intake extends SubsystemBase implements Statusable {
   private final SolenoidIO m_solenoid;
   public IntakeState m_state;
   private final Supplier<Pose2d> m_poseSupplier;
+  private Polygon m_polygon;
 
   public static enum IntakeState {
     UP,
@@ -28,6 +29,7 @@ public class Intake extends SubsystemBase implements Statusable {
     m_solenoid = solenoid;
     roller = new RelEncoderSparkMax(IntakeConstants.intakeRollerConfig);
     m_poseSupplier = drivePose;
+    updatePolygon();
   }
 
   public IntakeState getIntakeState() {
@@ -60,6 +62,7 @@ public class Intake extends SubsystemBase implements Statusable {
   public void periodic() {
     m_state = getSolenoid().getSolenoidOn() ? IntakeState.DOWN : IntakeState.UP;
     Logger.recordOutput("Subsystems/Intake/state", m_state.toString());
+    updatePolygon();
   }
 
   @Override
@@ -73,7 +76,11 @@ public class Intake extends SubsystemBase implements Statusable {
   }
 
   public Polygon getPolygon() {
-    return getPolygon(m_poseSupplier.get(), m_state);
+    return m_polygon;
+  }
+
+  private void updatePolygon() {
+    m_polygon = getPolygon(m_poseSupplier.get(), m_state);
   }
 
   public Polygon getPolygon(Pose2d pose, IntakeState state) {

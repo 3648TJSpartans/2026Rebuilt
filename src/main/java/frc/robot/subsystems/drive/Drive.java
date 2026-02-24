@@ -65,6 +65,7 @@ public class Drive extends SubsystemBase implements Statusable {
   private final SysIdRoutine sysId;
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+  private Polygon m_polygon;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -93,6 +94,7 @@ public class Drive extends SubsystemBase implements Statusable {
     modules[3] = new Module(brModuleIO, 3);
 
     setName("Subsystems/Drive");
+    updatePolygon();
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
@@ -147,6 +149,7 @@ public class Drive extends SubsystemBase implements Statusable {
 
   @Override
   public void periodic() {
+    updatePolygon();
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -423,8 +426,12 @@ public class Drive extends SubsystemBase implements Statusable {
     return gyroInputs.pitch;
   }
 
+  private void updatePolygon() {
+    m_polygon = getPolygon(getPose());
+  }
+
   public Polygon getPolygon() {
-    return getPolygon(getPose());
+    return m_polygon;
   }
 
   public Polygon getPolygon(Pose2d pose) {
