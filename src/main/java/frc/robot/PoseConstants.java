@@ -54,4 +54,7 @@ public class PoseConstants {
                 new Translation2d(5.189 + 7.29, 4.83),
                 new Translation2d(8.27 + 7.29, 4.034)
               }));
+
+  public static final Rectangle field =
+      new Rectangle("field", new Translation2d(0, 0), new Translation2d(fieldLength, fieldWidth));
 }

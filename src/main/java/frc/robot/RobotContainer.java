@@ -1168,6 +1168,20 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+
+    Command pullUpIntakeAtWall =
+        Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+            .onlyIf(
+                () ->
+                    ((m_drive.getChassisSpeeds().vxMetersPerSecond
+                        > IntakeConstants.maxIntakeSpeed.get())));
+    new Trigger(
+            () ->
+                PoseConstants.field.fullyContains(
+                    m_intake.getPolygon(
+                        m_drive.getPose().exp(m_drive.getChassisSpeeds().toTwist2d(IntakeConstants.pullUpTime.get())),
+                        m_intake.getIntakeState())))
+        .onFalse(pullUpIntakeAtWall);
   }
 
   public void configureHopper() {}
