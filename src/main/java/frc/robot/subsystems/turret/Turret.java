@@ -86,7 +86,7 @@ public class Turret extends SubsystemBase implements Statusable {
       isHomed = true;
       return;
     }
-    if (m_zeroSwitch.switchedTrue()) {
+    if (m_zeroSwitch.switchedFalse()) {
       // Allows us to rotate turret 360 degrees and get our encoder offset value.
       Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", m_relEncoder.getPosition());
       setZeroHeading();
