@@ -91,6 +91,7 @@ import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
+import frc.robot.util.zoneCalc.Polygon;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -1175,13 +1176,65 @@ public class RobotContainer {
                 () ->
                     ((m_drive.getChassisSpeeds().vxMetersPerSecond
                         > IntakeConstants.maxIntakeSpeed.get())));
+
+    Polygon projectedIntakeLocation =
+        m_intake.getPolygon(
+            m_drive
+                .getPose()
+                .exp(m_drive.getChassisSpeeds().toTwist2d(IntakeConstants.pullUpTime.get())),
+            m_intake.getIntakeState());
+
     new Trigger(
             () ->
                 PoseConstants.field.fullyContains(
                     m_intake.getPolygon(
-                        m_drive.getPose().exp(m_drive.getChassisSpeeds().toTwist2d(IntakeConstants.pullUpTime.get())),
+                        m_drive
+                            .getPose()
+                            .exp(
+                                m_drive
+                                    .getChassisSpeeds()
+                                    .toTwist2d(IntakeConstants.pullUpTime.get())),
                         m_intake.getIntakeState())))
-        .onFalse(pullUpIntakeAtWall);
+        .onFalse(
+            Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+                .onlyIf(
+                    () ->
+                        ((m_drive.getChassisSpeeds().vxMetersPerSecond
+                            > IntakeConstants.maxIntakeSpeed.get()))));
+    new Trigger(
+            () ->
+                PoseConstants.blueHub.contains(
+                    m_intake.getPolygon(
+                        m_drive
+                            .getPose()
+                            .exp(
+                                m_drive
+                                    .getChassisSpeeds()
+                                    .toTwist2d(IntakeConstants.pullUpTime.get())),
+                        m_intake.getIntakeState())))
+        .onTrue(
+            Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+                .onlyIf(
+                    () ->
+                        ((m_drive.getChassisSpeeds().vxMetersPerSecond
+                            > IntakeConstants.maxIntakeSpeed.get()))));
+    new Trigger(
+            () ->
+                PoseConstants.redHub.contains(
+                    m_intake.getPolygon(
+                        m_drive
+                            .getPose()
+                            .exp(
+                                m_drive
+                                    .getChassisSpeeds()
+                                    .toTwist2d(IntakeConstants.pullUpTime.get())),
+                        m_intake.getIntakeState())))
+        .onTrue(
+            Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+                .onlyIf(
+                    () ->
+                        ((m_drive.getChassisSpeeds().vxMetersPerSecond
+                            > IntakeConstants.maxIntakeSpeed.get()))));
   }
 
   public void configureHopper() {}
