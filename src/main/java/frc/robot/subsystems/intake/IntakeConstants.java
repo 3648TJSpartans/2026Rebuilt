@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
@@ -37,6 +38,18 @@ public class IntakeConstants {
   // it will shred the balls.
   public static final TunableNumber hopperSlowSpeed =
       new TunableNumber("Subsystems/Intake/hopperSlowSpeed", 0);
+  // This is the max speed that the robot will let itself run into a wall with while intake is down.
+  // Faster than this and it automatically pulls the intake up.
+  public static final TunableNumber maxIntakeSpeed =
+      new TunableNumber("Subsystems/Intake/maxIntakeSpeed", 2);
+  // This is how many seconds the robot will look into the future to decide when it will crash into
+  // a wall. If the intake is going to hit a wall in less time than it can pull up the intake, it
+  // attempts to bring it up.
+  public static final TunableNumber pullUpTime =
+      new TunableNumber("Subsystems/Intake/pullUpTime", 0.25);
+
+  public static final TunableBoolean intakeProtected =
+      new TunableBoolean("Subsystems/Intake/protected", true);
 
   public static final int solenoidChannel = 1;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);

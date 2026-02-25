@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.zoneCalc.Polygon;
 import frc.robot.util.zoneCalc.Rectangle;
@@ -54,4 +55,19 @@ public class PoseConstants {
                 new Translation2d(5.189 + 7.29, 4.83),
                 new Translation2d(8.27 + 7.29, 4.034)
               }));
+
+  public static final Rectangle field =
+      new Rectangle("field", new Translation2d(0, 0), new Translation2d(fieldLength, fieldWidth));
+  public static final Rectangle blueHub =
+      new Rectangle(
+          "blueHub",
+          new Translation2d(Units.inchesToMeters(158.61), Units.inchesToMeters(135.59)),
+          new Translation2d(Units.inchesToMeters(205.61), Units.inchesToMeters(182.59)));
+  public static final Rectangle redHub =
+      new Rectangle(
+          "redHub",
+          new Translation2d(
+              fieldLength - Units.inchesToMeters(158.61), Units.inchesToMeters(135.59)),
+          new Translation2d(
+              fieldLength - Units.inchesToMeters(205.61), Units.inchesToMeters(182.59)));
 }

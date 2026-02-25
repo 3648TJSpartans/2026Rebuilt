@@ -59,6 +59,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
@@ -91,6 +92,7 @@ import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
+import frc.robot.util.zoneCalc.Polygon;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -1168,6 +1170,36 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+
+    new Trigger(
+            () -> {
+              Polygon projectedIntake =
+                  m_intake.getPolygon(
+                      m_drive
+                          .getPose()
+                          .exp(
+                              m_drive
+                                  .getChassisSpeeds()
+                                  .toTwist2d(IntakeConstants.pullUpTime.get())),
+                      m_intake.getIntakeState());
+              if (!PoseConstants.field.fullyContains(projectedIntake)) {
+                return true;
+              }
+              if (PoseConstants.blueHub.contains(projectedIntake)) {
+                return true;
+              }
+              if (PoseConstants.redHub.contains(projectedIntake)) {
+                return true;
+              }
+              return false;
+            })
+        .onTrue(
+            Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+                .onlyIf(
+                    () ->
+                        (IntakeConstants.intakeProtected.get()
+                            && (m_drive.getChassisSpeeds().vxMetersPerSecond
+                                > IntakeConstants.maxIntakeSpeed.get()))));
   }
 
   public void configureHopper() {}
@@ -1278,7 +1310,20 @@ public class RobotContainer {
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
                 .andThen(
                     Commands.runOnce(m_neural::updateSavedPose)
-                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
+                        .andThen(
+                            new DriveTo(m_drive, () -> m_neural.getSavedPose())
+                                .onlyIf(
+                                    () ->
+                                        (IntakeConstants.intakeProtected.get()
+                                            && !PoseConstants.blueHub.contains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN))
+                                            && !PoseConstants.blueHub.contains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN))
+                                            && PoseConstants.field.fullyContains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN)))))))
         .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
 
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
