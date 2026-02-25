@@ -91,7 +91,6 @@ import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
-import frc.robot.util.zoneCalc.Polygon;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -1169,20 +1168,6 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
-
-    Command pullUpIntakeAtWall =
-        Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
-            .onlyIf(
-                () ->
-                    ((m_drive.getChassisSpeeds().vxMetersPerSecond
-                        > IntakeConstants.maxIntakeSpeed.get())));
-
-    Polygon projectedIntakeLocation =
-        m_intake.getPolygon(
-            m_drive
-                .getPose()
-                .exp(m_drive.getChassisSpeeds().toTwist2d(IntakeConstants.pullUpTime.get())),
-            m_intake.getIntakeState());
 
     new Trigger(
             () ->
