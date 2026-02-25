@@ -29,7 +29,7 @@ public class Kicker extends RelEncoderSparkMax {
   @Override
   public void updateValues() {
     super.updateValues();
-    Logger.recordOutput("Subsystems/Kicker/irSensor", irSensor.get());
+    irSensor.updateValues();
   }
 
   @Override
