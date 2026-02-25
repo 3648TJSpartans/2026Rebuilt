@@ -54,6 +54,7 @@ public class Turret extends SubsystemBase implements Statusable {
 
   @Override
   public void periodic() {
+    m_zeroSwitch.updateValues();
     m_relEncoder.periodic();
     updateInputs();
     checkHeading();

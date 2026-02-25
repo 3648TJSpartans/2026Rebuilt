@@ -59,6 +59,7 @@ public class TheClaw extends SubsystemBase implements Statusable {
 
   @Override
   public void periodic() {
+    bottomSwitch.updateValues();
     if (bottomSwitch.get()) {
       setZero();
     }
