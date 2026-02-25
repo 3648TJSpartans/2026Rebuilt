@@ -59,6 +59,7 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
@@ -1196,8 +1197,9 @@ public class RobotContainer {
             Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
                 .onlyIf(
                     () ->
-                        ((m_drive.getChassisSpeeds().vxMetersPerSecond
-                            > IntakeConstants.maxIntakeSpeed.get()))));
+                        (IntakeConstants.intakeProtected.get()
+                            && (m_drive.getChassisSpeeds().vxMetersPerSecond
+                                > IntakeConstants.maxIntakeSpeed.get()))));
   }
 
   public void configureHopper() {}
@@ -1308,7 +1310,20 @@ public class RobotContainer {
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
                 .andThen(
                     Commands.runOnce(m_neural::updateSavedPose)
-                        .andThen(new DriveTo(m_drive, () -> m_neural.getSavedPose()))))
+                        .andThen(
+                            new DriveTo(m_drive, () -> m_neural.getSavedPose())
+                                .onlyIf(
+                                    () ->
+                                        (IntakeConstants.intakeProtected.get()
+                                            && !PoseConstants.blueHub.contains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN))
+                                            && !PoseConstants.blueHub.contains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN))
+                                            && PoseConstants.field.fullyContains(
+                                                m_intake.getPolygon(
+                                                    m_neural.getSavedPose(), IntakeState.DOWN)))))))
         .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
 
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
