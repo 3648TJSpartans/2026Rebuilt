@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
@@ -46,6 +47,9 @@ public class IntakeConstants {
   // attempts to bring it up.
   public static final TunableNumber pullUpTime =
       new TunableNumber("Subsystems/Intake/pullUpTime", 0.25);
+
+  public static final TunableBoolean intakeProtected =
+      new TunableBoolean("Subsystems/Intake/protected", true);
 
   public static final int solenoidChannel = 1;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);

@@ -1197,8 +1197,9 @@ public class RobotContainer {
             Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
                 .onlyIf(
                     () ->
-                        ((m_drive.getChassisSpeeds().vxMetersPerSecond
-                            > IntakeConstants.maxIntakeSpeed.get()))));
+                        (IntakeConstants.intakeProtected.get()
+                            && (m_drive.getChassisSpeeds().vxMetersPerSecond
+                                > IntakeConstants.maxIntakeSpeed.get()))));
   }
 
   public void configureHopper() {}
@@ -1313,7 +1314,8 @@ public class RobotContainer {
                             new DriveTo(m_drive, () -> m_neural.getSavedPose())
                                 .onlyIf(
                                     () ->
-                                        (!PoseConstants.blueHub.contains(
+                                        (IntakeConstants.intakeProtected.get()
+                                            && !PoseConstants.blueHub.contains(
                                                 m_intake.getPolygon(
                                                     m_neural.getSavedPose(), IntakeState.DOWN))
                                             && !PoseConstants.blueHub.contains(
