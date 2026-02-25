@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.drive.DriveConstants.powerOverTrench;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
@@ -1235,27 +1237,32 @@ public class RobotContainer {
       new Rotation2d(-3 * Math.PI / 4),
       new Rotation2d(-Math.PI / 4),
     };
-
-    m_driveController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                m_drive,
-                () -> -m_driveController.getLeftY(),
-                () -> -m_driveController.getLeftX(),
-                () -> {
-                  Rotation2d driveRotation = m_drive.getRotation();
-                  double smallestDiff = Double.MAX_VALUE;
-                  Rotation2d closestLockpoint = new Rotation2d(0.0);
-                  for (Rotation2d lockpoint : lockpoints) {
-                    double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
-                    if (diff < smallestDiff) {
-                      smallestDiff = diff;
-                      closestLockpoint = lockpoint;
-                    }
-                  }
-                  return closestLockpoint;
-                }));
+    Command driveAtAngle =
+        DriveCommands.joystickDriveAtAngle(
+            m_drive,
+            () -> -m_driveController.getLeftY() * powerOverTrench,
+            () -> -m_driveController.getLeftX() * powerOverTrench,
+            () -> {
+              Rotation2d driveRotation = m_drive.getRotation();
+              double smallestDiff = Double.MAX_VALUE;
+              Rotation2d closestLockpoint = new Rotation2d(0.0);
+              for (Rotation2d lockpoint : lockpoints) {
+                double diff = Math.abs(driveRotation.minus(lockpoint).getRadians());
+                if (diff < smallestDiff) {
+                  smallestDiff = diff;
+                  closestLockpoint = lockpoint;
+                }
+              }
+              return closestLockpoint;
+            });
+    m_driveController.a().whileTrue(driveAtAngle);
+    new Trigger(
+            () ->
+                PoseConstants.redBottomBump.contains(m_drive.getPolygon())
+                    || PoseConstants.redTopBump.contains(m_drive.getPolygon())
+                    || PoseConstants.blueBottomBump.contains(m_drive.getPolygon())
+                    || PoseConstants.blueTopBump.contains(m_drive.getPolygon()))
+        .whileTrue(driveAtAngle);
 
     // Switch to X pattern when X button is pressed
     m_driveController.x().onTrue(Commands.runOnce(m_drive::stopWithX, m_drive));

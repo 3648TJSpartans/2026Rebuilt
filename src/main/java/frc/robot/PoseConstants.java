@@ -54,4 +54,22 @@ public class PoseConstants {
                 new Translation2d(5.189 + 7.29, 4.83),
                 new Translation2d(8.27 + 7.29, 4.034)
               }));
+  public static final Polygon blueTopBump =
+      new Rectangle(
+          "Bumps/BlueTopBump", new Translation2d(4.015, 1.597), new Translation2d(5.209, 3.451));
+  public static final Polygon blueBottomBump =
+      new Rectangle(
+          "Bumps/BlueBottomBump",
+          new Translation2d(4.015, 8.0693 - 1.597),
+          new Translation2d(5.209, 8.0693 - 3.451));
+  public static final Polygon redTopBump =
+      new Rectangle(
+          "Bumps/RedTopBump",
+          new Translation2d(16.540 - 4.015, 1.597),
+          new Translation2d(16.540 - 5.209, 3.451));
+  public static final Polygon redBottomBump =
+      new Rectangle(
+          "Bumps/RedBottomBump",
+          new Translation2d(16.540 - 4.015, 8.0693 - 1.597),
+          new Translation2d(16.540 - 5.209, 8.0693 - 3.451));
 }

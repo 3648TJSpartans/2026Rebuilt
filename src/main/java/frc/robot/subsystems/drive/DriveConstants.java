@@ -35,7 +35,8 @@ public class DriveConstants {
   // maximum input for robot
   // relative
 
-  public static final double maxSpeedMetersPerSec = 4; // 4.46 is max on rev product page, 2
+  public static final double maxSpeedMetersPerSec = 4.46; // 4.46 is max on rev product page, 2
+  public static final double powerOverTrench = 1.0; // %
   // is what it was before
   public static final double odometryFrequency = 100.0; // Hz
   public static final double trackWidth = Units.inchesToMeters(24.8); // TODO Update;
