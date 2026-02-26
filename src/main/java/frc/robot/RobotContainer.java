@@ -1124,10 +1124,10 @@ public class RobotContainer {
    m_testController
         .y()
         .whileTrue(
-            dynamicTestTrajectory.alongWith(
+            shootTuning.alongWith(
                 Commands.run(
                         () -> {
-                          if (dynamicTestTrajectory.ready()) {
+                          if (shootTuning.ready()) {
                             m_kicker.setPower(1.0);
                             m_hopper.setPower(-.5);
                           }
