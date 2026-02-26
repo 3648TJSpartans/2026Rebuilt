@@ -8,7 +8,7 @@ public class ShooterConstants {
   public static MotorConfig kLeaderMotorConfig =
       new MotorConfig("Subsystems/Shooter/LeaderMotorIO")
           .motorCan(11)
-          .Ks(-0.02985)
+          .Ks(-0.0516)
           .Kv(0.00182)
           .minPower(0.0)
           .speedTolerance(100)
@@ -16,7 +16,7 @@ public class ShooterConstants {
   public static MotorConfig kFollowerMotorConfig =
       new MotorConfig("Subsystems/Shooter/FollowerMotorIO")
           .motorCan(10)
-          .Ks(-0.02985)
+          .Ks(-0.0516)
           .Kv(0.00182)
           .maxPower(0.0)
           .speedTolerance(100)

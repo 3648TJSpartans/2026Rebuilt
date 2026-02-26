@@ -1024,7 +1024,7 @@ public class RobotContainer {
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_test3Controller
         .leftStick()
-        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))).finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
         .a()
@@ -1236,7 +1236,7 @@ public class RobotContainer {
   }
 
   private void configureHood() {
-    m_copilotController
+    m_test3Controller
         .povUp()
         .whileTrue(
             Commands.run(() -> m_hood.getMotor().setPower(0.05), m_hood)

@@ -22,6 +22,15 @@ public class Hood extends SubsystemBase implements Statusable {
   //   setPosition(setpoint);
   // }
 
+  @Override
+  public void periodic(){
+    super.periodic();
+    motor.periodic();
+    if(motor.getPosition()>0.9){
+      motor.setEncoder(0.0);
+    }
+  }
+
   @AutoLogOutput(key = "Subsystems/Hood/getAngle")
   public double getAngle() {
     if (!Constants.hoodWorking.get()) {

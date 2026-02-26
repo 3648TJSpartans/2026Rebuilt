@@ -10,7 +10,7 @@ public class HoodConstants {
 
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Hood/MotorIO")
-          .motorCan(17)
+          .motorCan(14)
           .p(2)
           .i(0.01)
           .d(0)
