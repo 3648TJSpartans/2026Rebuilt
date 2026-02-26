@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.util.TunableBoolean;
 
 public class VisionConstants {
   public static final boolean usingMT1 = true;
@@ -36,9 +37,9 @@ public class VisionConstants {
   public static Transform3d robotToCamera1 = new Transform3d(0, 0, 0, new Rotation3d(0.0, 0, 0));
 
   // Basic filtering thresholds
-  public static double maxAmbiguity = 0.3;
-  public static double maxZError = 0.75; // TODO Updat this back
-
+  public static final double maxAmbiguity = 0.3;
+  public static final double maxZError = 0.75; // TODO Updat this back
+    public static final TunableBoolean pipelineSwitching = new TunableBoolean("Subsystems/Vision/pipelineSwitchingEnabled",false);
   // Standard deviation baselines, for 1 meter distance and 1 tag
   // (Adjusted automatically based on distance and # of tags)
   public static double linearStdDevBaseline = 0.02; // Meters

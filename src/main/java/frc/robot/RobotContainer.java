@@ -475,15 +475,13 @@ public class RobotContainer {
                     () -> m_turret.getRelEncoder().setPower(m_test3Controller.getLeftY() / 4.0),
                     m_turret)
                 .finallyDo(m_turret.getRelEncoder()::stop));
-    m_test3Controller
-        .rightTrigger()
+     new Trigger(()-> Math.abs(m_test3Controller.getRightTriggerAxis()) > 0.1)
         .whileTrue(
             Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
                 .finallyDo(m_kicker::stop));
-    m_test3Controller
-        .leftTrigger()
+    new Trigger(()-> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
         .whileTrue(
-            Commands.run(() -> m_hopper.setPower(m_test3Controller.getLeftTriggerAxis()), m_hopper)
+            Commands.run(() -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis()/2.0), m_hopper)
                 .finallyDo(m_hopper::stop));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
@@ -1239,12 +1237,12 @@ public class RobotContainer {
     m_test3Controller
         .povUp()
         .whileTrue(
-            Commands.run(() -> m_hood.getMotor().setPower(0.05), m_hood)
+            Commands.run(() -> m_hood.getMotor().setPower(0.2), m_hood)
                 .finallyDo(() -> m_hood.getMotor().stop()));
     m_test3Controller
         .povDown()
         .whileTrue(
-            Commands.run(() -> m_hood.getMotor().setPower(-0.05), m_hood)
+            Commands.run(() -> m_hood.getMotor().setPower(-0.2), m_hood)
                 .finallyDo(() -> m_hood.getMotor().stop()));
     TunableNumber testPose = new TunableNumber("Subsystems/Hood/testPosition", 0.25);
     m_test3Controller

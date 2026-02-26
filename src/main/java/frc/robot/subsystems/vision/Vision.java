@@ -21,6 +21,7 @@ import static frc.robot.subsystems.vision.VisionConstants.linearStdDevBaseline;
 import static frc.robot.subsystems.vision.VisionConstants.linearStdDevMegatag2Factor;
 import static frc.robot.subsystems.vision.VisionConstants.maxAmbiguity;
 import static frc.robot.subsystems.vision.VisionConstants.maxZError;
+import static frc.robot.subsystems.vision.VisionConstants.pipelineSwitching;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -226,6 +227,9 @@ public class Vision extends SubsystemBase implements Statusable {
   }
 
   public void setPipeline(int pipeline, int cameraIndex) {
+    if(!pipelineSwitching.get()){
+      return;
+    }
     io[cameraIndex].setPipeline(pipeline);
   }
 

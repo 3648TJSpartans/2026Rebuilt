@@ -26,7 +26,7 @@ public class Hood extends SubsystemBase implements Statusable {
   public void periodic(){
     super.periodic();
     motor.periodic();
-    if(motor.getPosition()>0.9){
+    if(motor.getPosition()>0.95){
       motor.setEncoder(0.0);
     }
   }
