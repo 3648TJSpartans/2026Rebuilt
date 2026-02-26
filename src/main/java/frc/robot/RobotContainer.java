@@ -1021,10 +1021,10 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.2), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
 
-    // TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
-    // m_testController
-    //     .rightTrigger()
-    //     .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
+    TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
+    m_test3Controller
+        .leftStick()
+        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))));
 
     m_test3Controller
         .a()

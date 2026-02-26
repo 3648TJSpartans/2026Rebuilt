@@ -17,15 +17,15 @@ public class TurretConstants {
           .maxPower(0.3)
           .minPower(-0.3);
   public static final Translation3d kTurretOffset = new Translation3d(-.165, .165, .39);
-  public static final TunableNumber kTurretMinRotation =
-      new TunableNumber("Subsystems/Turret/minRotation", -3*Math.PI/4);
-  public static final TunableNumber kTurretMaxRotation =
-      new TunableNumber("Subsystems/Turret/maxRotation", Math.PI/2);
-  public static double encoderPositionFactor = Math.PI / 63;
+  public static final TunableNumber kTurretMinPose =
+      new TunableNumber("Subsystems/Turret/minPosition", -44);
+  public static final TunableNumber kTurretMaxPose =
+      new TunableNumber("Subsystems/Turret/maxPosition", -50);
+  public static double encoderPositionFactor = Math.PI / 61.02;
   public static TunableNumber kVSim = new TunableNumber("Subsystems/Turret/Sim/kV", 100.0);
   public static final int zeroSwitchPort = 0;
   public static final TunableNumber turretZeroingOffset =
-      new TunableNumber("Subsystems/Turret/turretZeroingOffset", 0.0);
+      new TunableNumber("Subsystems/Turret/turretZeroingOffset", -9.66);
 
   public static final double homePower =
       new TunableNumber("Subsystems/Turret/homePower", 0.1).get();
@@ -33,5 +33,5 @@ public class TurretConstants {
       Units.degreesToRadians(new TunableNumber("Subsystems/Turret/homeRange (deg)", 30).get());
 
   public static final TunableNumber rotationOffset =
-      new TunableNumber("Subsystems/Turret/rotationOffset (rad)", 0.0);
+      new TunableNumber("Subsystems/Turret/rotationOffset (rad)", Math.PI/2);
 }
