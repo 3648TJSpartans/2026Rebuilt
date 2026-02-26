@@ -50,7 +50,9 @@ public class Turret extends SubsystemBase implements Statusable {
     if (!Constants.turretWorking.getAsBoolean()) {
       return new Rotation2d();
     }
-    return new Rotation2d(m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor);
+    return new Rotation2d(
+        m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor
+            + TurretConstants.rotationOffset.get());
   }
 
   @Override
@@ -133,7 +135,9 @@ public class Turret extends SubsystemBase implements Statusable {
             rotationRads,
             TurretConstants.kTurretMinRotation.get(),
             TurretConstants.kTurretMaxRotation.get());
-    m_relEncoder.setPosition(rotationRads / TurretConstants.encoderPositionFactor);
+    m_relEncoder.setPosition(
+        (rotationRads - TurretConstants.rotationOffset.get())
+            / TurretConstants.encoderPositionFactor);
   }
 
   // Sets the roation in field space
