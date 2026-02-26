@@ -19,6 +19,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
@@ -1069,9 +1070,19 @@ public class RobotContainer {
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
+    TunableNumber shooterOffset = new TunableNumber("Test/Subsystems/Shooter/xShot", 1.0);
+    RunTrajectoryCmd shootTuning =
+        new RunDynamicTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () -> aspect.get(),
+            () -> .5,
+            () -> new Translation3d(m_turret.getTurretFieldPose().getTranslation().toTranslation2d().plus(new Translation2d(shooterOffset.get(),0.0))),
+            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     // m_driveController.povLeft().whileTrue(dynamicTrajectory);
-
     RunTrajectoryCmd feedAlliance =
         new RunDynamicTrajectory(
             m_turret,
@@ -1110,7 +1121,23 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-
+   m_testController
+        .y()
+        .whileTrue(
+            dynamicTestTrajectory.alongWith(
+                Commands.run(
+                        () -> {
+                          if (dynamicTestTrajectory.ready()) {
+                            m_kicker.setPower(1.0);
+                            m_hopper.setPower(-.5);
+                          }
+                        },
+                        m_kicker)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
     // m_kicker.setDefaultCommand(
     //     Commands.run(
     //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
