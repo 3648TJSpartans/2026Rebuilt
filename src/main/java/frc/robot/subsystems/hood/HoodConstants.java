@@ -24,7 +24,7 @@ public class HoodConstants {
   public static final TunableNumber hoodAngleOffset =
       new TunableNumber("Subsystems/Hood/angleOffset", Math.PI / 2);
   public static final TunableNumber minPosition =
-      new TunableNumber("Subsystems/Hood/limits/minPose", 0.0);
+      new TunableNumber("Subsystems/Hood/limits/minPose", 0.02);
   public static final TunableNumber maxPosition =
       new TunableNumber("Subsystems/Hood/limits/maxPose", 0.775);
   public static final TunableNumber minAngle =
