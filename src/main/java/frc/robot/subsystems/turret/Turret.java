@@ -129,9 +129,9 @@ public class Turret extends SubsystemBase implements Statusable {
     if (!isHomed) {
       return;
     }
-    double rotationRads = rotation.getRadians();
-    
-    double pos =  MathUtil.clamp((rotationRads - TurretConstants.rotationOffset.get())
+    rotation = rotation.minus(new Rotation2d(TurretConstants.rotationOffset.get()));
+    Logger.recordOutput("Debug/Turret/rotationSetpt", rotation.getRadians());
+    double pos =  MathUtil.clamp((rotation.getRadians())
             / TurretConstants.encoderPositionFactor, TurretConstants.kTurretMinPose.get(),TurretConstants.kTurretMaxPose.get());
     m_relEncoder.setPosition(pos);
   }

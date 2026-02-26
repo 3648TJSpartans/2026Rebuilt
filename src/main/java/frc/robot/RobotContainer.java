@@ -1068,7 +1068,7 @@ public class RobotContainer {
             () -> aspect.get(),
             () -> .5,
             () -> TrajectoryConstants.hubPose,
-            () -> RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> true,
             () -> m_drive.getTilt());
     TunableNumber shooterOffset = new TunableNumber("Test/Subsystems/Shooter/xShot", 1.0);
     RunTrajectoryCmd shootTuning =
