@@ -44,6 +44,7 @@ import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
+import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -1061,7 +1062,7 @@ public class RobotContainer {
             () -> m_drive.getTilt());
     TunableNumber aspect = new TunableNumber("Trajectory/testTrajHeight", 1.5);
     RunTrajectoryCmd dynamicTestTrajectory =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,

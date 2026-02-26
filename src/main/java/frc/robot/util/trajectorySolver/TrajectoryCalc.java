@@ -139,9 +139,9 @@ public class TrajectoryCalc {
             .toTranslation2d()
             .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
   }
 
   public static Trajectory matrixTrajectory(
@@ -153,9 +153,9 @@ public class TrajectoryCalc {
             .toTranslation2d()
             .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
   }
 
   public static Translation3d trajectoryAtTime(
