@@ -18,9 +18,9 @@ public class TurretConstants {
           .minPower(-0.3);
   public static final Translation3d kTurretOffset = new Translation3d(-.165, .165, .39);
   public static final TunableNumber kTurretMinRotation =
-      new TunableNumber("Subsystems/Turret/minRotation", -Math.PI);
+      new TunableNumber("Subsystems/Turret/minRotation", -3*Math.PI/4);
   public static final TunableNumber kTurretMaxRotation =
-      new TunableNumber("Subsystems/Turret/maxRotation", Math.PI);
+      new TunableNumber("Subsystems/Turret/maxRotation", Math.PI/2);
   public static double encoderPositionFactor = Math.PI / 63;
   public static TunableNumber kVSim = new TunableNumber("Subsystems/Turret/Sim/kV", 100.0);
   public static final int zeroSwitchPort = 0;

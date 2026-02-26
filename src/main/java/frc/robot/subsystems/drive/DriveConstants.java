@@ -127,7 +127,7 @@ public class DriveConstants {
   public static final int frontLeftDriveCanId =
       switch (chasNum) {
         case 0 -> 0;
-        case 1 -> 4;
+        case 1 -> 6;
         case 2 -> 1;
         case 3 -> 4;
         default -> 0;
@@ -135,7 +135,7 @@ public class DriveConstants {
   public static final int backLeftDriveCanId =
       switch (chasNum) {
         case 0 -> 1;
-        case 1 -> 2;
+        case 1 -> 8;
         case 2 -> 3;
         case 3 -> 2;
         default -> 0;
@@ -143,7 +143,7 @@ public class DriveConstants {
   public static final int frontRightDriveCanId =
       switch (chasNum) {
         case 0 -> 2;
-        case 1 -> 6;
+        case 1 -> 4;
         case 2 -> 7;
         case 3 -> 6;
         default -> 0;
@@ -151,7 +151,7 @@ public class DriveConstants {
   public static final int backRightDriveCanId =
       switch (chasNum) {
         case 0 -> 3;
-        case 1 -> 8;
+        case 1 -> 2;
         case 2 -> 5;
         case 3 -> 8;
         default -> 0;
@@ -162,7 +162,7 @@ public class DriveConstants {
   public static final int frontLeftTurnCanId =
       switch (chasNum) {
         case 0 -> 4;
-        case 1 -> 3;
+        case 1 -> 5;
         case 2 -> 2;
         case 3 -> 3;
         default -> 0;
@@ -170,7 +170,7 @@ public class DriveConstants {
   public static final int backLeftTurnCanId =
       switch (chasNum) {
         case 0 -> 5;
-        case 1 -> 1;
+        case 1 -> 7;
         case 2 -> 4;
         case 3 -> 1;
         default -> 0;
@@ -178,7 +178,7 @@ public class DriveConstants {
   public static final int frontRightTurnCanId =
       switch (chasNum) {
         case 0 -> 6;
-        case 1 -> 5;
+        case 1 -> 3;
         case 2 -> 8;
         case 3 -> 5;
         default -> 0;
@@ -186,7 +186,7 @@ public class DriveConstants {
   public static final int backRightTurnCanId =
       switch (chasNum) {
         case 0 -> 7;
-        case 1 -> 7;
+        case 1 -> 1;
         case 2 -> 6;
         case 3 -> 7;
         default -> 0;

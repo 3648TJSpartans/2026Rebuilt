@@ -35,6 +35,9 @@ public final class Constants {
   public static final TunableBoolean hoodWorking =
       new TunableBoolean("Overrides/hoodWorking", true);
 
+  public static TunableBoolean doSmartShoot =
+  new TunableBoolean("Overrides/doSmartShoot", false);
+
   public static final long usbFreeThreshold = 100000000; // 100MB File
 
   public static enum Mode {

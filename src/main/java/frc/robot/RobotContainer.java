@@ -465,11 +465,11 @@ public class RobotContainer {
                   Logger.recordOutput(
                       "Utils/ZoneCalc/testing/timeCost", (startTime - System.nanoTime()) * 1e-9);
                 }));
-    new Trigger(() -> m_test3Controller.getRightY() > 0.2)
+    new Trigger(() -> Math.abs(m_test3Controller.getRightY()) > 0.2)
         .whileTrue(
             Commands.run(() -> m_shooter.setPower(m_test3Controller.getRightY()), m_shooter)
                 .finallyDo(m_shooter::stop));
-    new Trigger(() -> m_test3Controller.getLeftY() > 0.2)
+    new Trigger(() -> Math.abs(m_test3Controller.getLeftY()) > 0.2)
         .whileTrue(
             Commands.run(
                     () -> m_turret.getRelEncoder().setPower(m_test3Controller.getLeftY() / 4.0),
@@ -931,6 +931,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+        .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHub);
@@ -939,6 +940,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToField);
@@ -947,6 +949,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHub);
@@ -955,6 +958,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHubFixedTurret);
@@ -963,6 +967,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
         .whileTrue(runKickerAndShootToHubFixedHood);
@@ -971,6 +976,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToFieldFixedTurret);
@@ -979,6 +985,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
         .whileTrue(runKickerAndShootToFieldFixedHood);
@@ -987,6 +994,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
+                    .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
         .whileTrue(runKickerAndShootToHubFixedTurretFixedHood);
@@ -995,6 +1003,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
         .whileTrue(runKickerAndShootToFieldFixedTurretFixedHood);
