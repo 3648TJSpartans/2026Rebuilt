@@ -28,7 +28,7 @@ public class HoodConstants {
   public static final TunableNumber maxPosition =
       new TunableNumber("Subsystems/Hood/limits/maxPose", 0.775);
   public static final TunableNumber minAngle =
-      new TunableNumber("Subsystems/Hood/minAngle (deg)", 75);
+      new TunableNumber("Subsystems/Hood/minAngle (deg)", 78);
   //   new Rotation2d(
   //       Units.degreesToRadians(
   //           78)); // This ends up being the max angle we shoot, the min angle the hood is at.
