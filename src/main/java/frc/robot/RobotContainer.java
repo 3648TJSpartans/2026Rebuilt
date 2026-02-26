@@ -1170,6 +1170,9 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
         .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+
+    new Trigger(() -> m_drive.getPitch() > IntakeConstants.retractPitch.get())
+        .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
   }
 
   public void configureHopper() {}
