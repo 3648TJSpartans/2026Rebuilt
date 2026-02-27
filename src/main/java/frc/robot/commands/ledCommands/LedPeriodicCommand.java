@@ -1,5 +1,10 @@
 package frc.robot.commands.ledCommands;
 
+import static edu.wpi.first.units.Units.Seconds;
+
+import edu.wpi.first.units.Units.*;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.leds.LedConstants;
@@ -35,14 +40,20 @@ public class LedPeriodicCommand extends Command {
       m_leds.setPattern(m_leds.centerBuffer1, LedConstants.red);
     }
 
+    if (m_override.get()) {
+      m_leds.setPattern(m_leds.centerBuffer2, LEDPattern.solid(Color.kRed).blink(Seconds.of(0.5)));
+    } else {
+      m_leds.setPattern(m_leds.centerBuffer2, LedConstants.noColor);
+    }
+
     if (m_vision.getPipeline(0)
         == 0) { // Vision status - blue if detecting AprilTags, yellow/purple if in neural mode and
       // detecting/not detecting balls
-      m_leds.setPattern(m_leds.centerBuffer2, LedConstants.blue);
+      m_leds.setPattern(m_leds.centerBuffer3, LedConstants.blue);
     } else if (m_neural.isPoseDetected()) {
-      m_leds.setPattern(m_leds.centerBuffer2, LedConstants.yellow);
+      m_leds.setPattern(m_leds.centerBuffer3, LedConstants.yellow);
     } else {
-      m_leds.setPattern(m_leds.centerBuffer2, LedConstants.purple);
+      m_leds.setPattern(m_leds.centerBuffer3, LedConstants.purple);
     }
   }
 

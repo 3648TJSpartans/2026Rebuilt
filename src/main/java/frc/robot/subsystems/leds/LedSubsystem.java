@@ -14,6 +14,7 @@ public class LedSubsystem extends SubsystemBase {
   public final AddressableLEDBufferView leftBuffer; // Left side of the intake
   public final AddressableLEDBufferView centerBuffer1; // Left side of top of intake
   public final AddressableLEDBufferView centerBuffer2; // Right side of top of intake
+  public final AddressableLEDBufferView centerBuffer3;
   public final AddressableLEDBufferView rightBuffer; // Right side of the intake
 
   private final AddressableLED led;
@@ -31,6 +32,9 @@ public class LedSubsystem extends SubsystemBase {
     centerBuffer2 =
         new AddressableLEDBufferView(
             ledBuffer, LedConstants.centerBuffer2Start, LedConstants.centerBuffer2End);
+    centerBuffer3 =
+        new AddressableLEDBufferView(
+            ledBuffer, LedConstants.centerBuffer3Start, LedConstants.centerBuffer3End);
     rightBuffer =
         new AddressableLEDBufferView(
             ledBuffer, LedConstants.rightBufferStart, LedConstants.rightBufferEnd);
