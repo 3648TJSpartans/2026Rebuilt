@@ -9,6 +9,18 @@
           "data": {
             "pathName": "DriveOverHump"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HumpToNeutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DoALine"
+          }
         }
       ]
     }
