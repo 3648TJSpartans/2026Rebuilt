@@ -65,6 +65,10 @@ public class RelEncoderSparkMax extends SparkIO {
     return encoder.getVelocity();
   }
 
+  public double getCurrent() {
+    return motor.getOutputCurrent();
+  }
+
   @Override
   public void setEncoder(double setpoint) {
     encoder.setPosition(setpoint);
