@@ -8,7 +8,7 @@ import frc.robot.util.TunableNumber;
 public class TrajectoryConstants {
   public static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
   public static final TunableNumber overhangHeight =
-      new TunableNumber("Trajectory/overhangHeight", 2.1);
+      new TunableNumber("Trajectory/overhangHeight", 1.5);
   public static final TunableNumber overhangAspect =
       new TunableNumber("Trajectory/overhangAspect", .5);
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);

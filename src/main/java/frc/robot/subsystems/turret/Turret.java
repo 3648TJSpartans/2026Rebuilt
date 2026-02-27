@@ -29,6 +29,8 @@ public class Turret extends SubsystemBase implements Statusable {
   private final StatusableDigitalInput m_zeroSwitch;
   private boolean isHomed;
   private SparkIO m_relEncoder;
+  private double turretSetAngle;
+
 
   public Turret(
       SparkIO relEncoder,
@@ -80,6 +82,7 @@ public class Turret extends SubsystemBase implements Statusable {
     turretTranslationalVelocity[1] = (xt - xr) * robotVelocity[2] + robotVelocity[1];
     Logger.recordOutput(
         "Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
+    Logger.recordOutput("Subsystems/Turret/setAngle", turretSetAngle);
   }
 
   public void checkHeading() {
@@ -126,6 +129,7 @@ public class Turret extends SubsystemBase implements Statusable {
 
   // sets rotation in robot space
   public void setRotation(Rotation2d rotation) {
+    turretSetAngle = rotation.getRadians();
     if (!isHomed) {
       return;
     }
@@ -182,5 +186,9 @@ public class Turret extends SubsystemBase implements Statusable {
   @Override
   public String getName() {
     return "Subsystems/Turret";
+  }
+
+  public boolean angleInTolerance(){
+    return Math.abs(turretSetAngle - getTurretRotation().getRadians()) < TurretConstants.turretAngleTolerance.get();
   }
 }
