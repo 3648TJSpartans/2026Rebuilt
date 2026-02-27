@@ -4,17 +4,15 @@ import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Hopper extends RelEncoderSparkMax {
-
-  private double setPower;
+  private boolean overrideJam;
 
   public Hopper() {
     super(IntakeConstants.hopperMotorConfig);
-    setPower = 0;
   }
 
   @AutoLogOutput(key = "Subsystems/Intake/Hopper/currentToSpeed")
   public double getCurrentToSpeed() {
-    return Math.abs(getSpeed()) > 100 && Math.abs(getCurrent()) > .05
+    return Math.abs(getSpeed()) > 1 && Math.abs(getCurrent()) > .05
         ? Math.abs(getCurrent() / getSpeed())
         : 0.0;
   }
@@ -24,22 +22,22 @@ public class Hopper extends RelEncoderSparkMax {
     return getCurrentToSpeed() > IntakeConstants.jamThreshold.get();
   }
 
+  public void overrideJam(boolean override) {
+    overrideJam = override;
+  }
+
+  public boolean getOverrideJam() {
+    return overrideJam;
+  }
+
   @Override
   public void setPower(double power) {
-    if (power != IntakeConstants.hopperUnjamPower.get()) {
-      setPower = power;
-    }
+    if (power != IntakeConstants.hopperUnjamPower.get()) {}
     super.setPower(power);
   }
 
   @Override
   public void stop() {
-    setPower = 0;
     super.stop();
-  }
-
-  @AutoLogOutput(key = "Subsystems/Intake/Hopper/nonJamPower")
-  public double getPower() {
-    return setPower;
   }
 }

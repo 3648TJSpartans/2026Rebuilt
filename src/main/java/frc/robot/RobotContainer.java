@@ -483,6 +483,7 @@ public class RobotContainer {
             Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
                 .finallyDo(m_kicker::stop));
     new Trigger(() -> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
+        .and(() -> !m_hopper.jammed())
         .whileTrue(
             Commands.run(
                     () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
@@ -937,6 +938,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->
@@ -946,6 +948,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToField);
     new Trigger(
             () ->
@@ -955,6 +958,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
+        .and(() -> !m_hopper.jammed())
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->
@@ -964,6 +968,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedTurret);
     new Trigger(
             () ->
@@ -973,6 +978,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedHood);
     new Trigger(
             () ->
@@ -982,6 +988,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedTurret);
     new Trigger(
             () ->
@@ -991,6 +998,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedHood);
     new Trigger(
             () ->
@@ -1000,6 +1008,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedTurretFixedHood);
     new Trigger(
             () ->
@@ -1009,6 +1018,7 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedTurretFixedHood);
   }
 
@@ -1254,9 +1264,14 @@ public class RobotContainer {
   public void configureHopper() {
     new Trigger(() -> m_hopper.jammed())
         .onTrue(
-            Commands.runOnce(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper)
+            Commands.runOnce(
+                    () -> {
+                      m_hopper.overrideJam(true);
+                      m_hopper.setPower(IntakeConstants.hopperUnjamPower.get());
+                    },
+                    m_hopper)
                 .alongWith(new WaitCommand(IntakeConstants.unjamTime.get()))
-                .finallyDo(() -> m_hopper.setPower(m_hopper.getPower())));
+                .finallyDo(() -> m_hopper.overrideJam(false)));
   }
 
   public void configureLeds() {
@@ -1366,20 +1381,24 @@ public class RobotContainer {
                 .andThen(
                     Commands.runOnce(m_neural::updateSavedPose)
                         .andThen(
-                            new DriveTo(m_drive, () -> m_neural.getSavedPose())
-                                .onlyIf(
-                                    () ->
-                                        (IntakeConstants.intakeProtected.get()
-                                            && !PoseConstants.blueHub.contains(
-                                                m_intake.getPolygon(
-                                                    m_neural.getSavedPose(), IntakeState.DOWN))
-                                            && !PoseConstants.blueHub.contains(
-                                                m_intake.getPolygon(
-                                                    m_neural.getSavedPose(), IntakeState.DOWN))
-                                            && PoseConstants.field.fullyContains(
-                                                m_intake.getPolygon(
-                                                    m_neural.getSavedPose(), IntakeState.DOWN)))))))
-        .onFalse(Commands.runOnce(() -> m_vision.setPipeline(0, 0)));
+                            Commands.runOnce(() -> m_vision.setPipeline(0, 0))
+                                .andThen(
+                                    new DriveTo(m_drive, () -> m_neural.getSavedPose())
+                                        .onlyIf(
+                                            () ->
+                                                (IntakeConstants.intakeProtected.get()
+                                                    && !PoseConstants.blueHub.contains(
+                                                        m_intake.getPolygon(
+                                                            m_neural.getSavedPose(),
+                                                            IntakeState.DOWN))
+                                                    && !PoseConstants.blueHub.contains(
+                                                        m_intake.getPolygon(
+                                                            m_neural.getSavedPose(),
+                                                            IntakeState.DOWN))
+                                                    && PoseConstants.field.fullyContains(
+                                                        m_intake.getPolygon(
+                                                            m_neural.getSavedPose(),
+                                                            IntakeState.DOWN))))))));
 
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));

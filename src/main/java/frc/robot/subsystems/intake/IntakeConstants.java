@@ -52,10 +52,10 @@ public class IntakeConstants {
       new TunableBoolean("Subsystems/Intake/protected", true);
 
   public static final TunableNumber jamThreshold =
-      new TunableNumber("Subsystems/Hopper/jamThreshold", 0.025);
+      new TunableNumber("Subsystems/Hopper/jamThreshold", 20); // 0.025
 
   public static final TunableNumber hopperUnjamPower =
-      new TunableNumber("Subsystems/Intake/Hopper/unjamPower", .5);
+      new TunableNumber("Subsystems/Intake/Hopper/unjamPower", 0.25);
 
   public static final TunableNumber unjamTime =
       new TunableNumber("Subsystems/Intake/Hopper/unjamTime", 0.5);
