@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryCalc {
   public static final double g = 9.79; // m/s^2
-  public static final int movingtargetIts = 10;
+  public static final int movingtargetIts = 20;
   public static final int interpolationPoints = 20;
 
   public static void main(String[] args) {
@@ -75,23 +75,28 @@ public class TrajectoryCalc {
       double overhangRatio,
       double zOverhang) {
     Trajectory trajectory = stationaryTrajectory(current, target, overhangRatio, zOverhang);
+    Translation3d newTarget = new Translation3d();
     for (int i = 0; i < movingtargetIts; i++) {
-      Translation3d newTarget =
+      newTarget =
           target.minus(
               new Translation3d(
                   robotVelocity[0] * trajectory.getHangTime(),
                   robotVelocity[1] * trajectory.getHangTime(),
                   0));
+      
       trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
     }
+    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    trajectory.setError(error);
     return trajectory;
   }
 
   public static Trajectory dynamicTrajectory(
       Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
     Trajectory trajectory = stationaryTrajectory(current, target, shootAngle);
+    Translation3d newTarget = new Translation3d();
     for (int i = 0; i < movingtargetIts; i++) {
-      Translation3d newTarget =
+      newTarget =
           target.minus(
               new Translation3d(
                   robotVelocity[0] * trajectory.getHangTime(),
@@ -99,6 +104,8 @@ public class TrajectoryCalc {
                   0));
       trajectory = stationaryTrajectory(current, newTarget, shootAngle);
     }
+    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    trajectory.setError(error);
     return trajectory;
   }
 
