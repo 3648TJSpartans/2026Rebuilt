@@ -51,6 +51,8 @@ public class IntakeConstants {
   public static final TunableBoolean intakeProtected =
       new TunableBoolean("Subsystems/Intake/protected", true);
 
+  public static final TunableNumber jamThreshold = new TunableNumber("Subsystems/Hopper/jamThreshold", 0.025);
+
   public static final int solenoidChannel = 1;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);

@@ -45,7 +45,6 @@ import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
-import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -1251,7 +1250,10 @@ public class RobotContainer {
                                 > IntakeConstants.maxIntakeSpeed.get()))));
   }
 
-  public void configureHopper() {}
+  public void configureHopper() {
+    new Trigger(() -> m_hopper.jammed())
+        .onTrue(Commands.runOnce(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get())));
+  }
 
   public void configureLeds() {
 

@@ -1,8 +1,8 @@
 package frc.robot.subsystems.intake;
 
 import frc.robot.Constants.Status;
-import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Hopper extends RelEncoderSparkMax {
 
@@ -21,7 +21,8 @@ public class Hopper extends RelEncoderSparkMax {
         : 0.0;
   }
 
+  @AutoLogOutput(key = "Subsystems/Hopper/jammed")
   public boolean jammed() {
-    return getCurrentToSpeed() > ClimberConstants.currentToSpeedThreshold.get();
+    return getCurrentToSpeed() > IntakeConstants.jamThreshold.get();
   }
 }
