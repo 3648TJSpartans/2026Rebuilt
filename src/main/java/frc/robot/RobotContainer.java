@@ -45,7 +45,7 @@ import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
-import frc.robot.commands.trajectoryCommands.RunDynamicTrajectory;
+import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -374,7 +374,7 @@ public class RobotContainer {
    */
   private void configureAutos() {
     RunTrajectoryCmd dynamicTrajectory =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -609,7 +609,7 @@ public class RobotContainer {
   private void configureSmartShoot() {
 
     RunTrajectoryCmd shootToHub =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -620,7 +620,7 @@ public class RobotContainer {
             () -> m_drive.getTilt());
 
     RunTrajectoryCmd shootToHubFixedTurret =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -633,7 +633,7 @@ public class RobotContainer {
             false);
 
     RunTrajectoryCmd shootToHubFixedHood =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -645,7 +645,7 @@ public class RobotContainer {
             false,
             true);
     RunTrajectoryCmd shootToHubFixedTurretFixedHood =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -657,7 +657,7 @@ public class RobotContainer {
             true,
             true);
     RunTrajectoryCmd shootToField =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -678,7 +678,7 @@ public class RobotContainer {
             () -> m_drive.getTilt());
 
     RunTrajectoryCmd shootToFieldFixedHood =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -700,7 +700,7 @@ public class RobotContainer {
             false,
             true);
     RunTrajectoryCmd shootToFieldFixedTurret =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -722,7 +722,7 @@ public class RobotContainer {
             true,
             false);
     RunTrajectoryCmd shootToFieldFixedTurretFixedHood =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -1056,7 +1056,7 @@ public class RobotContainer {
     //         Commands.run(() -> m_turret.pointAt(TrajectoryConstants.hubPose.toTranslation2d())));
 
     RunTrajectoryCmd dynamicTrajectory =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -1078,7 +1078,7 @@ public class RobotContainer {
             () -> m_drive.getTilt());
     TunableNumber shooterOffset = new TunableNumber("Test/Subsystems/Shooter/xShot", 1.0);
     RunTrajectoryCmd shootTuning =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -1096,7 +1096,7 @@ public class RobotContainer {
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     // m_driveController.povLeft().whileTrue(dynamicTrajectory);
     RunTrajectoryCmd feedAlliance =
-        new RunDynamicTrajectory(
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
