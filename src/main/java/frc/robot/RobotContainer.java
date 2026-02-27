@@ -383,27 +383,64 @@ public class RobotContainer {
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
-
+    RunTrajectoryCmd shootToField = 
+    new RunDynamicMatrixAddTrajectory(
+            m_turret,
+            m_shooter,
+            m_hood,
+            () ->
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
+                  case 1 -> PoseConstants.overhangMiddle;
+                  default -> PoseConstants.overhangSide;
+                },
+            () -> .5,
+            () ->
+                switch (RangeCalc.zoneCalc(m_drive.getPose())) {
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
+                },
+            () -> !RangeCalc.inShootingRange(m_drive.getPose()),
+            () -> m_drive.getTilt());
     Command shootToHubCommand =
         dynamicTrajectory.alongWith(
-            Commands.run(
-                    () -> {
-                      if (dynamicTrajectory.ready()) {
-                        m_kicker.setPower(1.0);
-                        m_hopper.setPower(-.5);
-                      }
-                    },
-                    m_kicker)
-                .finallyDo(
-                    () -> {
-                      m_kicker.stop();
-                      m_hopper.stop();
-                    }));
+                Commands.run(
+                        () -> {
+                          if (dynamicTrajectory.ready()) {
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.run();
+                          }
+                        },
+                        m_kicker,
+                        m_hopper)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        }));
+                        Command shootToFieldCommand =
+        shootToField.alongWith(
+                Commands.run(
+                        () -> {
+                          if (shootToField.ready()) {
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.run();
+                          }
+                        },
+                        m_kicker,
+                        m_hopper)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        }));
 
     Command intake =
         Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
             .finallyDo(m_intake::setSolenoidAndRollerUp);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
+     NamedCommands.registerCommand("ShootToHub", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
   }
