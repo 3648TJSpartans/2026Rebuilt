@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends RelEncoderSparkMax {
   private boolean overrideJam;
@@ -47,7 +48,10 @@ public class Hopper extends RelEncoderSparkMax {
   public void run() {
     if (overrideJam) {
       setPower(IntakeConstants.hopperUnjamPower.get());
+      Logger.recordOutput("Subsystems/Intake/Hopper/outtake", true);
+      return;
     }
     setPower(IntakeConstants.hopperSpeed.get());
+    Logger.recordOutput("Subsystems/Intake/Hopper/outtake", false);
   }
 }

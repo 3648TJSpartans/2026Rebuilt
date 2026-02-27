@@ -482,14 +482,14 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
                 .finallyDo(m_kicker::stop));
-    new Trigger(() -> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
-        .and(() -> !m_hopper.jammed())
-        .and(() -> !m_hopper.getOverrideJam())
-        .whileTrue(
-            Commands.run(
-                    () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
-                    m_hopper)
-                .finallyDo(m_hopper::stop));
+    // new Trigger(() -> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
+    //     .and(() -> !m_hopper.jammed())
+    //     .and(() -> !m_hopper.getOverrideJam())
+    //     .whileTrue(
+    //         Commands.run(
+    //                 () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
+    //                 m_hopper)
+    //             .finallyDo(m_hopper::stop));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
     m_testController
@@ -1129,7 +1129,6 @@ public class RobotContainer {
                         },
                         m_kicker,
                         m_hopper)
-                    .repeatedly()
                     .finallyDo(
                         () -> {
                           m_kicker.stop();
