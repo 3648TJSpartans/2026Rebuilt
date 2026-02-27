@@ -1126,23 +1126,26 @@ public class RobotContainer {
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
-    m_test3Controller
-        .y()
-        .whileTrue(
-            dynamicTestTrajectory.alongWith(
-                Commands.run(
-                        () -> {
-                          if (dynamicTestTrajectory.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
-                          }
-                        },
-                        m_kicker)
-                    .finallyDo(
-                        () -> {
-                          m_kicker.stop();
-                          m_hopper.stop();
-                        })));
+    Command runFeed =
+        Commands.run(
+                () -> {
+                  m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                  m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                },
+                m_kicker,
+                m_hopper)
+            .finallyDo(
+                () -> {
+                  m_kicker.stop();
+                  if (!m_hopper.getOverrideJam()) {
+                    return;
+                  }
+                  m_hopper.stop();
+                });
+    m_test3Controller.y().whileTrue(dynamicTestTrajectory);
+    new Trigger(() -> dynamicTestTrajectory.ready())
+        .and(() -> !m_hopper.getOverrideJam())
+        .whileTrue(runFeed);
     m_testController
         .y()
         .whileTrue(

@@ -12,7 +12,8 @@ public class Hopper extends RelEncoderSparkMax {
 
   @AutoLogOutput(key = "Subsystems/Intake/Hopper/currentToSpeed")
   public double getCurrentToSpeed() {
-    return Math.abs(getSpeed()) > 1 && Math.abs(getCurrent()) > .05
+    return Math.abs(getSpeed()) > IntakeConstants.speedThreshold.get()
+            && Math.abs(getCurrent()) > IntakeConstants.currentThreshold.get()
         ? Math.abs(getCurrent() / getSpeed())
         : 0.0;
   }

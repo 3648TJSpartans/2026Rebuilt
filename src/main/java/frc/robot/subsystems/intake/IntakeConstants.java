@@ -59,7 +59,10 @@ public class IntakeConstants {
 
   public static final TunableNumber unjamTime =
       new TunableNumber("Subsystems/Intake/Hopper/unjamTime", 0.5);
-
+  public static final TunableNumber speedThreshold =
+      new TunableNumber("Subsystems/Intake/Hopper/speedThreshold", 0.5);
+  public static final TunableNumber currentThreshold =
+      new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
   public static final int solenoidChannel = 1;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
