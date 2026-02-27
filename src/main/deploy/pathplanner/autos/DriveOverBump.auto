@@ -19,7 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DoALine"
+            "pathName": "NeutralToHump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveOverHumpReversed"
           }
         }
       ]
