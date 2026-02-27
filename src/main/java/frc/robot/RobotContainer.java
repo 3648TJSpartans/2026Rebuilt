@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -1252,7 +1253,10 @@ public class RobotContainer {
 
   public void configureHopper() {
     new Trigger(() -> m_hopper.jammed())
-        .onTrue(Commands.runOnce(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get())));
+        .onTrue(
+            Commands.runOnce(() -> m_hopper.setPower(-IntakeConstants.hopperSpeed.get()), m_hopper)
+                .alongWith(new WaitCommand(IntakeConstants.unjamTime.get()))
+                .finallyDo(() -> m_hopper.setPower(m_hopper.getPower())));
   }
 
   public void configureLeds() {
