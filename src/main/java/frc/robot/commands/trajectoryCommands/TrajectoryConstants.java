@@ -86,10 +86,10 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] velocityMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.0m/velocity", 0.0),
-        new TunableNumber("Trajectory/.5m/velocity", 0.0),
-        new TunableNumber("Trajectory/1.0m/velocity", 0.0),
-        new TunableNumber("Trajectory/1.5m/velocity", 0.0),
+        new TunableNumber("Trajectory/.0m/velocity", -0.5),
+        new TunableNumber("Trajectory/.5m/velocity", -0.5),
+        new TunableNumber("Trajectory/1.0m/velocity", -0.5),
+        new TunableNumber("Trajectory/1.5m/velocity", -0.5),
         new TunableNumber("Trajectory/2.0m/velocity", -0.25),
         new TunableNumber("Trajectory/2.5m/velocity", -.225),
         new TunableNumber("Trajectory/3.0m/velocity", -0.45),

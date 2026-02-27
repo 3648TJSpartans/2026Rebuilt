@@ -256,7 +256,8 @@ public class RobotContainer {
                     // m_drive::getRotation),
                     new VisionIOLimelight("limelight-three", m_drive::getRotation),
                     new VisionIOLimelight("limelight-foura", m_drive::getRotation),
-                    new VisionIOLimelight("limelight-fourb", m_drive::getRotation),new VisionIOLimelight("limelight-fourc", m_drive::getRotation));
+                    new VisionIOLimelight("limelight-fourb", m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourc", m_drive::getRotation));
             break;
           default:
             m_vision =
@@ -477,13 +478,15 @@ public class RobotContainer {
                     () -> m_turret.getRelEncoder().setPower(m_test3Controller.getLeftY() / 4.0),
                     m_turret)
                 .finallyDo(m_turret.getRelEncoder()::stop));
-     new Trigger(()-> Math.abs(m_test3Controller.getRightTriggerAxis()) > 0.1)
+    new Trigger(() -> Math.abs(m_test3Controller.getRightTriggerAxis()) > 0.1)
         .whileTrue(
             Commands.run(() -> m_kicker.setPower(m_test3Controller.getLeftTriggerAxis()), m_kicker)
                 .finallyDo(m_kicker::stop));
-    new Trigger(()-> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
+    new Trigger(() -> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
         .whileTrue(
-            Commands.run(() -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis()/2.0), m_hopper)
+            Commands.run(
+                    () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
+                    m_hopper)
                 .finallyDo(m_hopper::stop));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
@@ -780,8 +783,8 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHub.ready()) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                           }
                         },
                         m_kicker,
@@ -798,8 +801,8 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHubFixedHood.ready()) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                           }
                         },
                         m_kicker,
@@ -824,8 +827,8 @@ public class RobotContainer {
                                       .getAngle()
                                       .getDegrees()
                                   < 1.0) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                           }
                         },
                         m_kicker)
@@ -848,8 +851,8 @@ public class RobotContainer {
                                       .getAngle()
                                       .getDegrees()
                                   < 1.0) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                           }
                         },
                         m_kicker)
@@ -864,8 +867,8 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToField.ready()) {
-                        m_kicker.setPower(1.0);
-                        m_hopper.setPower(-.5);
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                       }
                     },
                     m_kicker)
@@ -879,8 +882,8 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToFieldFixedHood.ready()) {
-                        m_kicker.setPower(1.0);
-                        m_hopper.setPower(-.5);
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                       }
                     },
                     m_kicker)
@@ -894,8 +897,8 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToField.ready()) {
-                        m_kicker.setPower(1.0);
-                        m_hopper.setPower(-.5);
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                       }
                     },
                     m_kicker)
@@ -909,8 +912,8 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToFieldFixedTurretFixedHood.ready()) {
-                        m_kicker.setPower(1.0);
-                        m_hopper.setPower(-.5);
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                       }
                     },
                     m_kicker)
@@ -940,7 +943,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToField);
@@ -949,7 +952,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHub);
@@ -958,7 +961,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToHubFixedTurret);
@@ -967,7 +970,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
         .whileTrue(runKickerAndShootToHubFixedHood);
@@ -976,7 +979,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
         .whileTrue(runKickerAndShootToFieldFixedTurret);
@@ -985,7 +988,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
         .whileTrue(runKickerAndShootToFieldFixedHood);
@@ -994,7 +997,7 @@ public class RobotContainer {
                 DriverStation.isTeleopEnabled()
                     && !m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
-                    .and(Constants.doSmartShoot)
+        .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
         .whileTrue(runKickerAndShootToHubFixedTurretFixedHood);
@@ -1024,7 +1027,9 @@ public class RobotContainer {
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
     m_test3Controller
         .leftStick()
-        .whileTrue(Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get()))).finallyDo(m_turret.getRelEncoder()::stop));
+        .whileTrue(
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get())))
+                .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
         .a()
@@ -1079,7 +1084,13 @@ public class RobotContainer {
             m_hood,
             () -> aspect.get(),
             () -> .5,
-            () -> new Translation3d(m_turret.getTurretFieldPose().getTranslation().toTranslation2d().plus(new Translation2d(shooterOffset.get(),0.0))),
+            () ->
+                new Translation3d(
+                    m_turret
+                        .getTurretFieldPose()
+                        .getTranslation()
+                        .toTranslation2d()
+                        .plus(new Translation2d(shooterOffset.get(), 0.0))),
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
@@ -1112,8 +1123,8 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (dynamicTestTrajectory.ready()) {
-                            m_kicker.setPower(1.0);
-                            m_hopper.setPower(-.5);
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
                           }
                         },
                         m_kicker)
@@ -1122,7 +1133,7 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-   m_testController
+    m_testController
         .y()
         .whileTrue(
             shootTuning.alongWith(
@@ -1192,19 +1203,22 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     // m_testController
     //     .y()
-    //     .whileTrue(Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
+    //     .whileTrue(Commands.run(() ->
+    // m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get())))
     //     .onFalse(Commands.runOnce(() -> m_intake.stopRollers()));
 
-    m_intake.setDefaultCommand(
-        Commands.run(
-                () -> m_intake.setRollers(MathUtil.applyDeadband(m_testController.getLeftY(), 0.1)),
-                m_intake)
-            .finallyDo(m_intake::stopRollers));
+    // m_intake.setDefaultCommand(
+    //     Commands.run(
+    //             () ->
+    //                 m_intake.setRollers(MathUtil.applyDeadband(m_test3Controller.getLeftY(),
+    // 0.1)),
+    //             m_intake)
+    //         .finallyDo(m_intake::stopRollers));
 
     m_driveController
         .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown()))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp()));
+        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
+        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
 
     new Trigger(
             () -> {
