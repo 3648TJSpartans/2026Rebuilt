@@ -10,7 +10,7 @@ public class HoodConstants {
 
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Hood/MotorIO")
-          .motorCan(17)
+          .motorCan(14)
           .p(2)
           .i(0.01)
           .d(0)
@@ -24,16 +24,16 @@ public class HoodConstants {
   public static final TunableNumber hoodAngleOffset =
       new TunableNumber("Subsystems/Hood/angleOffset", Math.PI / 2);
   public static final TunableNumber minPosition =
-      new TunableNumber("Subsystems/Hood/limits/minPose", 0.04);
+      new TunableNumber("Subsystems/Hood/limits/minPose", 0.02);
   public static final TunableNumber maxPosition =
-      new TunableNumber("Subsystems/Hood/limits/maxPose", 0.57);
+      new TunableNumber("Subsystems/Hood/limits/maxPose", 0.775);
   public static final TunableNumber minAngle =
       new TunableNumber("Subsystems/Hood/minAngle (deg)", 78);
   //   new Rotation2d(
   //       Units.degreesToRadians(
   //           78)); // This ends up being the max angle we shoot, the min angle the hood is at.
   public static final TunableNumber maxAngle =
-      new TunableNumber("Subsystems/Hood/maxAngle (deg)", 60);
+      new TunableNumber("Subsystems/Hood/maxAngle (deg)", 47);
   public static final TunableNumber simKV = new TunableNumber("Subsystems/Hood/maxAngle (deg)", 1);
   //   new Rotation2d(Units.degreesToRadians(60));
   public static final DoubleSupplier hoodEncoderFactor =

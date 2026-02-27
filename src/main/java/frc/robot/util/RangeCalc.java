@@ -1,7 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.commands.goToCommands.goToConstants.PoseConstants;
+import frc.robot.PoseConstants;
 
 public class RangeCalc {
   public static boolean inShootingRange(Pose2d robotPose) {

@@ -27,7 +27,7 @@ public class Ball {
   }
 
   public boolean isDead() {
-    if (traj.getHangTime() < time) {
+    if (getTranslation().getZ() < 0) {
       return true;
     }
     return false;

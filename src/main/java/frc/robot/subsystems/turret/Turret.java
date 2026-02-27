@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -28,6 +29,8 @@ public class Turret extends SubsystemBase implements Statusable {
   private final StatusableDigitalInput m_zeroSwitch;
   private boolean isHomed;
   private SparkIO m_relEncoder;
+  private double turretSetAngle;
+
 
   public Turret(
       SparkIO relEncoder,
@@ -49,11 +52,14 @@ public class Turret extends SubsystemBase implements Statusable {
     if (!Constants.turretWorking.getAsBoolean()) {
       return new Rotation2d();
     }
-    return new Rotation2d(m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor);
+    return new Rotation2d(
+        m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor
+            + TurretConstants.rotationOffset.get());
   }
 
   @Override
   public void periodic() {
+    m_zeroSwitch.updateValues();
     m_relEncoder.periodic();
     updateInputs();
     checkHeading();
@@ -76,18 +82,17 @@ public class Turret extends SubsystemBase implements Statusable {
     turretTranslationalVelocity[1] = (xt - xr) * robotVelocity[2] + robotVelocity[1];
     Logger.recordOutput(
         "Subsystems/Turret/TurretTranslationalVelocity", turretTranslationalVelocity);
+    Logger.recordOutput("Subsystems/Turret/setAngle", turretSetAngle);
   }
 
   public void checkHeading() {
-    boolean zeroSwitchState = m_zeroSwitch.get();
-    Logger.recordOutput("Subsystems/Turret/ZeroSwitch/Pushed", zeroSwitchState);
     // TODO this doesn't set zero heading for a >360 turret as it might trigger in multiple poses.
     // If we go that direction, update code. Use floor function as fix.
     if (Constants.currentMode == Mode.SIM) {
       isHomed = true;
       return;
     }
-    if (zeroSwitchState) {
+    if (m_zeroSwitch.switchedFalse()) {
       // Allows us to rotate turret 360 degrees and get our encoder offset value.
       Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", m_relEncoder.getPosition());
       setZeroHeading();
@@ -124,16 +129,15 @@ public class Turret extends SubsystemBase implements Statusable {
 
   // sets rotation in robot space
   public void setRotation(Rotation2d rotation) {
+    turretSetAngle = rotation.getRadians();
     if (!isHomed) {
       return;
     }
-    double rotationRads = rotation.getRadians();
-    rotationRads =
-        MathUtil.clamp(
-            rotationRads,
-            TurretConstants.kTurretMinRotation.get(),
-            TurretConstants.kTurretMaxRotation.get());
-    m_relEncoder.setPosition(rotationRads / TurretConstants.encoderPositionFactor);
+    rotation = rotation.minus(new Rotation2d(TurretConstants.rotationOffset.get()));
+    Logger.recordOutput("Debug/Turret/rotationSetpt", rotation.getRadians());
+    double pos =  MathUtil.clamp((rotation.getRadians())
+            / TurretConstants.encoderPositionFactor, TurretConstants.kTurretMinPose.get(),TurretConstants.kTurretMaxPose.get());
+    m_relEncoder.setPosition(pos);
   }
 
   // Sets the roation in field space
@@ -182,5 +186,9 @@ public class Turret extends SubsystemBase implements Statusable {
   @Override
   public String getName() {
     return "Subsystems/Turret";
+  }
+
+  public boolean angleInTolerance(){
+    return Math.abs(turretSetAngle - getTurretRotation().getRadians()) < TurretConstants.turretAngleTolerance.get();
   }
 }

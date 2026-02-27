@@ -1,0 +1,68 @@
+package frc.robot;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.zoneCalc.Polygon;
+import frc.robot.util.zoneCalc.Rectangle;
+
+public class PoseConstants {
+  // TODO: update this to an actual pose/poses for climbing
+  public static final Pose2d climbPose = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+  public static final double fieldLength = 16.540988;
+  public static final double fieldWidth = 8.042;
+
+  public static final double shootCutoff = 4.282694;
+
+  public static final double zone1 = 3;
+  public static final double zone2 = 5.042;
+
+  public static final double overhangMiddle = 3.5;
+  public static final double overhangSide = 1.5;
+
+  public static final Rectangle test =
+      new Rectangle("testZone", new Translation2d(0, 0), new Translation2d(1, 1));
+  public static final Polygon testPolygon =
+      AllianceFlipUtil.apply(
+          new Polygon(
+              "testPolygon",
+              new Translation2d(0, 0),
+              new Translation2d(2, 4),
+              new Translation2d(4, 0)));
+  public static final Polygon behindHub =
+      new Polygon(
+          "BehindHub",
+          AllianceFlipUtil.apply(
+              new Translation2d[] {
+                new Translation2d(5.189, 3.23),
+                new Translation2d(5.189, 4.83),
+                new Translation2d(8.27, 4.034)
+              }));
+  public static final Polygon behindOtherHub =
+      new Polygon(
+          "BehindOtherHub",
+          AllianceFlipUtil.apply(
+              new Translation2d[] {
+                new Translation2d(5.189 + 7.29, 3.23),
+                new Translation2d(5.189 + 7.29, 4.83),
+                new Translation2d(8.27 + 7.29, 4.034)
+              }));
+
+  public static final Rectangle field =
+      new Rectangle("field", new Translation2d(0, 0), new Translation2d(fieldLength, fieldWidth));
+  public static final Rectangle blueHub =
+      new Rectangle(
+          "blueHub",
+          new Translation2d(Units.inchesToMeters(158.61), Units.inchesToMeters(135.59)),
+          new Translation2d(Units.inchesToMeters(205.61), Units.inchesToMeters(182.59)));
+  public static final Rectangle redHub =
+      new Rectangle(
+          "redHub",
+          new Translation2d(
+              fieldLength - Units.inchesToMeters(158.61), Units.inchesToMeters(135.59)),
+          new Translation2d(
+              fieldLength - Units.inchesToMeters(205.61), Units.inchesToMeters(182.59)));
+}

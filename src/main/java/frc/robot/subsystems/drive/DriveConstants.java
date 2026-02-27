@@ -92,7 +92,7 @@ public class DriveConstants {
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 4.09;
+        case 1 -> 0.44;
         case 2 -> 1.71;
         case 3 -> 5.15;
         default -> 0.0;
@@ -100,7 +100,7 @@ public class DriveConstants {
   public static final double backLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 0.38;
+        case 1 -> 5.61;
         case 2 -> 4.10;
         case 3 -> 4.54;
         default -> 0.0;
@@ -108,7 +108,7 @@ public class DriveConstants {
   public static final double frontRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 4.24;
+        case 1 -> 4.34;
         case 2 -> 2.98;
         case 3 -> 0.26;
         default -> 0.0;
@@ -116,7 +116,7 @@ public class DriveConstants {
   public static final double backRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 5.66;
+        case 1 -> 4.16;
         case 2 -> 0.217;
         case 3 -> 1.16;
         default -> 0.0;
@@ -127,7 +127,7 @@ public class DriveConstants {
   public static final int frontLeftDriveCanId =
       switch (chasNum) {
         case 0 -> 0;
-        case 1 -> 4;
+        case 1 -> 6;
         case 2 -> 1;
         case 3 -> 4;
         default -> 0;
@@ -135,7 +135,7 @@ public class DriveConstants {
   public static final int backLeftDriveCanId =
       switch (chasNum) {
         case 0 -> 1;
-        case 1 -> 2;
+        case 1 -> 8;
         case 2 -> 3;
         case 3 -> 2;
         default -> 0;
@@ -143,7 +143,7 @@ public class DriveConstants {
   public static final int frontRightDriveCanId =
       switch (chasNum) {
         case 0 -> 2;
-        case 1 -> 6;
+        case 1 -> 4;
         case 2 -> 7;
         case 3 -> 6;
         default -> 0;
@@ -151,7 +151,7 @@ public class DriveConstants {
   public static final int backRightDriveCanId =
       switch (chasNum) {
         case 0 -> 3;
-        case 1 -> 8;
+        case 1 -> 2;
         case 2 -> 5;
         case 3 -> 8;
         default -> 0;
@@ -162,7 +162,7 @@ public class DriveConstants {
   public static final int frontLeftTurnCanId =
       switch (chasNum) {
         case 0 -> 4;
-        case 1 -> 3;
+        case 1 -> 5;
         case 2 -> 2;
         case 3 -> 3;
         default -> 0;
@@ -170,7 +170,7 @@ public class DriveConstants {
   public static final int backLeftTurnCanId =
       switch (chasNum) {
         case 0 -> 5;
-        case 1 -> 1;
+        case 1 -> 7;
         case 2 -> 4;
         case 3 -> 1;
         default -> 0;
@@ -178,7 +178,7 @@ public class DriveConstants {
   public static final int frontRightTurnCanId =
       switch (chasNum) {
         case 0 -> 6;
-        case 1 -> 5;
+        case 1 -> 3;
         case 2 -> 8;
         case 3 -> 5;
         default -> 0;
@@ -186,7 +186,7 @@ public class DriveConstants {
   public static final int backRightTurnCanId =
       switch (chasNum) {
         case 0 -> 7;
-        case 1 -> 7;
+        case 1 -> 1;
         case 2 -> 6;
         case 3 -> 7;
         default -> 0;
@@ -233,7 +233,11 @@ public class DriveConstants {
   public static final double wheelRadiusMeters = Units.inchesToMeters(2);
   public static final double driveMotorReduction = 6.75; // L2 MKI4
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
-
+  public static final double width = Units.inchesToMeters(27.0);
+  public static final Translation2d frontRightCorner = new Translation2d(width / 2, width / 2);
+  public static final Translation2d frontLeftCorner = new Translation2d(-width / 2, width / 2);
+  public static final Translation2d backRightCorner = new Translation2d(width / 2, -width / 2);
+  public static final Translation2d backLeftCorner = new Translation2d(-width / 2, -width / 2);
   // Drive encoder configuration
   public static final double driveEncoderPositionFactor =
       2 * Math.PI / driveMotorReduction; // Rotor

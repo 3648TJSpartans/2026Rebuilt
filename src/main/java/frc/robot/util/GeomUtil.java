@@ -160,4 +160,22 @@ public class GeomUtil {
   public static Pose2d withRotation(Pose2d pose, Rotation2d rotation) {
     return new Pose2d(pose.getTranslation(), rotation);
   }
+
+  // checks if a point is in a rectangle
+  public static boolean inRectangle(
+      Translation2d point, Translation2d lowCorner, Translation2d highCorner) {
+    return ((lowCorner.getX() < point.getX()) && (point.getX() < highCorner.getX()))
+        && ((lowCorner.getY() < point.getY()) && (point.getY() < highCorner.getY()));
+  }
+
+  public static boolean inRectangle(
+      Pose2d point, Translation2d lowCorner, Translation2d highCorner) {
+    return ((lowCorner.getX() < point.getX()) && (point.getX() < highCorner.getX()))
+        && ((lowCorner.getY() < point.getY()) && (point.getY() < highCorner.getY()));
+  }
+
+  public static boolean inRectangle(Pose2d point, Translation2d[] corners) {
+    return ((corners[0].getX() < point.getX()) && (point.getX() < corners[1].getX()))
+        && ((corners[1].getY() < point.getY()) && (point.getY() < corners[1].getY()));
+  }
 }

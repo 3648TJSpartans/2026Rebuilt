@@ -75,23 +75,28 @@ public class TrajectoryCalc {
       double overhangRatio,
       double zOverhang) {
     Trajectory trajectory = stationaryTrajectory(current, target, overhangRatio, zOverhang);
+    Translation3d newTarget = new Translation3d();
     for (int i = 0; i < movingtargetIts; i++) {
-      Translation3d newTarget =
+      newTarget =
           target.minus(
               new Translation3d(
                   robotVelocity[0] * trajectory.getHangTime(),
                   robotVelocity[1] * trajectory.getHangTime(),
                   0));
+      
       trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
     }
+    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    trajectory.setError(error);
     return trajectory;
   }
 
   public static Trajectory dynamicTrajectory(
       Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
     Trajectory trajectory = stationaryTrajectory(current, target, shootAngle);
+    Translation3d newTarget = new Translation3d();
     for (int i = 0; i < movingtargetIts; i++) {
-      Translation3d newTarget =
+      newTarget =
           target.minus(
               new Translation3d(
                   robotVelocity[0] * trajectory.getHangTime(),
@@ -99,6 +104,8 @@ public class TrajectoryCalc {
                   0));
       trajectory = stationaryTrajectory(current, newTarget, shootAngle);
     }
+    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    trajectory.setError(error);
     return trajectory;
   }
 
@@ -137,25 +144,29 @@ public class TrajectoryCalc {
         target
             .minus(current)
             .toTranslation2d()
-            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .minus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
   }
 
   public static Trajectory matrixTrajectory(
-      Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
-    Trajectory traj = dynamicTrajectory(current, target, robotVelocity, shootAngle);
+      Translation3d current, Translation3d target, double[] turretVelocity, double shootAngle) {
+    long startTime = System.nanoTime();
+    Trajectory traj = dynamicTrajectory(current, target, turretVelocity, shootAngle);
     double distance =
         target
             .minus(current)
             .toTranslation2d()
-            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .minus(new Translation2d(turretVelocity[0], turretVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput(
+                      "Utils/TrajectoryCalc/matrixCalc/calcTime", ( System.nanoTime() - startTime) * 1e-9);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
+        
   }
 
   public static Translation3d trajectoryAtTime(

@@ -8,7 +8,7 @@ public class ShooterConstants {
   public static MotorConfig kLeaderMotorConfig =
       new MotorConfig("Subsystems/Shooter/LeaderMotorIO")
           .motorCan(11)
-          .Ks(-0.02985)
+          .Ks(-0.0516)
           .Kv(0.00182)
           .minPower(0.0)
           .speedTolerance(100)
@@ -16,7 +16,7 @@ public class ShooterConstants {
   public static MotorConfig kFollowerMotorConfig =
       new MotorConfig("Subsystems/Shooter/FollowerMotorIO")
           .motorCan(10)
-          .Ks(-0.02985)
+          .Ks(-0.0516)
           .Kv(0.00182)
           .maxPower(0.0)
           .speedTolerance(100)
@@ -34,9 +34,9 @@ public class ShooterConstants {
    * Example: If revving the shooter to 5000 rpm results in a ball velocity of 15 m/s, then the factor will be 5000/15 = 333.33 RPM*s/m
    */
   public static final TunableNumber kShooterVelocityFactor =
-      new TunableNumber("Subsystems/Shooter/VelocityFactor", 748.4);
+      new TunableNumber("Subsystems/Shooter/VelocityFactor", 580);
   public static final TunableNumber rpmThreshold =
-      new TunableNumber("Subsystems/Shooter/RPMThreshold", -1971);
+      new TunableNumber("Subsystems/Shooter/RPMThreshold", -200);
   public static final TunableNumber kickerSpeed =
       new TunableNumber("Subsystems/Kicker/kickerSpeed", 1.0);
   public static final TunableNumber kickerSlowSpeed =
