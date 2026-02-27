@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -49,7 +50,9 @@ public class Turret extends SubsystemBase implements Statusable {
     if (!Constants.turretWorking.getAsBoolean()) {
       return new Rotation2d();
     }
-    return new Rotation2d(m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor);
+    return new Rotation2d(
+        m_relEncoder.getPosition() * TurretConstants.encoderPositionFactor
+            + TurretConstants.rotationOffset.get());
   }
 
   @Override
@@ -126,13 +129,11 @@ public class Turret extends SubsystemBase implements Statusable {
     if (!isHomed) {
       return;
     }
-    double rotationRads = rotation.getRadians();
-    rotationRads =
-        MathUtil.clamp(
-            rotationRads,
-            TurretConstants.kTurretMinRotation.get(),
-            TurretConstants.kTurretMaxRotation.get());
-    m_relEncoder.setPosition(rotationRads / TurretConstants.encoderPositionFactor);
+    rotation = rotation.minus(new Rotation2d(TurretConstants.rotationOffset.get()));
+    Logger.recordOutput("Debug/Turret/rotationSetpt", rotation.getRadians());
+    double pos =  MathUtil.clamp((rotation.getRadians())
+            / TurretConstants.encoderPositionFactor, TurretConstants.kTurretMinPose.get(),TurretConstants.kTurretMaxPose.get());
+    m_relEncoder.setPosition(pos);
   }
 
   // Sets the roation in field space

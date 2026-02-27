@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryCalc {
   public static final double g = 9.79; // m/s^2
-  public static final int movingtargetIts = 20;
+  public static final int movingtargetIts = 10;
   public static final int interpolationPoints = 20;
 
   public static void main(String[] args) {
@@ -137,25 +137,29 @@ public class TrajectoryCalc {
         target
             .minus(current)
             .toTranslation2d()
-            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .minus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
   }
 
   public static Trajectory matrixTrajectory(
-      Translation3d current, Translation3d target, double[] robotVelocity, double shootAngle) {
-    Trajectory traj = dynamicTrajectory(current, target, robotVelocity, shootAngle);
+      Translation3d current, Translation3d target, double[] turretVelocity, double shootAngle) {
+    long startTime = System.nanoTime();
+    Trajectory traj = dynamicTrajectory(current, target, turretVelocity, shootAngle);
     double distance =
         target
             .minus(current)
             .toTranslation2d()
-            .plus(new Translation2d(robotVelocity[0], robotVelocity[1]).times(traj.getHangTime()))
+            .minus(new Translation2d(turretVelocity[0], turretVelocity[1]).times(traj.getHangTime()))
             .getNorm();
-    Logger.recordOutput("TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
+    Logger.recordOutput(
+                      "Utils/TrajectoryCalc/matrixCalc/calcTime", ( System.nanoTime() - startTime) * 1e-9);
     return traj.plus(
-        new Trajectory(linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0, 0, 0));
+        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
+        
   }
 
   public static Translation3d trajectoryAtTime(
