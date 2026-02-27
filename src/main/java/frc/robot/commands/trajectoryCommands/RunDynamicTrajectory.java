@@ -84,6 +84,9 @@ public class RunDynamicTrajectory extends RunTrajectoryCmd {
               "Commands/RunDynamicTrajectory/trajectory/shooterSpeed", traj.getShooterSpeed());
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/trajectory/shooterAngle", traj.getShooterAngle());
+            Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/error",
+              traj.getError());
           Logger.recordOutput(
               "Commands/RunDynamicTrajectory/trajectory/turretRotation", traj.getTurretRotation());
           Logger.recordOutput(
