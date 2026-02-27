@@ -28,6 +28,7 @@ public class Hopper extends RelEncoderSparkMax {
     overrideJam = override;
   }
 
+  @AutoLogOutput(key = "Subsystems/Intake/Hopper/overrideJam")
   public boolean getOverrideJam() {
     return overrideJam;
   }

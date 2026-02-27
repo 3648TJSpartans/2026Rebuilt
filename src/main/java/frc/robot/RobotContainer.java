@@ -1129,6 +1129,7 @@ public class RobotContainer {
                         },
                         m_kicker,
                         m_hopper)
+                    .repeatedly()
                     .finallyDo(
                         () -> {
                           m_kicker.stop();
@@ -1259,7 +1260,7 @@ public class RobotContainer {
                     () -> {
                       m_hopper.overrideJam(true);
                     })
-                .alongWith(new WaitCommand(IntakeConstants.unjamTime.get()))
+                .andThen(new WaitCommand(IntakeConstants.unjamTime.get()))
                 .finallyDo(() -> m_hopper.overrideJam(false)));
   }
 
