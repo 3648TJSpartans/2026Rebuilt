@@ -484,6 +484,7 @@ public class RobotContainer {
                 .finallyDo(m_kicker::stop));
     new Trigger(() -> Math.abs(m_test3Controller.getLeftTriggerAxis()) > 0.1)
         .and(() -> !m_hopper.jammed())
+        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(
             Commands.run(
                     () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
@@ -499,7 +500,7 @@ public class RobotContainer {
                       m_shooter.runFFVelocity(shootSpeed.get());
                       if (m_shooter.getLeaderMotor().speedInTolerance()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                        m_hopper.run();
                       } else {
                         m_kicker.stop();
                         m_hopper.stop();
@@ -785,7 +786,7 @@ public class RobotContainer {
                         () -> {
                           if (shootToHub.ready()) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                            m_hopper.run();
                           }
                         },
                         m_kicker,
@@ -803,7 +804,7 @@ public class RobotContainer {
                         () -> {
                           if (shootToHubFixedHood.ready()) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                            m_hopper.run();
                           }
                         },
                         m_kicker,
@@ -829,7 +830,7 @@ public class RobotContainer {
                                       .getDegrees()
                                   < 1.0) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                            m_hopper.run();
                           }
                         },
                         m_kicker)
@@ -853,7 +854,7 @@ public class RobotContainer {
                                       .getDegrees()
                                   < 1.0) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                            m_hopper.run();
                           }
                         },
                         m_kicker)
@@ -869,7 +870,7 @@ public class RobotContainer {
                     () -> {
                       if (shootToField.ready()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                        m_hopper.run();
                       }
                     },
                     m_kicker)
@@ -884,7 +885,7 @@ public class RobotContainer {
                     () -> {
                       if (shootToFieldFixedHood.ready()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                        m_hopper.run();
                       }
                     },
                     m_kicker)
@@ -899,7 +900,7 @@ public class RobotContainer {
                     () -> {
                       if (shootToField.ready()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                        m_hopper.run();
                       }
                     },
                     m_kicker)
@@ -914,7 +915,7 @@ public class RobotContainer {
                     () -> {
                       if (shootToFieldFixedTurretFixedHood.ready()) {
                         m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        m_hopper.setPower(IntakeConstants.hopperSpeed.get());
+                        m_hopper.run();
                       }
                     },
                     m_kicker)
@@ -938,7 +939,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->
@@ -948,7 +948,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToField);
     new Trigger(
             () ->
@@ -958,7 +957,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
         .and(Constants.hoodWorking)
-        .and(() -> !m_hopper.jammed())
         .whileTrue(runKickerAndShootToHub);
     new Trigger(
             () ->
@@ -968,7 +966,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedTurret);
     new Trigger(
             () ->
@@ -978,7 +975,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedHood);
     new Trigger(
             () ->
@@ -988,7 +984,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(Constants.hoodWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedTurret);
     new Trigger(
             () ->
@@ -998,7 +993,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
         .and(Constants.turretWorking)
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedHood);
     new Trigger(
             () ->
@@ -1008,7 +1002,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToHubFixedTurretFixedHood);
     new Trigger(
             () ->
@@ -1018,7 +1011,6 @@ public class RobotContainer {
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
         .and(() -> !Constants.hoodWorking.get())
-        .and(() -> !m_hopper.getOverrideJam())
         .whileTrue(runKickerAndShootToFieldFixedTurretFixedHood);
   }
 
@@ -1126,26 +1118,22 @@ public class RobotContainer {
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
 
-    Command runFeed =
-        Commands.run(
-                () -> {
-                  m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                  m_hopper.setPower(IntakeConstants.hopperSpeed.get());
-                },
-                m_kicker,
-                m_hopper)
-            .finallyDo(
-                () -> {
-                  m_kicker.stop();
-                  if (!m_hopper.getOverrideJam()) {
-                    return;
-                  }
-                  m_hopper.stop();
-                });
-    m_test3Controller.y().whileTrue(dynamicTestTrajectory);
-    new Trigger(() -> dynamicTestTrajectory.ready())
-        .and(() -> !m_hopper.getOverrideJam())
-        .whileTrue(runFeed);
+    m_test3Controller
+        .y()
+        .whileTrue(
+            dynamicTestTrajectory.alongWith(
+                Commands.run(
+                        () -> {
+                          m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                          m_hopper.run();
+                        },
+                        m_kicker,
+                        m_hopper)
+                    .finallyDo(
+                        () -> {
+                          m_kicker.stop();
+                          m_hopper.stop();
+                        })));
     m_testController
         .y()
         .whileTrue(
@@ -1270,9 +1258,7 @@ public class RobotContainer {
             Commands.runOnce(
                     () -> {
                       m_hopper.overrideJam(true);
-                      m_hopper.setPower(IntakeConstants.hopperUnjamPower.get());
-                    },
-                    m_hopper)
+                    })
                 .alongWith(new WaitCommand(IntakeConstants.unjamTime.get()))
                 .finallyDo(() -> m_hopper.overrideJam(false)));
   }

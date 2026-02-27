@@ -8,6 +8,7 @@ public class Hopper extends RelEncoderSparkMax {
 
   public Hopper() {
     super(IntakeConstants.hopperMotorConfig);
+    overrideJam = false;
   }
 
   @AutoLogOutput(key = "Subsystems/Intake/Hopper/currentToSpeed")
@@ -40,5 +41,12 @@ public class Hopper extends RelEncoderSparkMax {
   @Override
   public void stop() {
     super.stop();
+  }
+
+  public void run() {
+    if (overrideJam) {
+      setPower(IntakeConstants.hopperUnjamPower.get());
+    }
+    setPower(IntakeConstants.hopperSpeed.get());
   }
 }
