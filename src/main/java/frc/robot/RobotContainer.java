@@ -1124,8 +1124,10 @@ public class RobotContainer {
             dynamicTestTrajectory.alongWith(
                 Commands.run(
                         () -> {
-                          m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                          m_hopper.run();
+                          if (dynamicTestTrajectory.ready()) {
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_hopper.run();
+                          }
                         },
                         m_kicker,
                         m_hopper)
