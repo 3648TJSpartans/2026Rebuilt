@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 // Copyright (c) 2025 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
@@ -75,7 +77,7 @@ public class AllianceFlipUtil {
     return new Polygon(polygon.getName(), apply(polygon.getCorners()));
   }
 
-  // @AutoLogOutput(key = "shouldFlip")
+  @AutoLogOutput(key = "Utils/AllianceFlip/shouldFlip")
   public static boolean shouldFlip() {
     return DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;

@@ -6,12 +6,21 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 
 public class TrajectoryConstants {
-  public static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
+  private static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
+  private static final Translation3d blueFeedRight =
+      new Translation3d(1.0, 1.5, 0.0);
+  private static final Translation3d blueFeedMiddle =
+      new Translation3d(1.0, 4.021, 0.0);
+  private static final Translation3d blueFeedLeft =
+      new Translation3d(1.0, 6.542, 0.0);
   public static final TunableNumber overhangHeight =
-      new TunableNumber("Trajectory/overhangHeight", 2.1);
+      new TunableNumber("Trajectory/overhangHeight", 1.5);
   public static final TunableNumber overhangAspect =
       new TunableNumber("Trajectory/overhangAspect", .5);
   public static final Translation3d hubPose = AllianceFlipUtil.apply(blueHubPose);
+  public static final Translation3d feedLeft = AllianceFlipUtil.apply(blueFeedLeft);
+  public static final Translation3d feedMiddle = AllianceFlipUtil.apply(blueFeedMiddle);
+  public static final Translation3d feedRight = AllianceFlipUtil.apply(blueFeedRight);
   public static final double maxTilt = Units.degreesToRadians(7.5);
   public static final TunableNumber preshotDelay =
       new TunableNumber("Trajectory/preshotDelay", 0.0);

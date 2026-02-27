@@ -19,12 +19,7 @@ public class PoseConstants {
 
   public static final double zone1 = 3;
   public static final double zone2 = 5.042;
-  public static final Translation3d feedRight =
-      AllianceFlipUtil.apply(new Translation3d(1.0, 1.5, 0.0));
-  public static final Translation3d feedMiddle =
-      AllianceFlipUtil.apply(new Translation3d(1.0, 4.021, 0.0));
-  public static final Translation3d feedLeft =
-      AllianceFlipUtil.apply(new Translation3d(1.0, 6.542, 0.0));
+
   public static final double overhangMiddle = 3.5;
   public static final double overhangSide = 1.5;
 

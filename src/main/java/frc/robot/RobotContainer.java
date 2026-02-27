@@ -671,10 +671,10 @@ public class RobotContainer {
             () -> .5,
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -692,10 +692,10 @@ public class RobotContainer {
             () -> .5,
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -714,10 +714,10 @@ public class RobotContainer {
             () -> .5,
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -736,10 +736,10 @@ public class RobotContainer {
             () -> .5,
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -1110,10 +1110,10 @@ public class RobotContainer {
             () -> .5,
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
-                  case 0 -> PoseConstants.feedRight;
-                  case 1 -> PoseConstants.feedMiddle;
-                  case 2 -> PoseConstants.feedLeft;
-                  default -> PoseConstants.feedMiddle;
+                  case 0 -> TrajectoryConstants.feedRight;
+                  case 1 -> TrajectoryConstants.feedMiddle;
+                  case 2 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
