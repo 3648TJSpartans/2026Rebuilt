@@ -80,10 +80,10 @@ public class RunTrajectoryCmd extends Command {
     boolean robotInRange = m_inRangeSupplier.get();
     boolean goodTilt = m_robotTiltSupplier.get() < TrajectoryConstants.maxTilt;
     boolean turretTransSpeedGood =
-        m_turret.getTurretTranslationalSpeed() < TrajectoryConstants.translationalSpeedThreshold;
+        m_turret.getTurretTranslationalSpeed()
+            < TrajectoryConstants.translationalSpeedThreshold.get();
     Logger.recordOutput(
-        "Commands/RunTrajectoryCmd/ready/turretPositioned",
-        m_turret.angleInTolerance());
+        "Commands/RunTrajectoryCmd/ready/turretPositioned", m_turret.angleInTolerance());
     Logger.recordOutput(
         "Commands/RunTrajectoryCmd/ready/hoodPositioned", m_hood.getMotor().positionInTolerance());
     Logger.recordOutput(
