@@ -440,7 +440,7 @@ public class RobotContainer {
         Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
             .finallyDo(m_intake::setSolenoidAndRollerUp);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
-     NamedCommands.registerCommand("ShootToHub", shootToFieldCommand);
+     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
   }
