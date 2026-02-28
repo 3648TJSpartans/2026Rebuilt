@@ -223,7 +223,8 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_intake =
             new Intake(
-                new SingleSolenoid(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                new SingleSolenoid(IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
+                new SingleSolenoid(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
                 m_drive::getPose);
         // new Drive(
         //     new GyroIONavX(),
@@ -284,7 +285,9 @@ public class RobotContainer {
                 new SparkSim("Subsystems/Shooter/FollowMotor", ShooterConstants.shooterSimKV));
         m_intake =
             new Intake(
-                new SingleSolenoidSim(IntakeConstants.solenoidChannel, "Subsystems/Intake"),
+                new SingleSolenoidSim(
+                    IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
+                new SingleSolenoidSim(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
                 m_drive::getPose);
         m_turret =
             new Turret(
@@ -309,7 +312,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
-        m_intake = new Intake(new SingleSolenoidSim(0, null), m_drive::getPose);
+        m_intake =
+            new Intake(
+                new SingleSolenoidSim(
+                    IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
+                new SingleSolenoidSim(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
+                m_drive::getPose);
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
             new Shooter(
@@ -643,7 +651,7 @@ public class RobotContainer {
 
     m_claw.setDefaultCommand(
         Commands.run(
-            () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getLeftY(), 0.1)),
+            () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getRightY(), 0.1)),
             m_claw));
   }
 
@@ -973,7 +981,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
@@ -982,7 +990,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
@@ -991,7 +999,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(Constants.turretWorking)
@@ -1000,7 +1008,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
@@ -1009,7 +1017,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
@@ -1018,7 +1026,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
@@ -1027,7 +1035,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.hoodWorking.get())
@@ -1036,7 +1044,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
@@ -1045,7 +1053,7 @@ public class RobotContainer {
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
-                    && !m_driveController.rightTrigger().getAsBoolean()
+                    && m_driveController.rightTrigger().getAsBoolean()
                     && !rangeGood.getAsBoolean())
         .and(Constants.doSmartShoot)
         .and(() -> !Constants.turretWorking.get())
@@ -1054,7 +1062,7 @@ public class RobotContainer {
   }
 
   private void configureTurret() {
-    new Trigger(() -> DriverStation.isEnabled()).onTrue(new HomeTurretCmd(m_turret));
+    // new Trigger(() -> DriverStation.isEnabled()).onTrue(new HomeTurretCmd(m_turret));
     m_copilotController
         .rightBumper()
         .and(() -> override)
@@ -1075,7 +1083,7 @@ public class RobotContainer {
     m_test3Controller
         .rightStick()
         .whileTrue(
-            Commands.run(() -> m_turret.setRotation(new Rotation2d(Math.PI / 4)))
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(Math.PI / 2)))
                 .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
@@ -1243,12 +1251,6 @@ public class RobotContainer {
 
   public void configureIntake() {
 
-    m_testController
-        .povDown()
-        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)));
-    m_testController
-        .povUp()
-        .onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     // m_testController
     //     .y()
     //     .whileTrue(Commands.run(() ->

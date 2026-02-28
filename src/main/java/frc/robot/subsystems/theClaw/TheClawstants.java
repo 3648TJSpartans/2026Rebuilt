@@ -12,7 +12,7 @@ public class TheClawstants {
       new TunableNumber("Subsystems/Claw/maxPose", 10.0);
   public static final MotorConfig motorConfig =
       new MotorConfig("Subsystems/Claw/MotorIO")
-          .motorCan(20)
+          .motorCan(17)
           .p(0.0)
           .i(0.0)
           .d(0.0)
