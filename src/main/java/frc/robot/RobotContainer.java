@@ -42,6 +42,7 @@ import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
+import frc.robot.commands.ledCommands.LedPeriodicCommand;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
@@ -1310,6 +1311,14 @@ public class RobotContainer {
 
     WrapperCommand statusCheck =
         new StatusCheckLEDCommand(m_leds, m_statusLogger.getStatuses()).ignoringDisable(true);
+
+    WrapperCommand enabledPeriodic =
+        new LedPeriodicCommand(m_leds, m_drive, m_neural, m_vision, () -> override)
+            .ignoringDisable(false);
+
+    Trigger enabledTrigger = new Trigger(() -> DriverStation.isEnabled());
+
+    enabledTrigger.whileTrue(enabledPeriodic);
 
     m_leds.setDefaultCommand(statusCheck);
     m_copilotController
