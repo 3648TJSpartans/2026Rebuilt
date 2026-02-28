@@ -383,8 +383,8 @@ public class RobotContainer {
             () -> TrajectoryConstants.hubPose,
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
-    RunTrajectoryCmd shootToField = 
-    new RunDynamicMatrixAddTrajectory(
+    RunTrajectoryCmd shootToField =
+        new RunDynamicMatrixAddTrajectory(
             m_turret,
             m_shooter,
             m_hood,
@@ -405,42 +405,42 @@ public class RobotContainer {
             () -> m_drive.getTilt());
     Command shootToHubCommand =
         dynamicTrajectory.alongWith(
-                Commands.run(
-                        () -> {
-                          if (dynamicTrajectory.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.run();
-                          }
-                        },
-                        m_kicker,
-                        m_hopper)
-                    .finallyDo(
-                        () -> {
-                          m_kicker.stop();
-                          m_hopper.stop();
-                        }));
-                        Command shootToFieldCommand =
+            Commands.run(
+                    () -> {
+                      if (dynamicTrajectory.ready()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.run();
+                      }
+                    },
+                    m_kicker,
+                    m_hopper)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
+    Command shootToFieldCommand =
         shootToField.alongWith(
-                Commands.run(
-                        () -> {
-                          if (shootToField.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                            m_hopper.run();
-                          }
-                        },
-                        m_kicker,
-                        m_hopper)
-                    .finallyDo(
-                        () -> {
-                          m_kicker.stop();
-                          m_hopper.stop();
-                        }));
+            Commands.run(
+                    () -> {
+                      if (shootToField.ready()) {
+                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_hopper.run();
+                      }
+                    },
+                    m_kicker,
+                    m_hopper)
+                .finallyDo(
+                    () -> {
+                      m_kicker.stop();
+                      m_hopper.stop();
+                    }));
 
     Command intake =
         Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
             .finallyDo(m_intake::setSolenoidAndRollerUp);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
-     NamedCommands.registerCommand("ShootToHub", shootToFieldCommand);
+    NamedCommands.registerCommand("ShootToHub", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
   }
@@ -473,6 +473,8 @@ public class RobotContainer {
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_copilotController.povLeft().onTrue(Commands.runOnce(() -> setOverride(false)));
     m_copilotController.povRight().onTrue(Commands.runOnce(() -> setOverride(true)));
+    m_copilotController.b().onTrue(Commands.runOnce(() -> m_shiftTracker.setTimeSlot(true)));
+    m_copilotController.y().onTrue(Commands.runOnce(() -> m_shiftTracker.setTimeSlot(false)));
 
     /*
      * m_led.setLedPattern(LedConstants.elevatorHeight, m_led.elevatorBuffer);
@@ -1067,7 +1069,12 @@ public class RobotContainer {
     m_test3Controller
         .leftStick()
         .whileTrue(
-            Commands.run(() -> m_turret.setRotation(new Rotation2d(setPose.get())))
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(0)))
+                .finallyDo(m_turret.getRelEncoder()::stop));
+    m_test3Controller
+        .rightStick()
+        .whileTrue(
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(Math.PI / 4)))
                 .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
@@ -1304,7 +1311,7 @@ public class RobotContainer {
 
   public void configureLeds() {
 
-    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.getOnShift());
+    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.onShiftDeprecated());
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
@@ -1319,7 +1326,7 @@ public class RobotContainer {
             new ConditionalCommand(
                 new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green),
                 new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red),
-                () -> m_shiftTracker.getOnShift()));
+                () -> m_shiftTracker.onShiftDeprecated()));
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
   }
