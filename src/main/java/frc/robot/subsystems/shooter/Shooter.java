@@ -20,6 +20,12 @@ public class Shooter extends SubsystemBase implements Statusable {
     follower.setPower(-power);
   }
 
+  @Override
+  public void periodic() {
+    leader.periodic();
+    follower.periodic();
+  }
+
   public void shootVelocity(double velocity) {
     double rpmSetpoint =
         velocity * ShooterConstants.kShooterVelocityFactor.get()
