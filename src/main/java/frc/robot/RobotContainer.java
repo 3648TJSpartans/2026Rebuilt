@@ -1054,6 +1054,7 @@ public class RobotContainer {
   }
 
   private void configureTurret() {
+    new Trigger(() -> DriverStation.isEnabled()).onTrue(new HomeTurretCmd(m_turret));
     m_copilotController
         .rightBumper()
         .and(() -> override)
