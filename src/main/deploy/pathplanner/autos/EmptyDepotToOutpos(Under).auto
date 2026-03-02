@@ -124,6 +124,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootToHub"
+          }
         }
       ]
     }
