@@ -88,6 +88,7 @@ import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.motorUtil.SparkSim;
 import frc.robot.util.shiftTracker.ShiftTracker;
+import frc.robot.util.solenoids.DoubleSolenoidIO;
 import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.solenoids.SingleSolenoidSim;
 import frc.robot.util.statusableUtils.GenericStatusable;
@@ -223,8 +224,7 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_intake =
             new Intake(
-                new SingleSolenoid(IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
-                new SingleSolenoid(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
+                new DoubleSolenoidIO(IntakeConstants.downSolenoidChannel,IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Down"),
                 m_drive::getPose);
         // new Drive(
         //     new GyroIONavX(),
@@ -287,7 +287,6 @@ public class RobotContainer {
             new Intake(
                 new SingleSolenoidSim(
                     IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
-                new SingleSolenoidSim(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
                 m_drive::getPose);
         m_turret =
             new Turret(
@@ -316,7 +315,6 @@ public class RobotContainer {
             new Intake(
                 new SingleSolenoidSim(
                     IntakeConstants.downSolenoidChannel, "Subsystems/Intake/Down"),
-                new SingleSolenoidSim(IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Up"),
                 m_drive::getPose);
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
         m_shooter =
