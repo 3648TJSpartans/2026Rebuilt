@@ -9,7 +9,11 @@
     "ToDepot",
     "UnderTower"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Depot",
+    "Neutral",
+    "Stationary"
+  ],
   "defaultMaxVel": 4.5,
   "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 540.0,
