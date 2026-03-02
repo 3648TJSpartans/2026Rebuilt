@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.723362919560185,
-        "y": 5.714
+        "x": 7.340255685397352,
+        "y": 5.712749863505052
       },
       "isLocked": false,
       "linkedName": "PostHump(Lie)"
@@ -20,8 +20,8 @@
         "y": 5.714
       },
       "prevControl": {
-        "x": 2.47485423900463,
-        "y": 5.714
+        "x": 3.0111757913578145,
+        "y": 5.715590040451239
       },
       "nextControl": null,
       "isLocked": false,
