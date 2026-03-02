@@ -88,6 +88,7 @@ import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.motorUtil.SparkSim;
 import frc.robot.util.shiftTracker.ShiftTracker;
+import frc.robot.util.solenoids.CompressorIO;
 import frc.robot.util.solenoids.DoubleSolenoidIO;
 import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.solenoids.SingleSolenoidSim;
@@ -111,7 +112,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class RobotContainer {
   // Subsystems
   private final Drive m_drive;
-  // private final CompressorIO m_compressor;
+  private final CompressorIO m_compressor;
   private final LedSubsystem m_leds;
   private final Vision m_vision;
   private final Neural m_neural;
@@ -158,7 +159,7 @@ public class RobotContainer {
     m_kicker = new Kicker();
     m_hopper = new Hopper();
     m_tuningUpdater = new TuningUpdater();
-    // m_compressor = new CompressorIO("Compressor");
+    m_compressor = new CompressorIO("Compressor");
     m_usbStatus =
         new GenericStatusable(
             () -> {
