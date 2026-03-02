@@ -5,8 +5,9 @@
   "pathFolders": [
     "DriveToOutpost",
     "NeutralZone",
-    "UnderTower",
-    "ToDepot"
+    "Stationary",
+    "ToDepot",
+    "UnderTower"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,
