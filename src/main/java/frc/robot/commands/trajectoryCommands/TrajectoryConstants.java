@@ -7,12 +7,9 @@ import frc.robot.util.TunableNumber;
 
 public class TrajectoryConstants {
   private static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
-  private static final Translation3d blueFeedRight =
-      new Translation3d(1.0, 1.5, 0.0);
-  private static final Translation3d blueFeedMiddle =
-      new Translation3d(1.0, 4.021, 0.0);
-  private static final Translation3d blueFeedLeft =
-      new Translation3d(1.0, 6.542, 0.0);
+  private static final Translation3d blueFeedRight = new Translation3d(1.0, 1.5, 0.0);
+  private static final Translation3d blueFeedMiddle = new Translation3d(1.0, 4.021, 0.0);
+  private static final Translation3d blueFeedLeft = new Translation3d(1.0, 6.542, 0.0);
   public static final TunableNumber overhangHeight =
       new TunableNumber("Trajectory/overhangHeight", 1.5);
   public static final TunableNumber overhangAspect =
@@ -26,7 +23,8 @@ public class TrajectoryConstants {
       new TunableNumber("Trajectory/preshotDelay", 0.0);
   public static final TunableNumber postshotDelay =
       new TunableNumber("Trajectory/postshotDelay", 3.0);
-  public static final double translationalSpeedThreshold = Double.MAX_VALUE;
+  public static final TunableNumber translationalSpeedThreshold =
+      new TunableNumber("Trajectory/postshotDelay", 4.46);
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
 

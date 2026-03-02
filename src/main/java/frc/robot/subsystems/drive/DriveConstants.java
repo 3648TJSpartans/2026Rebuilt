@@ -118,7 +118,7 @@ public class DriveConstants {
         case 0 -> 0.0;
         case 1 -> 4.16;
         case 2 -> 0.217;
-        case 3 -> 1.16;
+        case 3 -> 1.71;
         default -> 0.0;
       };
 

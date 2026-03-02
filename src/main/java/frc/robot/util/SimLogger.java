@@ -26,7 +26,7 @@ public class SimLogger extends SubsystemBase {
           new Pose3d(TurretConstants.kTurretOffset, new Rotation3d(m_turret.getTurretRotation())),
           new Pose3d(
               IntakeConstants.intakeOffset,
-              m_intake.getSolenoid().getSolenoidOn()
+              m_intake.getDownSolenoid().getSolenoidOn()
                   ? IntakeConstants.intakeDownRotation
                   : IntakeConstants.intakeUpRotation)
         });

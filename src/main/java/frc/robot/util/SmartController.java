@@ -246,7 +246,7 @@ public class SmartController extends CommandXboxController implements Statusable
           "Debug/" + m_name + "/AxisAllocation/",
           axisArray[XboxController.Axis.kRightTrigger.value] + " is allocated multiple times.");
     }
-    return super.leftTrigger();
+    return super.rightTrigger();
   }
 
   @Override

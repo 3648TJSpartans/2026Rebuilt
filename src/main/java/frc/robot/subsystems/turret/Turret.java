@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -30,7 +29,6 @@ public class Turret extends SubsystemBase implements Statusable {
   private boolean isHomed;
   private SparkIO m_relEncoder;
   private double turretSetAngle;
-
 
   public Turret(
       SparkIO relEncoder,
@@ -93,6 +91,9 @@ public class Turret extends SubsystemBase implements Statusable {
       return;
     }
     if (m_zeroSwitch.switchedFalse()) {
+      if (isHomed && TurretConstants.setOnce.get()) {
+        return;
+      }
       // Allows us to rotate turret 360 degrees and get our encoder offset value.
       Logger.recordOutput("Subsystems/Turret/ZeroSwitch/delta", m_relEncoder.getPosition());
       setZeroHeading();
@@ -135,8 +136,11 @@ public class Turret extends SubsystemBase implements Statusable {
     }
     rotation = rotation.minus(new Rotation2d(TurretConstants.rotationOffset.get()));
     Logger.recordOutput("Debug/Turret/rotationSetpt", rotation.getRadians());
-    double pos =  MathUtil.clamp((rotation.getRadians())
-            / TurretConstants.encoderPositionFactor, TurretConstants.kTurretMinPose.get(),TurretConstants.kTurretMaxPose.get());
+    double pos =
+        MathUtil.clamp(
+            (rotation.getRadians()) / TurretConstants.encoderPositionFactor,
+            TurretConstants.kTurretMinPose.get(),
+            TurretConstants.kTurretMaxPose.get());
     m_relEncoder.setPosition(pos);
   }
 
@@ -188,7 +192,8 @@ public class Turret extends SubsystemBase implements Statusable {
     return "Subsystems/Turret";
   }
 
-  public boolean angleInTolerance(){
-    return Math.abs(turretSetAngle - getTurretRotation().getRadians()) < TurretConstants.turretAngleTolerance.get();
+  public boolean angleInTolerance() {
+    return Math.abs(new Rotation2d(turretSetAngle).minus(getTurretRotation()).getRadians())
+        < TurretConstants.turretAngleTolerance.get();
   }
 }
