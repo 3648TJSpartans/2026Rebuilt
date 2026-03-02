@@ -18,7 +18,8 @@ public class TurretConstants {
           .maxPower(0.9)
           .minPower(-0.9);
 
-  public static final TunableBoolean setOnce = new TunableBoolean("Subsystems/Turret/setOnce", true);
+  public static final TunableBoolean setOnce =
+      new TunableBoolean("Subsystems/Turret/setOnce", true);
   public static final Translation3d kTurretOffset = new Translation3d(-.165, .165, .39);
   public static final TunableNumber kTurretMinPose =
       new TunableNumber("Subsystems/Turret/minPosition", -61.94);
