@@ -42,29 +42,23 @@
                           }
                         ]
                       }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "DepotToOutpost"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
                     }
                   ]
                 }
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootToHub"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Depot",
   "choreoAuto": false
 }
