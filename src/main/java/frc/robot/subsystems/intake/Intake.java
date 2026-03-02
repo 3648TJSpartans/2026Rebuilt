@@ -56,7 +56,7 @@ public class Intake extends SubsystemBase implements Statusable {
     roller.setPower(IntakeConstants.intakeRollerSpeed.get());
   }
 
-  public SolenoidIO solenoid() {
+  public SolenoidIO getSolenoid() {
     return m_solenoid;
   }
 
