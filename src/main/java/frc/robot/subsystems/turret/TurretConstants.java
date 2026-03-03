@@ -37,7 +37,7 @@ public class TurretConstants {
       Units.degreesToRadians(new TunableNumber("Subsystems/Turret/homeRange (deg)", 30).get());
 
   public static final TunableNumber rotationOffset =
-      new TunableNumber("Subsystems/Turret/rotationOffset (rad)", -Math.PI / 2);
+      new TunableNumber("Subsystems/Turret/rotationOffset (rad)", Math.PI / 2);
 
   public static final TunableNumber turretAngleTolerance =
       new TunableNumber("Subsystems/Turret/angleTolerance", 0.015);
