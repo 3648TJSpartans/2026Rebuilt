@@ -90,7 +90,6 @@ import frc.robot.util.motorUtil.SparkSim;
 import frc.robot.util.shiftTracker.ShiftTracker;
 import frc.robot.util.solenoids.CompressorIO;
 import frc.robot.util.solenoids.DoubleSolenoidIO;
-import frc.robot.util.solenoids.SingleSolenoid;
 import frc.robot.util.solenoids.SingleSolenoidSim;
 import frc.robot.util.statusableUtils.GenericStatusable;
 import frc.robot.util.statusableUtils.StatusLogger;
@@ -225,7 +224,10 @@ public class RobotContainer {
                 m_drive::getVelocity);
         m_intake =
             new Intake(
-                new DoubleSolenoidIO(IntakeConstants.downSolenoidChannel,IntakeConstants.upSolenoidChannel, "Subsystems/Intake/Down"),
+                new DoubleSolenoidIO(
+                    IntakeConstants.downSolenoidChannel,
+                    IntakeConstants.upSolenoidChannel,
+                    "Subsystems/Intake/Down"),
                 m_drive::getPose);
         // new Drive(
         //     new GyroIONavX(),
@@ -861,25 +863,23 @@ public class RobotContainer {
                           m_hopper.stop();
                         }))
             .onlyWhile(shootTimeGood);
-                        TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance",5.0);
+    TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance", 5.0);
     Command runKickerAndShootToHubFixedTurret =
         new ParallelCommandGroup(
                 aimDriveAtHub,
                 shootToHubFixedTurret,
                 Commands.run(
                         () -> {
-                        double driveOffset = 
-                             TrajectoryConstants.hubPose
-                                      .toTranslation2d()
-                                      .minus(m_drive.getPose().getTranslation())
-                                      .getAngle()
-                                      .getDegrees();
-                        boolean driveReady = Math.abs(driveOffset)
-                                  < driveTurnTolerance.get();
-                        Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
-                        Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
-                          if (shootToHubFixedTurret.ready()
-                              && driveReady) {
+                          double driveOffset =
+                              TrajectoryConstants.hubPose
+                                  .toTranslation2d()
+                                  .minus(m_drive.getPose().getTranslation())
+                                  .getAngle()
+                                  .getDegrees();
+                          boolean driveReady = Math.abs(driveOffset) < driveTurnTolerance.get();
+                          Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
+                          Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
+                          if (shootToHubFixedTurret.ready() && driveReady) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
                           }
@@ -898,11 +898,12 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHubFixedTurretFixedHood.ready()
-                              && Math.abs(TrajectoryConstants.hubPose
-                                      .toTranslation2d()
-                                      .minus(m_drive.getPose().getTranslation())
-                                      .getAngle()
-                                      .getDegrees())
+                              && Math.abs(
+                                      TrajectoryConstants.hubPose
+                                          .toTranslation2d()
+                                          .minus(m_drive.getPose().getTranslation())
+                                          .getAngle()
+                                          .getDegrees())
                                   < 1.0) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
@@ -1067,6 +1068,26 @@ public class RobotContainer {
 
   private void configureTurret() {
     // new Trigger(() -> DriverStation.isEnabled()).onTrue(new HomeTurretCmd(m_turret));
+
+    Command headUpShot =
+        Commands.run(
+            () -> {
+              m_shooter.runFFVelocity(5.716);
+              m_turret.setRotation(new Rotation2d());
+              m_hood.setAngle(new Rotation2d(1.324));
+            },
+            m_shooter,
+            m_hood,
+            m_turret).alongWith(
+              Commands.run(()-> {
+                m_hopper.run();
+                m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+              }).onlyWhile(()-> m_shooter.getLeaderMotor().speedInTolerance() && m_turret.angleInTolerance() && m_hood.getMotor().positionInTolerance())
+              .finallyDo(()->{
+                m_hopper.stop();
+                m_kicker.stop();
+          }));
+
     m_copilotController
         .rightBumper()
         .and(() -> override)
@@ -1153,7 +1174,6 @@ public class RobotContainer {
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
-    // m_driveController.povLeft().whileTrue(dynamicTrajectory);
     RunTrajectoryCmd feedAlliance =
         new RunDynamicMatrixAddTrajectory(
             m_turret,
