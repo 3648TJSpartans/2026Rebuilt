@@ -1071,23 +1071,36 @@ public class RobotContainer {
 
     Command headUpShot =
         Commands.run(
-            () -> {
-              m_shooter.runFFVelocity(5.716);
-              m_turret.setRotation(new Rotation2d());
-              m_hood.setAngle(new Rotation2d(1.324));
-            },
-            m_shooter,
-            m_hood,
-            m_turret).alongWith(
-              Commands.run(()-> {
-                m_hopper.run();
-                m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-              }).onlyWhile(()-> m_shooter.getLeaderMotor().speedInTolerance() && m_turret.angleInTolerance() && m_hood.getMotor().positionInTolerance())
-              .finallyDo(()->{
-                m_hopper.stop();
-                m_kicker.stop();
-          }));
-
+                () -> {
+                  m_shooter.runFFVelocity(5.716);
+                  m_turret.setRotation(new Rotation2d());
+                  m_hood.setAngle(new Rotation2d(1.324));
+                },
+                m_shooter,
+                m_hood,
+                m_turret).finallyDo(()->{
+                  m_shooter.stop();
+                  m_hood.getMotor().stop();
+                  m_turret.getRelEncoder().stop();
+                }
+                )
+            .alongWith(
+                Commands.run(
+                        () -> {
+                          m_hopper.run();
+                          m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        })
+                    .onlyWhile(
+                        () ->
+                            m_shooter.getLeaderMotor().speedInTolerance()
+                                && (m_turret.angleInTolerance() || !Constants.turretWorking.get())
+                                && m_hood.getMotor().positionInTolerance())
+                    .finallyDo(
+                        () -> {
+                          m_hopper.stop();
+                          m_kicker.stop();
+                        }));
+    m_driveController.povLeft().whileTrue(headUpShot);
     m_copilotController
         .rightBumper()
         .and(() -> override)
