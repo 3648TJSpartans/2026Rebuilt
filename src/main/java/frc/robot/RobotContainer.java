@@ -861,20 +861,25 @@ public class RobotContainer {
                           m_hopper.stop();
                         }))
             .onlyWhile(shootTimeGood);
-
+                        TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance",5.0);
     Command runKickerAndShootToHubFixedTurret =
         new ParallelCommandGroup(
                 aimDriveAtHub,
                 shootToHubFixedTurret,
                 Commands.run(
                         () -> {
-                          if (shootToHubFixedTurret.ready()
-                              && TrajectoryConstants.hubPose
+                        double driveOffset = 
+                             TrajectoryConstants.hubPose
                                       .toTranslation2d()
                                       .minus(m_drive.getPose().getTranslation())
                                       .getAngle()
-                                      .getDegrees()
-                                  < 1.0) {
+                                      .getDegrees();
+                        boolean driveReady = Math.abs(driveOffset)
+                                  < driveTurnTolerance.get();
+                        Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
+                        Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
+                          if (shootToHubFixedTurret.ready()
+                              && driveReady) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
                           }
@@ -893,11 +898,11 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHubFixedTurretFixedHood.ready()
-                              && TrajectoryConstants.hubPose
+                              && Math.abs(TrajectoryConstants.hubPose
                                       .toTranslation2d()
                                       .minus(m_drive.getPose().getTranslation())
                                       .getAngle()
-                                      .getDegrees()
+                                      .getDegrees())
                                   < 1.0) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
