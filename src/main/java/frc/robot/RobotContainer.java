@@ -1072,13 +1072,17 @@ public class RobotContainer {
     Command headUpShot =
         Commands.run(
                 () -> {
-                  m_shooter.runFFVelocity(5.716);
+                  m_shooter.shootVelocity(TrajectoryConstants.headUpShootSpeed.get());
                   m_turret.setRotation(new Rotation2d());
-                  m_hood.setAngle(new Rotation2d(1.324));
+                  m_hood.setAngle(new Rotation2d(TrajectoryConstants.headUpHoodAngle.get()));
+                  Logger.recordOutput("Commands/headUpShot/turretReady", (m_turret.angleInTolerance() || !Constants.turretWorking.get()));
+                  Logger.recordOutput("Commands/headUpShot/shooterReady",  m_shooter.getLeaderMotor().speedInTolerance());
+                  Logger.recordOutput("Commands/headUpShot/hoodReady", m_hood.getMotor().positionInTolerance());
                 },
                 m_shooter,
                 m_hood,
-                m_turret).finallyDo(()->{
+                m_turret)
+                .finallyDo(()->{
                   m_shooter.stop();
                   m_hood.getMotor().stop();
                   m_turret.getRelEncoder().stop();
@@ -1087,14 +1091,16 @@ public class RobotContainer {
             .alongWith(
                 Commands.run(
                         () -> {
-                          m_hopper.run();
-                          m_kicker.setPower(ShooterConstants.kickerSpeed.get());
-                        })
-                    .onlyWhile(
-                        () ->
-                            m_shooter.getLeaderMotor().speedInTolerance()
+                          if(m_shooter.getLeaderMotor().speedInTolerance()
                                 && (m_turret.angleInTolerance() || !Constants.turretWorking.get())
-                                && m_hood.getMotor().positionInTolerance())
+                                && m_hood.getMotor().positionInTolerance()){
+                            m_hopper.run();
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());}
+                          else{
+                            m_hopper.stop();
+                            m_kicker.stop();
+                          }
+                        })
                     .finallyDo(
                         () -> {
                           m_hopper.stop();
