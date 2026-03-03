@@ -1075,28 +1075,33 @@ public class RobotContainer {
                   m_shooter.shootVelocity(TrajectoryConstants.headUpShootSpeed.get());
                   m_turret.setRotation(new Rotation2d());
                   m_hood.setAngle(new Rotation2d(TrajectoryConstants.headUpHoodAngle.get()));
-                  Logger.recordOutput("Commands/headUpShot/turretReady", (m_turret.angleInTolerance() || !Constants.turretWorking.get()));
-                  Logger.recordOutput("Commands/headUpShot/shooterReady",  m_shooter.getLeaderMotor().speedInTolerance());
-                  Logger.recordOutput("Commands/headUpShot/hoodReady", m_hood.getMotor().positionInTolerance());
+                  Logger.recordOutput(
+                      "Commands/headUpShot/turretReady",
+                      (m_turret.angleInTolerance() || !Constants.turretWorking.get()));
+                  Logger.recordOutput(
+                      "Commands/headUpShot/shooterReady",
+                      m_shooter.getLeaderMotor().speedInTolerance());
+                  Logger.recordOutput(
+                      "Commands/headUpShot/hoodReady", m_hood.getMotor().positionInTolerance());
                 },
                 m_shooter,
                 m_hood,
                 m_turret)
-                .finallyDo(()->{
+            .finallyDo(
+                () -> {
                   m_shooter.stop();
                   m_hood.getMotor().stop();
                   m_turret.getRelEncoder().stop();
-                }
-                )
+                })
             .alongWith(
                 Commands.run(
                         () -> {
-                          if(m_shooter.getLeaderMotor().speedInTolerance()
-                                && (m_turret.angleInTolerance() || !Constants.turretWorking.get())
-                                && m_hood.getMotor().positionInTolerance()){
+                          if (m_shooter.getLeaderMotor().speedInTolerance()
+                              && (m_turret.angleInTolerance() || !Constants.turretWorking.get())
+                              && m_hood.getMotor().positionInTolerance()) {
                             m_hopper.run();
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());}
-                          else{
+                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                          } else {
                             m_hopper.stop();
                             m_kicker.stop();
                           }
@@ -1342,6 +1347,17 @@ public class RobotContainer {
                         (IntakeConstants.intakeProtected.get()
                             && (m_drive.getChassisSpeeds().vxMetersPerSecond
                                 > IntakeConstants.maxIntakeSpeed.get()))));
+    m_copilotController.leftTrigger().whileTrue(
+        Commands.run(
+            () -> {
+              m_hopper.setPower(IntakeConstants.hopperOuttakeSpeed.get());
+              m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get());
+              m_kicker.setPower(-ShooterConstants.kickerSpeed.get());
+            }, m_hopper, m_intake, m_kicker).finallyDo(() -> {
+                m_hopper.stop();
+                m_intake.stopRollers();
+                m_kicker.stop();
+            }));
   }
 
   public void configureHopper() {

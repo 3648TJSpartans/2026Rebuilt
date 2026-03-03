@@ -33,6 +33,8 @@ public class IntakeConstants {
       new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.25);
   public static final TunableNumber hopperSpeed =
       new TunableNumber("Subsystems/Intake/hopperSpeed", -.5);
+        public static final TunableNumber hopperOuttakeSpeed =
+      new TunableNumber("Subsystems/Intake/hopperOuttakeSpeed", .4);
   // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
   // to push any balls in the hopper towards the shooter. It can't run fast or else
   // it will shred the balls.
