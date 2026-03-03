@@ -26,7 +26,7 @@ public class HoodConstants {
   public static final TunableNumber minPosition =
       new TunableNumber("Subsystems/Hood/limits/minPose", 0.02);
   public static final TunableNumber maxPosition =
-      new TunableNumber("Subsystems/Hood/limits/maxPose", 0.775);
+      new TunableNumber("Subsystems/Hood/limits/maxPose", 0.82);
   public static final TunableNumber minAngle =
       new TunableNumber("Subsystems/Hood/minAngle (deg)", 78);
   //   new Rotation2d(
