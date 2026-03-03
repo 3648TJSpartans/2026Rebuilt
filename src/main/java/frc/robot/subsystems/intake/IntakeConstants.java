@@ -64,9 +64,9 @@ public class IntakeConstants {
   public static final TunableNumber currentThreshold =
       new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
 
-  public static final int upSolenoidChannel = 2;
+  public static final int upSolenoidChannel = 3;
 
-  public static final int downSolenoidChannel = 3;
+  public static final int downSolenoidChannel = 2;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
   public static final Rotation3d intakeUpRotation = new Rotation3d();
