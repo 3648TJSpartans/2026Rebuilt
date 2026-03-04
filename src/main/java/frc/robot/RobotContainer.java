@@ -1115,12 +1115,12 @@ public class RobotContainer {
     m_copilotController
         .rightBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.2), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.06), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
     m_copilotController
         .leftBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.2), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.06), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
@@ -1350,6 +1350,7 @@ public class RobotContainer {
     m_copilotController.leftTrigger().whileTrue(
         Commands.run(
             () -> {
+              m_intake.getSolenoid().setSolenoid(true);
               m_hopper.setPower(IntakeConstants.hopperOuttakeSpeed.get());
               m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get());
               m_kicker.setPower(-ShooterConstants.kickerSpeed.get());
@@ -1425,7 +1426,7 @@ public class RobotContainer {
             () -> -m_driveController.getLeftY(),
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
-            m_driveController.leftBumper()));
+            m_driveController.rightBumper()));
 
     // Lock to nearest 45° when A button is held
     Rotation2d[] lockpoints = {
