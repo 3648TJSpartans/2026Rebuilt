@@ -648,7 +648,7 @@ public class RobotContainer {
     // We will eventually replace this with a more detailed command that lines the robot up
     // for its L1 climb
     // We should also probably make it so it drives to different possible climb poses
-    m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
+    // m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
     m_claw.setDefaultCommand(
         Commands.run(
@@ -1493,28 +1493,27 @@ public class RobotContainer {
                 m_intake))
         .whileTrue(
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
+                .andThen(Commands.runOnce(m_neural::updateSavedPose))
+                .andThen(Commands.runOnce(() -> m_vision.setPipeline(0, 0)))
                 .andThen(
-                    Commands.runOnce(m_neural::updateSavedPose)
-                        .andThen(
-                            Commands.runOnce(() -> m_vision.setPipeline(0, 0))
-                                .andThen(
-                                    new DriveTo(m_drive, () -> m_neural.getSavedPose())
-                                        .onlyIf(
-                                            () ->
-                                                (IntakeConstants.intakeProtected.get()
-                                                    && !PoseConstants.blueHub.contains(
-                                                        m_intake.getPolygon(
-                                                            m_neural.getSavedPose(),
-                                                            IntakeState.DOWN))
-                                                    && !PoseConstants.blueHub.contains(
-                                                        m_intake.getPolygon(
-                                                            m_neural.getSavedPose(),
-                                                            IntakeState.DOWN))
-                                                    && PoseConstants.field.fullyContains(
-                                                        m_intake.getPolygon(
-                                                            m_neural.getSavedPose(),
-                                                            IntakeState.DOWN)))))))
-                .finallyDo(() -> m_intake.getSolenoid().setSolenoid(true)));
+                    new DriveTo(m_drive, () -> m_neural.getSavedPose())
+                        .onlyIf(
+                            () ->
+                                (IntakeConstants.intakeProtected.get()
+                                    && !PoseConstants.blueHub.contains(
+                                        m_intake.getPolygon(
+                                            m_neural.getSavedPose(), IntakeState.DOWN))
+                                    && !PoseConstants.blueHub.contains(
+                                        m_intake.getPolygon(
+                                            m_neural.getSavedPose(), IntakeState.DOWN))
+                                    && PoseConstants.field.fullyContains(
+                                        m_intake.getPolygon(
+                                            m_neural.getSavedPose(), IntakeState.DOWN)))))
+                .finallyDo(
+                    () -> {
+                      m_intake.stopRollers();
+                      m_vision.setPipeline(0, 0);
+                    }));
 
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));

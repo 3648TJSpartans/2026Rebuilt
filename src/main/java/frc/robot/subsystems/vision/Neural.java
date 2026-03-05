@@ -24,6 +24,7 @@ public class Neural extends SubsystemBase {
     ty = 0;
     txnc = 0;
     tync = 0;
+    targetDetected = false;
     this.robotPoseSupplier = robotPoseSupplier;
   }
 
