@@ -1316,7 +1316,9 @@ public class RobotContainer {
     m_driveController
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
-        .onFalse(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
+        .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
+
+    m_driveController.leftBumper().onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
 
     new Trigger(
             () -> {
@@ -1472,7 +1474,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     m_driveController
-        .leftBumper()
+        .y()
         .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
         .whileTrue(
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
