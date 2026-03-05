@@ -27,6 +27,10 @@ public class TrajectoryConstants {
       new TunableNumber("Trajectory/postshotDelay", 4.46);
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
+  public static final TunableNumber headUpShootSpeed =
+      new TunableNumber("Trajectory/headUpShot/shootSpeed", 5.716);
+  public static final TunableNumber headUpHoodAngle =
+      new TunableNumber("Trajectory/headUpShot/shootAngle", 1.124);
 
   public static final TunableNumber[] rpmMatrix =
       new TunableNumber[] {
@@ -93,10 +97,10 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] velocityMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.0m/velocity", -0.5),
-        new TunableNumber("Trajectory/.5m/velocity", -0.5),
-        new TunableNumber("Trajectory/1.0m/velocity", -0.5),
-        new TunableNumber("Trajectory/1.5m/velocity", -0.5),
+        new TunableNumber("Trajectory/.0m/velocity", 0),
+        new TunableNumber("Trajectory/.5m/velocity", 0),
+        new TunableNumber("Trajectory/1.0m/velocity", 0.0),
+        new TunableNumber("Trajectory/1.5m/velocity", 0.4),
         new TunableNumber("Trajectory/2.0m/velocity", -0.25),
         new TunableNumber("Trajectory/2.5m/velocity", -.225),
         new TunableNumber("Trajectory/3.0m/velocity", -0.45),

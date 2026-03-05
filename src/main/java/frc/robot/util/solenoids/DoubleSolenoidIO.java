@@ -1,5 +1,7 @@
 package frc.robot.util.solenoids;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -56,8 +58,10 @@ public class DoubleSolenoidIO extends SolenoidIO {
     // TODO Auto-generated method stub
     if (on) {
       setSolenoidForward();
+      Logger.recordOutput(getName() +"/state", "forward");
       return;
     }
+    Logger.recordOutput(getName() +"/state", "reverse");
     setSolenoidReverse();
   }
 

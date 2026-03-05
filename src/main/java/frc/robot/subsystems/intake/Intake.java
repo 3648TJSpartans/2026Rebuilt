@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
+import frc.robot.util.solenoids.DoubleSolenoidIO;
 import frc.robot.util.solenoids.SolenoidIO;
 import frc.robot.util.statusableUtils.Statusable;
 import frc.robot.util.zoneCalc.Polygon;
@@ -16,8 +17,7 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase implements Statusable {
 
   private final RelEncoderSparkMax roller;
-  private final SolenoidIO m_upSolenoid;
-  private final SolenoidIO m_downSolenoid;
+  private final SolenoidIO m_solenoid;
   public IntakeState m_state;
   private final Supplier<Pose2d> m_poseSupplier;
   private Polygon m_polygon;
@@ -27,9 +27,8 @@ public class Intake extends SubsystemBase implements Statusable {
     DOWN
   }
 
-  public Intake(SolenoidIO upSolenoid, SolenoidIO downSolenoid, Supplier<Pose2d> drivePose) {
-    m_upSolenoid = upSolenoid;
-    m_downSolenoid = downSolenoid;
+  public Intake(SolenoidIO solenoid, Supplier<Pose2d> drivePose) {
+    m_solenoid = solenoid;
     roller = new RelEncoderSparkMax(IntakeConstants.intakeRollerConfig);
     m_poseSupplier = drivePose;
     updatePolygon();
@@ -48,35 +47,29 @@ public class Intake extends SubsystemBase implements Statusable {
   }
 
   public void setSolenoidAndRollerUp() {
-    m_upSolenoid.setSolenoid(true);
-    m_downSolenoid.setSolenoid(false);
+    m_solenoid.setSolenoid(true);
     roller.stop();
   }
 
   public void setSolenoidAndRollerDown() {
-    m_upSolenoid.setSolenoid(false);
-    m_downSolenoid.setSolenoid(true);
+    m_solenoid.setSolenoid(false);
     roller.setPower(IntakeConstants.intakeRollerSpeed.get());
   }
 
-  public SolenoidIO getUpSolenoid() {
-    return m_upSolenoid;
-  }
-
-  public SolenoidIO getDownSolenoid() {
-    return m_downSolenoid;
+  public SolenoidIO getSolenoid() {
+    return m_solenoid;
   }
 
   @Override
   public void periodic() {
-    m_state = getDownSolenoid().getSolenoidOn() ? IntakeState.DOWN : IntakeState.UP;
+    m_state = m_solenoid.getSolenoidOn() ? IntakeState.DOWN : IntakeState.UP;
     Logger.recordOutput("Subsystems/Intake/state", m_state.toString());
     updatePolygon();
   }
 
   @Override
   public Status getStatus() {
-    return Constants.leastCommonStatus(m_upSolenoid.getStatus(), m_downSolenoid.getStatus());
+    return m_solenoid.getStatus();
   }
 
   @Override

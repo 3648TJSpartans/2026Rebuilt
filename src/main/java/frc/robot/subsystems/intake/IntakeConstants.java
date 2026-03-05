@@ -33,6 +33,8 @@ public class IntakeConstants {
       new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.25);
   public static final TunableNumber hopperSpeed =
       new TunableNumber("Subsystems/Intake/hopperSpeed", -.5);
+        public static final TunableNumber hopperOuttakeSpeed =
+      new TunableNumber("Subsystems/Intake/hopperOuttakeSpeed", .4);
   // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
   // to push any balls in the hopper towards the shooter. It can't run fast or else
   // it will shred the balls.
@@ -64,9 +66,9 @@ public class IntakeConstants {
   public static final TunableNumber currentThreshold =
       new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
 
-  public static final int upSolenoidChannel = 2;
+  public static final int upSolenoidChannel = 3;
 
-  public static final int downSolenoidChannel = 3;
+  public static final int downSolenoidChannel = 2;
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
   public static final Rotation3d intakeUpRotation = new Rotation3d();
