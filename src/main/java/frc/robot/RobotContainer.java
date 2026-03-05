@@ -1499,16 +1499,16 @@ public class RobotContainer {
                     new DriveTo(m_drive, () -> m_neural.getSavedPose())
                         .onlyIf(
                             () ->
-                                (IntakeConstants.intakeProtected.get()
-                                    && !PoseConstants.blueHub.contains(
-                                        m_intake.getPolygon(
-                                            m_neural.getSavedPose(), IntakeState.DOWN))
-                                    && !PoseConstants.blueHub.contains(
-                                        m_intake.getPolygon(
-                                            m_neural.getSavedPose(), IntakeState.DOWN))
-                                    && PoseConstants.field.fullyContains(
-                                        m_intake.getPolygon(
-                                            m_neural.getSavedPose(), IntakeState.DOWN)))))
+                                (!IntakeConstants.intakeProtected.get()
+                                    || (!PoseConstants.blueHub.contains(
+                                            m_intake.getPolygon(
+                                                m_neural.getSavedPose(), IntakeState.DOWN))
+                                        && !PoseConstants.blueHub.contains(
+                                            m_intake.getPolygon(
+                                                m_neural.getSavedPose(), IntakeState.DOWN))
+                                        && PoseConstants.field.fullyContains(
+                                            m_intake.getPolygon(
+                                                m_neural.getSavedPose(), IntakeState.DOWN))))))
                 .finallyDo(
                     () -> {
                       m_intake.stopRollers();
