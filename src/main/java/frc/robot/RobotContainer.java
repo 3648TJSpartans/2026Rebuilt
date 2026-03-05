@@ -1318,7 +1318,9 @@ public class RobotContainer {
         .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
-    m_driveController.leftBumper().onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
+    m_driveController
+        .leftBumper()
+        .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
 
     new Trigger(
             () -> {
@@ -1349,18 +1351,25 @@ public class RobotContainer {
                         (IntakeConstants.intakeProtected.get()
                             && (m_drive.getChassisSpeeds().vxMetersPerSecond
                                 > IntakeConstants.maxIntakeSpeed.get()))));
-    m_copilotController.leftTrigger().whileTrue(
-        Commands.run(
-            () -> {
-              m_intake.getSolenoid().setSolenoid(true);
-              m_hopper.setPower(IntakeConstants.hopperOuttakeSpeed.get());
-              m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get());
-              m_kicker.setPower(-ShooterConstants.kickerSpeed.get());
-            }, m_hopper, m_intake, m_kicker).finallyDo(() -> {
-                m_hopper.stop();
-                m_intake.stopRollers();
-                m_kicker.stop();
-            }));
+    m_copilotController
+        .leftTrigger()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_intake.getSolenoid().setSolenoid(true);
+                      m_hopper.setPower(IntakeConstants.hopperOuttakeSpeed.get());
+                      m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get());
+                      m_kicker.setPower(-ShooterConstants.kickerSpeed.get());
+                    },
+                    m_hopper,
+                    m_intake,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_hopper.stop();
+                      m_intake.stopRollers();
+                      m_kicker.stop();
+                    }));
   }
 
   public void configureHopper() {
@@ -1475,7 +1484,13 @@ public class RobotContainer {
 
     m_driveController
         .y()
-        .onTrue(Commands.runOnce(() -> m_vision.setPipeline(1, 0)))
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  m_vision.setPipeline(1, 0);
+                  m_intake.setSolenoidAndRollerDown();
+                },
+                m_intake))
         .whileTrue(
             new WaitUntilCommand(() -> m_vision.getPipeline(0) == 1 && m_neural.isPoseDetected())
                 .andThen(
@@ -1498,7 +1513,8 @@ public class RobotContainer {
                                                     && PoseConstants.field.fullyContains(
                                                         m_intake.getPolygon(
                                                             m_neural.getSavedPose(),
-                                                            IntakeState.DOWN))))))));
+                                                            IntakeState.DOWN)))))))
+                .finallyDo(() -> m_intake.getSolenoid().setSolenoid(true)));
 
     Pose2d alignOffsetRight = new Pose2d(new Translation2d(-.75, -.17), new Rotation2d(0));
     Pose2d alignOffsetLeft = new Pose2d(new Translation2d(-.75, .17), new Rotation2d(0));
