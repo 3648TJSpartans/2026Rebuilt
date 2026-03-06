@@ -40,6 +40,7 @@ public class Neural extends SubsystemBase {
     Logger.recordOutput("Subsystems/Vision/Neural/tync", tync);
     targetDetected = tx != 0 && ty != 0;
     Logger.recordOutput("Subsystems/Vision/Neural/targetDetected", targetDetected);
+    estimateTargetPose(robotPoseSupplier.get());
   }
 
   // We already have a method to switch pipelines, but I'm not sure how to integrate the limelight
