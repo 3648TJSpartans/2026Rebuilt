@@ -1115,12 +1115,12 @@ public class RobotContainer {
     m_copilotController
         .rightBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.06), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.1), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
     m_copilotController
         .leftBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.06), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.1), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
@@ -1132,7 +1132,7 @@ public class RobotContainer {
     m_test3Controller
         .rightStick()
         .whileTrue(
-            Commands.run(() -> m_turret.setRotation(new Rotation2d(Math.PI / 2)))
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(-.99*Math.PI)))
                 .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
