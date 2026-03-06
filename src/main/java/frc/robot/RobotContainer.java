@@ -863,7 +863,7 @@ public class RobotContainer {
                           m_hopper.stop();
                         }))
             .onlyWhile(shootTimeGood);
-    TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance", 5.0);
+    TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance", 1.5);
     Command runKickerAndShootToHubFixedTurret =
         new ParallelCommandGroup(
                 aimDriveAtHub,
@@ -875,6 +875,7 @@ public class RobotContainer {
                                   .toTranslation2d()
                                   .minus(m_drive.getPose().getTranslation())
                                   .getAngle()
+                                  .minus(m_drive.getRotation())
                                   .getDegrees();
                           boolean driveReady = Math.abs(driveOffset) < driveTurnTolerance.get();
                           Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
@@ -897,14 +898,17 @@ public class RobotContainer {
                 shootToHubFixedTurretFixedHood,
                 Commands.run(
                         () -> {
-                          if (shootToHubFixedTurretFixedHood.ready()
-                              && Math.abs(
-                                      TrajectoryConstants.hubPose
-                                          .toTranslation2d()
-                                          .minus(m_drive.getPose().getTranslation())
-                                          .getAngle()
-                                          .getDegrees())
-                                  < 1.0) {
+                          double driveOffset =
+                              TrajectoryConstants.hubPose
+                                  .toTranslation2d()
+                                  .minus(m_drive.getPose().getTranslation())
+                                  .getAngle()
+                                  .minus(m_drive.getRotation())
+                                  .getDegrees();
+                          boolean driveReady = Math.abs(driveOffset) < driveTurnTolerance.get();
+                          Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
+                          Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
+                          if (shootToHubFixedTurretFixedHood.ready() && driveReady) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
                           }
@@ -1132,7 +1136,7 @@ public class RobotContainer {
     m_test3Controller
         .rightStick()
         .whileTrue(
-            Commands.run(() -> m_turret.setRotation(new Rotation2d(-.99*Math.PI)))
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(-.99 * Math.PI)))
                 .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller
