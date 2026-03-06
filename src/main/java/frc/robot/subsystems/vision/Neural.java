@@ -81,17 +81,17 @@ public class Neural extends SubsystemBase {
     // Get distance
     double distanceToTargetM =
         (VisionConstants.nTargetHeight / 100 - VisionConstants.robotToCamera0.getZ())
-            / Math.tan(Math.toRadians(ty) + VisionConstants.robotToCamera0.getRotation().getY());
+            / Math.tan(Math.toRadians(ty) - VisionConstants.robotToCamera0.getRotation().getY());
     Logger.recordOutput("Subsystems/Vision/Neural/distanceToTarget", distanceToTargetM);
 
     // Calculate transform
     Transform2d transformToTarget =
         new Transform2d(
             new Translation2d(
-                -(distanceToTargetM * Math.cos(Math.toRadians(tx)))
+                -distanceToTargetM * Math.cos(Math.toRadians(tx))
                     + VisionConstants.ballDriveOffset
                     + VisionConstants.robotToCamera0.getX(),
-                -(distanceToTargetM * Math.sin(Math.toRadians(tx)))
+                -distanceToTargetM * Math.sin(Math.toRadians(tx))
                     + VisionConstants.robotToCamera0.getY()
                     + VisionConstants.ballHorizOffest),
             new Rotation2d());
