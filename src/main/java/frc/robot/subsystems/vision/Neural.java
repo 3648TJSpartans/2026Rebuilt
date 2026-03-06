@@ -24,6 +24,7 @@ public class Neural extends SubsystemBase {
     ty = 0;
     txnc = 0;
     tync = 0;
+    targetDetected = false;
     this.robotPoseSupplier = robotPoseSupplier;
   }
 
@@ -75,29 +76,28 @@ public class Neural extends SubsystemBase {
   public void estimateTargetPose(Pose2d robotPose) {
     if (tx == 0 && ty == 0) {
       return;
-    } else {
-
-      // Get distance
-      double distanceToTargetM =
-          (VisionConstants.nTargetHeight / 100 - VisionConstants.nCameraHeight / 100)
-              / Math.tan(Math.toRadians(ty));
-      Logger.recordOutput("Subsystems/Vision/Neural/distanceToTarget", distanceToTargetM);
-
-      // Calculate transform
-      Transform2d transformToTarget =
-          new Transform2d(
-              new Translation2d(
-                  (distanceToTargetM * Math.cos(Math.toRadians(tx)))
-                      + VisionConstants.ballDriveOffset
-                      + VisionConstants.robotToCamera0.getX(),
-                  -(distanceToTargetM * Math.sin(Math.toRadians(tx)))
-                      + VisionConstants.robotToCamera0.getY()
-                      + VisionConstants.ballHorizOffest),
-              new Rotation2d());
-      Logger.recordOutput("Subsystems/Vision/Neural/transformToTarget", transformToTarget);
-      Pose2d targetPose = robotPose.transformBy(transformToTarget);
-      Logger.recordOutput("Subsystems/Vision/Neural/targetPose", targetPose);
-      this.targetPose = targetPose;
     }
+
+    // Get distance
+    double distanceToTargetM =
+        (VisionConstants.nTargetHeight / 100 - VisionConstants.robotToCamera0.getZ())
+            / Math.tan(Math.toRadians(ty) - VisionConstants.robotToCamera0.getRotation().getY());
+    Logger.recordOutput("Subsystems/Vision/Neural/distanceToTarget", distanceToTargetM);
+
+    // Calculate transform
+    Transform2d transformToTarget =
+        new Transform2d(
+            new Translation2d(
+                -distanceToTargetM * Math.cos(Math.toRadians(tx))
+                    + VisionConstants.ballDriveOffset
+                    + VisionConstants.robotToCamera0.getX(),
+                -distanceToTargetM * Math.sin(Math.toRadians(tx))
+                    + VisionConstants.robotToCamera0.getY()
+                    + VisionConstants.ballHorizOffest),
+            new Rotation2d());
+    Logger.recordOutput("Subsystems/Vision/Neural/transformToTarget", transformToTarget);
+    Pose2d targetPose = robotPose.transformBy(transformToTarget);
+    Logger.recordOutput("Subsystems/Vision/Neural/targetPose", targetPose);
+    this.targetPose = targetPose;
   }
 }
