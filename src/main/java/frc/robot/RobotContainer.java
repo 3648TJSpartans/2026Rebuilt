@@ -117,7 +117,7 @@ public class RobotContainer {
   private final Neural m_neural;
   private final Hood m_hood;
   private final ShiftTracker m_shiftTracker;
-  private final Climber m_climber;
+  // private final Climber m_climber;
   private boolean override;
   private final Shooter m_shooter;
   private final Turret m_turret;
@@ -129,7 +129,7 @@ public class RobotContainer {
   private final GenericStatusable m_batteryStatus;
   private final StatusLogger m_statusLogger;
   private final SimLogger m_simLogger;
-  private final TheClaw m_claw;
+  // private final TheClaw m_claw;
   private final TuningUpdater m_tuningUpdater;
   // Controller
   private final SmartController m_driveController =
@@ -154,7 +154,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
-    m_climber = new Climber();
+    // m_climber = new Climber();
     m_kicker = new Kicker();
     m_hopper = new Hopper();
     m_tuningUpdater = new TuningUpdater();
@@ -209,7 +209,7 @@ public class RobotContainer {
                 new RelEncoderSparkMax(ShooterConstants.kLeaderMotorConfig),
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
         m_hood = new Hood(new AbsEncoderSparkMax(HoodConstants.motorConfig));
-        m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
+        // m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
         m_drive =
             new Drive(
                 new GyroIONavX(),
@@ -281,7 +281,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
-        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
+        // m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_shooter =
             new Shooter(
                 new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
@@ -313,7 +313,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
+        // m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_intake =
             new Intake(
                 new SingleSolenoidSim(
@@ -352,7 +352,7 @@ public class RobotContainer {
 
     m_statusLogger =
         new StatusLogger(
-            m_climber,
+            // m_climber,
             m_hood,
             m_shooter,
             m_kicker,
@@ -362,7 +362,7 @@ public class RobotContainer {
             m_vision,
             m_usbStatus,
             m_batteryStatus,
-            m_claw,
+            // m_claw,
             m_driveController,
             m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
@@ -460,7 +460,7 @@ public class RobotContainer {
     configureDrive();
     // configureShooter();
     configureAlerts();
-    configureClimber();
+    // configureClimber();
     configureIntake();
     configureHopper();
     configureTurret();
@@ -650,10 +650,10 @@ public class RobotContainer {
     // We should also probably make it so it drives to different possible climb poses
     // m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
-    m_claw.setDefaultCommand(
-        Commands.run(
-            () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getRightY(), 0.1)),
-            m_claw));
+    // m_claw.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getRightY(), 0.1)),
+    //         m_claw));
   }
 
   private void configureSmartShoot() {
