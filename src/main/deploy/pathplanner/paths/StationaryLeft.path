@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8070949349641037,
-        "y": 6.356596307976342
+        "x": 3.3074733096085422,
+        "y": 6.3428469750889676
       },
       "isLocked": false,
       "linkedName": "LeftTrench"
@@ -20,8 +20,8 @@
         "y": 6.3428469750889676
       },
       "prevControl": {
-        "x": 3.2774844413496234,
-        "y": 6.327392070789817
+        "x": 3.8378883955361833,
+        "y": 6.3428469750889676
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Stationary",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

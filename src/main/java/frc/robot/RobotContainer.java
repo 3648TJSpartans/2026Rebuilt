@@ -447,7 +447,7 @@ public class RobotContainer {
 
     Command intake =
         Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
-            .finallyDo(m_intake::setSolenoidAndRollerUp);
+            .finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.914756877899083,
-        "y": 6.186529475151749
+        "x": 3.883691955791628,
+        "y": 6.443460163866253
       },
       "isLocked": false,
       "linkedName": "LeftTrench"
@@ -20,8 +20,8 @@
         "y": 7.06981517650463
       },
       "prevControl": {
-        "x": -0.015926761303240833,
-        "y": 7.201063820660558
+        "x": 0.07099332760676674,
+        "y": 7.123186209141811
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "ToDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
