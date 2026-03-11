@@ -12,11 +12,11 @@ public class IntakeConstants {
   public static final MotorConfig hopperMotorConfig =
       new MotorConfig("Subsystems/Intake/HopperMotorIO")
           .motorCan(15)
-          .p(0.0003)
+          .p(0.0001)
           .i(0)
           .d(0)
-          .maxPower(1.0)
-          .minPower(-1.0)
+          .maxPower(0.5)
+          .minPower(-0.5)
           .positionTolerance(0.0);
 
   public static final MotorConfig intakeRollerConfig =
