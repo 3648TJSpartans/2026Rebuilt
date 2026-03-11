@@ -12,11 +12,11 @@ public class IntakeConstants {
   public static final MotorConfig hopperMotorConfig =
       new MotorConfig("Subsystems/Intake/HopperMotorIO")
           .motorCan(15)
-          .p(0)
+          .p(0.0003)
           .i(0)
           .d(0)
-          .maxPower(.1)
-          .minPower(-.1)
+          .maxPower(1.0)
+          .minPower(-1.0)
           .positionTolerance(0.0);
 
   public static final MotorConfig intakeRollerConfig =
@@ -32,7 +32,7 @@ public class IntakeConstants {
   public static final TunableNumber intakeRollerSpeed =
       new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.25);
   public static final TunableNumber hopperSpeed =
-      new TunableNumber("Subsystems/Intake/hopperSpeed", -.5);
+      new TunableNumber("Subsystems/Intake/hopperSpeed", -1000);
   public static final TunableNumber hopperOuttakeSpeed =
       new TunableNumber("Subsystems/Intake/hopperOuttakeSpeed", .4);
   // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
@@ -65,6 +65,9 @@ public class IntakeConstants {
       new TunableNumber("Subsystems/Intake/Hopper/speedThreshold", 0.5);
   public static final TunableNumber currentThreshold =
       new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
+
+  public static final TunableBoolean unjamEnabled =
+      new TunableBoolean("Subsystems/Intake/Hopper/unjamEnabled", false);
 
   public static final int upSolenoidChannel = 9;
 

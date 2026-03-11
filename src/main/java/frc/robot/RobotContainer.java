@@ -48,7 +48,6 @@ import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -68,8 +67,6 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.theClaw.TheClaw;
-import frc.robot.subsystems.theClaw.TheClawstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.vision.Neural;
@@ -446,8 +443,7 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
-            .finallyDo(m_intake::stopRollers);
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake).finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -538,6 +534,11 @@ public class RobotContainer {
     //                 () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
     //                 m_hopper)
     //             .finallyDo(m_hopper::stop));
+    m_testController
+        .a()
+        .whileTrue(
+            Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get()), m_hopper)
+                .finallyDo(m_hopper::stop));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
     m_testController
@@ -1258,12 +1259,6 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-    // m_kicker.setDefaultCommand(
-    //     Commands.run(
-    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    // new Trigger(() -> dynamicTrajectory.ready())
-    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
