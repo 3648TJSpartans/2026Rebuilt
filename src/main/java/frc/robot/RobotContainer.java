@@ -537,8 +537,18 @@ public class RobotContainer {
     m_testController
         .a()
         .whileTrue(
-            Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get()), m_hopper)
-                .finallyDo(m_hopper::stop));
+            Commands.run(
+                    () -> {
+                      m_hopper.run();
+                      m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                    },
+                    m_hopper,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_hopper.stop();
+                      m_kicker.stop();
+                    }));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
     m_testController
