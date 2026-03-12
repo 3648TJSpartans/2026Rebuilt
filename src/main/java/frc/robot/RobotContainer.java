@@ -79,6 +79,7 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
 import frc.robot.util.SmartController;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
@@ -451,7 +452,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
 
     Command autonInitCommand = new PathPlannerAuto("Neutral").ignoringDisable(true);
-    autonInitCommand.schedule();
+    TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);
+    new Trigger(autoLagTrigger).onTrue(autonInitCommand);
   }
 
   private void configureButtonBindings() {
