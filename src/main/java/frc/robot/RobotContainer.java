@@ -117,7 +117,7 @@ public class RobotContainer {
   private final Neural m_neural;
   private final Hood m_hood;
   private final ShiftTracker m_shiftTracker;
-  private final Climber m_climber;
+  // private final Climber m_climber;
   private boolean override;
   private final Shooter m_shooter;
   private final Turret m_turret;
@@ -129,7 +129,7 @@ public class RobotContainer {
   private final GenericStatusable m_batteryStatus;
   private final StatusLogger m_statusLogger;
   private final SimLogger m_simLogger;
-  private final TheClaw m_claw;
+  // private final TheClaw m_claw;
   private final TuningUpdater m_tuningUpdater;
   // Controller
   private final SmartController m_driveController =
@@ -154,7 +154,7 @@ public class RobotContainer {
   public RobotContainer() {
     m_leds = new LedSubsystem();
     m_shiftTracker = new ShiftTracker();
-    m_climber = new Climber();
+    // m_climber = new Climber();
     m_kicker = new Kicker();
     m_hopper = new Hopper();
     m_tuningUpdater = new TuningUpdater();
@@ -209,7 +209,7 @@ public class RobotContainer {
                 new RelEncoderSparkMax(ShooterConstants.kLeaderMotorConfig),
                 new RelEncoderSparkMax(ShooterConstants.kFollowerMotorConfig));
         m_hood = new Hood(new AbsEncoderSparkMax(HoodConstants.motorConfig));
-        m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
+        // m_claw = new TheClaw(new RelEncoderSparkMax(TheClawstants.motorConfig));
         m_drive =
             new Drive(
                 new GyroIONavX(),
@@ -281,7 +281,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_hood = new Hood(new SparkSim("Subsystems/Hood/MotorIO", HoodConstants.simKV));
-        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
+        // m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_shooter =
             new Shooter(
                 new SparkSim("Subsystems/Shooter/LeadMotor", ShooterConstants.shooterSimKV),
@@ -313,7 +313,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
+        // m_claw = new TheClaw(new SparkSim("Subsystems/Claw/MotorIO", TheClawstants.simKv));
         m_intake =
             new Intake(
                 new SingleSolenoidSim(
@@ -352,7 +352,7 @@ public class RobotContainer {
 
     m_statusLogger =
         new StatusLogger(
-            m_climber,
+            // m_climber,
             m_hood,
             m_shooter,
             m_kicker,
@@ -362,7 +362,7 @@ public class RobotContainer {
             m_vision,
             m_usbStatus,
             m_batteryStatus,
-            m_claw,
+            // m_claw,
             m_driveController,
             m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
@@ -447,7 +447,7 @@ public class RobotContainer {
 
     Command intake =
         Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
-            .finallyDo(m_intake::setSolenoidAndRollerUp);
+            .finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -460,7 +460,7 @@ public class RobotContainer {
     configureDrive();
     // configureShooter();
     configureAlerts();
-    configureClimber();
+    // configureClimber();
     configureIntake();
     configureHopper();
     configureTurret();
@@ -650,10 +650,10 @@ public class RobotContainer {
     // We should also probably make it so it drives to different possible climb poses
     // m_driveController.y().whileTrue(new DriveTo(m_drive, () -> PoseConstants.climbPose));
 
-    m_claw.setDefaultCommand(
-        Commands.run(
-            () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getRightY(), 0.1)),
-            m_claw));
+    // m_claw.setDefaultCommand(
+    //     Commands.run(
+    //         () -> m_claw.setPower(MathUtil.applyDeadband(m_copilotController.getRightY(), 0.1)),
+    //         m_claw));
   }
 
   private void configureSmartShoot() {
@@ -863,7 +863,7 @@ public class RobotContainer {
                           m_hopper.stop();
                         }))
             .onlyWhile(shootTimeGood);
-    TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance", 5.0);
+    TunableNumber driveTurnTolerance = new TunableNumber("Overrides/Turret/driveTolerance", 1.5);
     Command runKickerAndShootToHubFixedTurret =
         new ParallelCommandGroup(
                 aimDriveAtHub,
@@ -875,6 +875,7 @@ public class RobotContainer {
                                   .toTranslation2d()
                                   .minus(m_drive.getPose().getTranslation())
                                   .getAngle()
+                                  .minus(m_drive.getRotation())
                                   .getDegrees();
                           boolean driveReady = Math.abs(driveOffset) < driveTurnTolerance.get();
                           Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
@@ -897,14 +898,17 @@ public class RobotContainer {
                 shootToHubFixedTurretFixedHood,
                 Commands.run(
                         () -> {
-                          if (shootToHubFixedTurretFixedHood.ready()
-                              && Math.abs(
-                                      TrajectoryConstants.hubPose
-                                          .toTranslation2d()
-                                          .minus(m_drive.getPose().getTranslation())
-                                          .getAngle()
-                                          .getDegrees())
-                                  < 1.0) {
+                          double driveOffset =
+                              TrajectoryConstants.hubPose
+                                  .toTranslation2d()
+                                  .minus(m_drive.getPose().getTranslation())
+                                  .getAngle()
+                                  .minus(m_drive.getRotation())
+                                  .getDegrees();
+                          boolean driveReady = Math.abs(driveOffset) < driveTurnTolerance.get();
+                          Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
+                          Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
+                          if (shootToHubFixedTurretFixedHood.ready() && driveReady) {
                             m_kicker.setPower(ShooterConstants.kickerSpeed.get());
                             m_hopper.run();
                           }
@@ -1115,12 +1119,12 @@ public class RobotContainer {
     m_copilotController
         .rightBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.06), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(0.1), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
     m_copilotController
         .leftBumper()
         .and(() -> override)
-        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.06), m_turret))
+        .onTrue(Commands.runOnce(() -> m_turret.getRelEncoder().setPower(-0.1), m_turret))
         .onFalse(new InstantCommand(() -> m_turret.getRelEncoder().stop(), m_turret));
 
     TunableNumber setPose = new TunableNumber("Subsystems/Turret/testSetPose", 0.0);
@@ -1132,7 +1136,7 @@ public class RobotContainer {
     m_test3Controller
         .rightStick()
         .whileTrue(
-            Commands.run(() -> m_turret.setRotation(new Rotation2d(Math.PI / 2)))
+            Commands.run(() -> m_turret.setRotation(new Rotation2d(-.99 * Math.PI)))
                 .finallyDo(m_turret.getRelEncoder()::stop));
 
     m_test3Controller

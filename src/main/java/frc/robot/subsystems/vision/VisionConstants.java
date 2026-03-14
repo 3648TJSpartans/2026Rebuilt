@@ -34,7 +34,7 @@ public class VisionConstants {
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static Transform3d robotToCamera0 =
-      new Transform3d(0.07, -0.26, 0.60, new Rotation3d(0, Units.degreesToRadians(-20), 0.0));
+      new Transform3d(0.07, -0.26, 0.60, new Rotation3d(0, Units.degreesToRadians(-17), 0.0));
   public static Transform3d robotToCamera1 = new Transform3d(0, 0, 0, new Rotation3d(0.0, 0, 0));
 
   // Basic filtering thresholds
@@ -67,6 +67,6 @@ public class VisionConstants {
       11.5; // Height of the limelight camera from the *ground* in cm
   public static double nCameraAngle =
       0; // Angle of the limelight camera from perfectly horizontal in degrees
-  public static double ballDriveOffset = -Units.metersToInches(-13.5); // Meters (probably)
+  public static double ballDriveOffset = -Units.inchesToMeters(-13.5); // Meters (probably)
   public static double ballHorizOffest = 0;
 }

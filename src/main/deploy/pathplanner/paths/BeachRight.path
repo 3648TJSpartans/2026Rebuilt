@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.396690391459075,
+        "y": 0.6297153024911029
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.12765552242927,
+        "y": 0.5016284944815906
+      },
+      "isLocked": false,
+      "linkedName": "PostTrench"
+    },
+    {
+      "anchor": {
+        "x": 5.849181494661923,
+        "y": 0.9847686832740215
+      },
+      "prevControl": {
+        "x": 5.615047962419499,
+        "y": 0.5385629650006056
+      },
+      "nextControl": {
+        "x": 6.018372468430385,
+        "y": 1.3072085288300541
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.042846975088969,
+        "y": 1.8562633451957287
+      },
+      "prevControl": {
+        "x": 5.9312434280487505,
+        "y": 1.5730646464265132
+      },
+      "nextControl": {
+        "x": 6.270899463704408,
+        "y": 2.4349561353424436
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.732040332147095,
+        "y": 2.534092526690391
+      },
+      "prevControl": {
+        "x": 6.7997516592917755,
+        "y": 2.734800327001874
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "EndBeachRight"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Disrupt",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

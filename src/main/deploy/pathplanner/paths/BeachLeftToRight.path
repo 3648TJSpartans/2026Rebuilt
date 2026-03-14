@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.396690391459075,
-        "y": 0.6297153024911029
+        "x": 7.742799525504152,
+        "y": 5.514389086595493
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.690393010096221,
-        "y": 0.6446088933475845
+        "x": 7.995895130298004,
+        "y": 5.505136638005323
       },
       "isLocked": false,
-      "linkedName": "RightStart"
+      "linkedName": "EndBeachLeft"
     },
     {
       "anchor": {
-        "x": 1.0499545717592595,
-        "y": 0.7084803964120374
+        "x": 6.15043890865955,
+        "y": 3.4809015421115066
       },
       "prevControl": {
-        "x": 1.5009613715277779,
-        "y": 0.7231115451388894
+        "x": 5.926678586991988,
+        "y": 4.873265055968942
+      },
+      "nextControl": {
+        "x": 6.246179930298605,
+        "y": 2.8851466543986266
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.732040332147095,
+        "y": 2.534092526690391
+      },
+      "prevControl": {
+        "x": 6.827871882073342,
+        "y": 2.4587245187639826
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost"
+      "linkedName": "EndBeachRight"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +61,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "DriveToOutpost",
+  "folder": "Disrupt",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
