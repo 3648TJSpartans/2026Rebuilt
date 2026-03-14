@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
@@ -28,8 +29,8 @@ public class ShooterConstants {
   public static MotorConfig kKickerMotorConfig =
       new MotorConfig("Subsystems/Kicker/MotorIO")
           .motorCan(13)
-          .Ks(0)
-          .Kv(0)
+          .Ks(0.11438)
+          .Kv(0.00207)
           .speedTolerance(0.0)
           .idleMode(IdleMode.kCoast);
 
@@ -48,4 +49,8 @@ public class ShooterConstants {
       new TunableNumber("Subsystems/Kicker/kickerSpeed", 0);
   public static final TunableNumber shootHeadUpSpeed =
       new TunableNumber("Subsystems/Shooter/shootHeadUpSpeed", 300);
+  public static final TunableBoolean kickerFF =
+      new TunableBoolean("Subsystems/Kicker/runWithFF", true);
+  public static final TunableNumber kickerFFVelocity =
+      new TunableNumber("Subsystems/Kicker/ffVelocity", 5000.0);
 }
