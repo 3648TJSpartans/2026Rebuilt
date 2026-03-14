@@ -28,7 +28,7 @@ public class TrajectoryConstants {
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
   public static final TunableNumber headUpShootSpeed =
-      new TunableNumber("Trajectory/headUpShot/shootSpeed", 5.716);
+      new TunableNumber("Trajectory/headUpShot/shootSpeed", -5.716);
   public static final TunableNumber headUpHoodAngle =
       new TunableNumber("Trajectory/headUpShot/shootAngle", 1.124);
 
