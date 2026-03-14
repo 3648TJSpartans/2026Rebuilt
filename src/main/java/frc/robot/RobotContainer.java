@@ -48,7 +48,6 @@ import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -68,8 +67,6 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.theClaw.TheClaw;
-import frc.robot.subsystems.theClaw.TheClawstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.vision.Neural;
@@ -446,8 +443,7 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
-            .finallyDo(m_intake::stopRollers);
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake).finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -1380,10 +1376,11 @@ public class RobotContainer {
     new Trigger(() -> m_hopper.jammed())
         .onTrue(
             Commands.runOnce(
-                    () -> {
-                      m_hopper.overrideJam(true);
-                    })
-                .andThen(new WaitCommand(IntakeConstants.unjamTime.get()))
+                () -> {
+                  m_hopper.overrideJam(true);
+                }))
+        .onFalse(
+            new WaitCommand(IntakeConstants.unjamTime.get())
                 .finallyDo(() -> m_hopper.overrideJam(false)));
   }
 

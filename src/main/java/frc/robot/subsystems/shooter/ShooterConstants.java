@@ -26,7 +26,12 @@ public class ShooterConstants {
   public static final TunableNumber shooterSimKV =
       new TunableNumber("Subsystems/Shooter/kV", 6000.0);
   public static MotorConfig kKickerMotorConfig =
-      new MotorConfig("Subsystems/Kicker/MotorIO").motorCan(13).Ks(0).Kv(0).speedTolerance(0.0);
+      new MotorConfig("Subsystems/Kicker/MotorIO")
+          .motorCan(13)
+          .Ks(0)
+          .Kv(0)
+          .speedTolerance(0.0)
+          .idleMode(IdleMode.kCoast);
 
   public static final int kickerIRSensorChannel = 3;
 

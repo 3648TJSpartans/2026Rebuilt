@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -17,7 +18,8 @@ public class IntakeConstants {
           .d(0)
           .maxPower(.1)
           .minPower(-.1)
-          .positionTolerance(0.0);
+          .positionTolerance(0.0)
+          .idleMode(IdleMode.kCoast);
 
   public static final MotorConfig intakeRollerConfig =
       new MotorConfig("Subsystems/Intake/MotorIO")
