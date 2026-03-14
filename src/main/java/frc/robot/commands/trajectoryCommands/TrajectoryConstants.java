@@ -1,7 +1,9 @@
 package frc.robot.commands.trajectoryCommands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.TunableNumber;
 
@@ -28,9 +30,11 @@ public class TrajectoryConstants {
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
   public static final TunableNumber headUpShootSpeed =
-      new TunableNumber("Trajectory/headUpShot/shootSpeed", -5.716);
+      new TunableNumber("Trajectory/headUpShot/shootSpeed", 5.75);
+  public static final Rotation2d headUpShotRobotAngle = new Rotation2d(-Math.PI / 2);
   public static final TunableNumber headUpHoodAngle =
-      new TunableNumber("Trajectory/headUpShot/shootAngle", 1.124);
+      new TunableNumber(
+          "Trajectory/headUpShot/shootAngle", Units.degreesToRadians(HoodConstants.minAngle.get()));
 
   public static final TunableNumber[] rpmMatrix =
       new TunableNumber[] {
@@ -97,22 +101,22 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] velocityMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.0m/velocity", 0),
-        new TunableNumber("Trajectory/.5m/velocity", 0),
-        new TunableNumber("Trajectory/1.0m/velocity", 0.0),
-        new TunableNumber("Trajectory/1.5m/velocity", 0.4),
-        new TunableNumber("Trajectory/2.0m/velocity", 0.25),
-        new TunableNumber("Trajectory/2.5m/velocity", .225),
-        new TunableNumber("Trajectory/3.0m/velocity", 0.0),
-        new TunableNumber("Trajectory/3.5m/velocity", 0.0),
-        new TunableNumber("Trajectory/4.0m/velocity", 1.5),
-        new TunableNumber("Trajectory/4.5m/velocity", 1.25),
-        new TunableNumber("Trajectory/5.0m/velocity", 1.5),
-        new TunableNumber("Trajectory/5.5m/velocity", 1.5),
-        new TunableNumber("Trajectory/6.0m/velocity", 1.5),
-        new TunableNumber("Trajectory/6.5m/velocity", 1.5),
-        new TunableNumber("Trajectory/7.0m/velocity", 1.5),
-        new TunableNumber("Trajectory/7.5m/velocity", 1.5),
-        new TunableNumber("Trajectory/8.0m/velocity", 1.5)
+        new TunableNumber("Trajectory/.0m/velocity", -.5),
+        new TunableNumber("Trajectory/.5m/velocity", -.5),
+        new TunableNumber("Trajectory/1.0m/velocity", -.5),
+        new TunableNumber("Trajectory/1.5m/velocity", -.65),
+        new TunableNumber("Trajectory/2.0m/velocity", -.55),
+        new TunableNumber("Trajectory/2.5m/velocity", -.6),
+        new TunableNumber("Trajectory/3.0m/velocity", -.65),
+        new TunableNumber("Trajectory/3.5m/velocity", -.25),
+        new TunableNumber("Trajectory/4.0m/velocity", -.5),
+        new TunableNumber("Trajectory/4.5m/velocity", -.5),
+        new TunableNumber("Trajectory/5.0m/velocity", -.5),
+        new TunableNumber("Trajectory/5.5m/velocity", -.35),
+        new TunableNumber("Trajectory/6.0m/velocity", -.35),
+        new TunableNumber("Trajectory/6.5m/velocity", -.35),
+        new TunableNumber("Trajectory/7.0m/velocity", -.35),
+        new TunableNumber("Trajectory/7.5m/velocity", -.35),
+        new TunableNumber("Trajectory/8.0m/velocity", -.35)
       };
 }

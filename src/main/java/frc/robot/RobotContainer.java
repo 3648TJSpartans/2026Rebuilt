@@ -1073,7 +1073,7 @@ public class RobotContainer {
         Commands.run(
                 () -> {
                   m_shooter.shootVelocity(TrajectoryConstants.headUpShootSpeed.get());
-                  m_turret.setRotation(new Rotation2d());
+                  m_turret.setRotation(TrajectoryConstants.headUpShotRobotAngle);
                   m_hood.setAngle(new Rotation2d(TrajectoryConstants.headUpHoodAngle.get()));
                   Logger.recordOutput(
                       "Commands/headUpShot/turretReady",
@@ -1087,6 +1087,7 @@ public class RobotContainer {
                 m_shooter,
                 m_hood,
                 m_turret)
+            .alongWith(Commands.runOnce(m_drive::stopWithX, m_drive))
             .finallyDo(
                 () -> {
                   m_shooter.stop();
@@ -1196,7 +1197,9 @@ public class RobotContainer {
                         .toTranslation2d()
                         .plus(new Translation2d(shooterOffset.get(), 0.0))),
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt());
+            () -> m_drive.getTilt(),
+            true,
+            true);
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     RunTrajectoryCmd feedAlliance =
         new RunDynamicMatrixAddTrajectory(
