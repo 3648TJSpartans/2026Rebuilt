@@ -123,6 +123,7 @@ public ShiftTracker() {
 - Drive while running intake. 
 - m_driveController.leftBumper()
 ### Option 2: Smart Shooter Angle
+- Test Cotnroller.y 
 - Get shooter angle (low speed) (15 min)
 - Get basic velocity factor (20 min)
 - Shoto 1 m

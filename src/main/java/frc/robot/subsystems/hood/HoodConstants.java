@@ -15,7 +15,7 @@ public class HoodConstants {
           .d(0)
           .minPower(-.2)
           .maxPower(0.2)
-          .positionTolerance(0.01)
+          .positionTolerance(0.05)
           .isInverted(true);
   public static final TunableNumber hoodTestSpeed =
       new TunableNumber("Subsystems/Hood/testSpeed", .05);

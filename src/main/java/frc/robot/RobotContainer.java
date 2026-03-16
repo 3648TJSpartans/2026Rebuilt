@@ -48,7 +48,6 @@ import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -68,8 +67,6 @@ import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.theClaw.TheClaw;
-import frc.robot.subsystems.theClaw.TheClawstants;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.vision.Neural;
@@ -417,7 +414,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (dynamicTrajectory.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -433,7 +430,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToField.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -446,8 +443,7 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake)
-            .finallyDo(m_intake::stopRollers);
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake).finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -547,7 +543,7 @@ public class RobotContainer {
                     () -> {
                       m_shooter.runFFVelocity(shootSpeed.get());
                       if (m_shooter.getLeaderMotor().speedInTolerance()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       } else {
                         m_kicker.stop();
@@ -833,7 +829,7 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHub.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                             m_hopper.run();
                           }
                         },
@@ -851,7 +847,7 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (shootToHubFixedHood.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                             m_hopper.run();
                           }
                         },
@@ -881,7 +877,7 @@ public class RobotContainer {
                           Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
                           Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
                           if (shootToHubFixedTurret.ready() && driveReady) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                             m_hopper.run();
                           }
                         },
@@ -909,7 +905,7 @@ public class RobotContainer {
                           Logger.recordOutput("Commands/SmartShoot/driveOffset", driveOffset);
                           Logger.recordOutput("Commands/SmartShoot/driveReady", driveReady);
                           if (shootToHubFixedTurretFixedHood.ready() && driveReady) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                             m_hopper.run();
                           }
                         },
@@ -925,7 +921,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToField.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -940,7 +936,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToFieldFixedHood.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -955,7 +951,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToField.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -970,7 +966,7 @@ public class RobotContainer {
             Commands.run(
                     () -> {
                       if (shootToFieldFixedTurretFixedHood.ready()) {
-                        m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                        m_kicker.run();
                         m_hopper.run();
                       }
                     },
@@ -986,7 +982,14 @@ public class RobotContainer {
           Logger.recordOutput("Commands/SmartShoot/Target", inRange ? "Hub" : "Alliance Zone");
           return inRange;
         };
-
+    Command driveSlow =
+        DriveCommands.joystickDriveForTrajectory(
+            m_drive,
+            () -> -m_driveController.getLeftY(),
+            () -> -m_driveController.getLeftX(),
+            () -> -m_driveController.getRightX(),
+            m_driveController.rightBumper());
+    m_driveController.rightTrigger().and(Constants.turretWorking).whileTrue(driveSlow);
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -1077,7 +1080,7 @@ public class RobotContainer {
         Commands.run(
                 () -> {
                   m_shooter.shootVelocity(TrajectoryConstants.headUpShootSpeed.get());
-                  m_turret.setRotation(new Rotation2d());
+                  m_turret.setRotation(TrajectoryConstants.headUpShotRobotAngle);
                   m_hood.setAngle(new Rotation2d(TrajectoryConstants.headUpHoodAngle.get()));
                   Logger.recordOutput(
                       "Commands/headUpShot/turretReady",
@@ -1091,6 +1094,7 @@ public class RobotContainer {
                 m_shooter,
                 m_hood,
                 m_turret)
+            .alongWith(Commands.runOnce(m_drive::stopWithX, m_drive))
             .finallyDo(
                 () -> {
                   m_shooter.stop();
@@ -1104,7 +1108,7 @@ public class RobotContainer {
                               && (m_turret.angleInTolerance() || !Constants.turretWorking.get())
                               && m_hood.getMotor().positionInTolerance()) {
                             m_hopper.run();
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                           } else {
                             m_hopper.stop();
                             m_kicker.stop();
@@ -1200,7 +1204,9 @@ public class RobotContainer {
                         .toTranslation2d()
                         .plus(new Translation2d(shooterOffset.get(), 0.0))),
             () -> RangeCalc.inShootingRange(m_drive.getPose()),
-            () -> m_drive.getTilt());
+            () -> m_drive.getTilt(),
+            true,
+            true);
     // m_testController.povLeft().whileTrue(dynamicTrajectory);
     RunTrajectoryCmd feedAlliance =
         new RunDynamicMatrixAddTrajectory(
@@ -1230,7 +1236,7 @@ public class RobotContainer {
                 Commands.run(
                         () -> {
                           if (dynamicTestTrajectory.ready()) {
-                            m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                            m_kicker.run();
                             m_hopper.run();
                           }
                         },
@@ -1299,6 +1305,13 @@ public class RobotContainer {
                 speed -> m_shooter.runCharacterization(speed),
                 () -> m_shooter.getLeaderMotor().getFFCharacterizationVelocity())
             .finallyDo(m_shooter::stop));
+    autoChooser.addOption(
+        "Kicker simple FF Identification",
+        FFCharacterizationCmd.characterizeSystem(
+                m_kicker,
+                speed -> m_kicker.runCharacterization(speed),
+                () -> m_kicker.getFFCharacterizationVelocity())
+            .finallyDo(m_kicker::stop));
   }
 
   public void configureIntake() {
@@ -1380,10 +1393,11 @@ public class RobotContainer {
     new Trigger(() -> m_hopper.jammed())
         .onTrue(
             Commands.runOnce(
-                    () -> {
-                      m_hopper.overrideJam(true);
-                    })
-                .andThen(new WaitCommand(IntakeConstants.unjamTime.get()))
+                () -> {
+                  m_hopper.overrideJam(true);
+                }))
+        .onFalse(
+            new WaitCommand(IntakeConstants.unjamTime.get())
                 .finallyDo(() -> m_hopper.overrideJam(false)));
   }
 

@@ -32,6 +32,14 @@ public class Kicker extends RelEncoderSparkMax {
     irSensor.updateValues();
   }
 
+  public void run() {
+    if (ShooterConstants.kickerFF.getAsBoolean()) {
+      runFFVelocity(ShooterConstants.kickerFFVelocity.getAsDouble());
+      return;
+    }
+    setPower(ShooterConstants.kickerSpeed.getAsDouble());
+  }
+
   @Override
   public String getName() {
     return "Subsystems/Kicker";

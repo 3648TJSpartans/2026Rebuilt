@@ -13,6 +13,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.subsystems.drive.DriveConstants.maxSpeedMetersPerSec;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -28,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import java.text.DecimalFormat;
@@ -106,6 +109,54 @@ public class DriveCommands {
                 new ChassisSpeeds(
                     linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                     linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                    omega * drive.getMaxAngularSpeedRadPerSec());
+            boolean isFlipped =
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red;
+            drive.runVelocity(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    isFlipped
+                        ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                        : drive.getRotation()));
+          }
+        },
+        drive);
+  }
+
+  public static Command joystickDriveForTrajectory(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier robotRelativeSupplier) {
+    return Commands.run(
+        () -> {
+          if (robotRelativeSupplier.getAsBoolean()) {
+            drive.runVelocity(
+                new ChassisSpeeds(
+                    MathUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND)
+                        * DriveConstants.robotRelativeMaxInputPercent,
+                    MathUtil.applyDeadband(ySupplier.getAsDouble(), DEADBAND)
+                        * DriveConstants.robotRelativeMaxInputPercent,
+                    MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND)
+                        * DriveConstants.robotRelativeMaxInputPercent));
+          } else {
+            // Get linear velocity
+            Translation2d linearVelocity =
+                getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+            // Apply rotation deadband
+            double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+            double maxSpeed = TrajectoryConstants.translationalSpeedThreshold.get();
+            // Square rotation value for more precise control
+            omega = Math.copySign(omega * omega, omega) * maxSpeed / maxSpeedMetersPerSec;
+
+            // Convert to field relative speeds & send command
+            ChassisSpeeds speeds =
+                new ChassisSpeeds(
+                    linearVelocity.getX() * maxSpeed,
+                    linearVelocity.getY() * maxSpeed,
                     omega * drive.getMaxAngularSpeedRadPerSec());
             boolean isFlipped =
                 DriverStation.getAlliance().isPresent()

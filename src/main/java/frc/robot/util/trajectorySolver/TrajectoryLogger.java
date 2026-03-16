@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
@@ -67,6 +68,9 @@ public class TrajectoryLogger extends SubsystemBase {
         new Pose3d(
             turretPose,
             new Rotation3d(0, -measuredTraj.getShooterAngle(), measuredTraj.getTurretAngle())));
+    Logger.recordOutput(
+        "Utils/TrajectoryLogger/Matrix/distance",
+        TrajectoryConstants.hubPose.minus(turretPose).toTranslation2d().getNorm());
     Logger.recordOutput(
         "Utils/TrajectoryLogger/Measured/measuredTrajectory/path",
         TrajectoryCalc.interpolateTrajectory(measuredTraj, turretVelocity, turretPose));
