@@ -6,9 +6,11 @@ import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends RelEncoderSparkMax {
   private boolean overrideJam;
+  private RelEncoderSparkMax followMotor;
 
   public Hopper() {
     super(IntakeConstants.hopperMotorConfig);
+    followMotor = new RelEncoderSparkMax(IntakeConstants.followHopperMotorConfig);
     overrideJam = false;
   }
 

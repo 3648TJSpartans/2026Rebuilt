@@ -21,6 +21,18 @@ public class IntakeConstants {
           .positionTolerance(0.0)
           .idleMode(IdleMode.kCoast);
 
+  public static final MotorConfig followHopperMotorConfig =
+      new MotorConfig("Subsystems/Intake/ArmMotorIO")
+          .motorCan(14)
+          .p(0)
+          .i(0)
+          .d(0)
+          .maxPower(.1)
+          .minPower(-.1)
+          .positionTolerance(0.0)
+          .idleMode(IdleMode.kCoast)
+          .follow(15);
+
   public static final MotorConfig intakeRollerConfig =
       new MotorConfig("Subsystems/Intake/MotorIO")
           .motorCan(16)
