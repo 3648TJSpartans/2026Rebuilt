@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.SparkIO;
 import frc.robot.util.statusableUtils.Statusable;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -58,5 +60,9 @@ public class Shooter extends SubsystemBase implements Statusable {
 
   public SparkIO getLeaderMotor() {
     return leader;
+  }
+
+  public Status getStatus() {
+    return Constants.leastCommonStatus(leader.getStatus(), follower.getStatus());
   }
 }

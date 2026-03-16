@@ -171,7 +171,7 @@ public class RobotContainer {
                 return Status.OK;
               }
               Logger.recordOutput("Debug/USB/warning", "not found");
-              return Status.WARNING;
+              return Status.ERROR;
             },
             "USB",
             5);
@@ -349,17 +349,16 @@ public class RobotContainer {
 
     m_statusLogger =
         new StatusLogger(
-            // m_climber,
+            m_batteryStatus,
+            m_usbStatus,
+            m_vision,
+            m_drive,
             m_hood,
             m_shooter,
             m_kicker,
             m_intake,
             m_hopper,
-            m_drive,
-            m_vision,
-            m_usbStatus,
-            m_batteryStatus,
-            // m_claw,
+            m_turret,
             m_driveController,
             m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
@@ -1094,7 +1093,7 @@ public class RobotContainer {
                 m_shooter,
                 m_hood,
                 m_turret)
-            .alongWith(Commands.runOnce(m_drive::stopWithX, m_drive))
+            // .alongWith(Commands.runOnce(m_drive::stopWithX, m_drive))
             .finallyDo(
                 () -> {
                   m_shooter.stop();
