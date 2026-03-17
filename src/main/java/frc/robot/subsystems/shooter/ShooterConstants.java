@@ -8,17 +8,21 @@ import frc.robot.util.motorUtil.MotorConfig;
 public class ShooterConstants {
   public static MotorConfig kLeaderMotorConfig =
       new MotorConfig("Subsystems/Shooter/LeaderMotorIO")
-          .motorCan(10)
+          .motorCan(11)
           .Ks(-0.0516)
           .Kv(0.00182)
+          .p(0.0)
+          .d(0.0)
           .minPower(0.0)
           .speedTolerance(100)
           .idleMode(IdleMode.kCoast);
   public static MotorConfig kFollowerMotorConfig =
       new MotorConfig("Subsystems/Shooter/FollowerMotorIO")
-          .motorCan(11)
+          .motorCan(10)
           .Ks(-0.0516)
           .Kv(0.00182)
+          .p(0.0)
+          .d(0.0)
           .maxPower(0.0)
           .speedTolerance(100)
           .idleMode(IdleMode.kCoast);
