@@ -101,22 +101,22 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] velocityMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.0m/velocity", -.45),
-        new TunableNumber("Trajectory/.5m/velocity", -.45),
-        new TunableNumber("Trajectory/1.0m/velocity", -.45),
-        new TunableNumber("Trajectory/1.5m/velocity", -.5),
+        new TunableNumber("Trajectory/.0m/velocity", -.4),
+        new TunableNumber("Trajectory/.5m/velocity", -.4),
+        new TunableNumber("Trajectory/1.0m/velocity", -.4),
+        new TunableNumber("Trajectory/1.5m/velocity", -.45),
         new TunableNumber("Trajectory/2.0m/velocity", -.55),
-        new TunableNumber("Trajectory/2.5m/velocity", -.55),
-        new TunableNumber("Trajectory/3.0m/velocity", -.55),
-        new TunableNumber("Trajectory/3.5m/velocity", -.55),
-        new TunableNumber("Trajectory/4.0m/velocity", -.55),
-        new TunableNumber("Trajectory/4.5m/velocity", -.45),
-        new TunableNumber("Trajectory/5.0m/velocity", -.35),
-        new TunableNumber("Trajectory/5.5m/velocity", -.35),
-        new TunableNumber("Trajectory/6.0m/velocity", -.35),
-        new TunableNumber("Trajectory/6.5m/velocity", -.35),
-        new TunableNumber("Trajectory/7.0m/velocity", -.35),
-        new TunableNumber("Trajectory/7.5m/velocity", -.35),
-        new TunableNumber("Trajectory/8.0m/velocity", -.35)
+        new TunableNumber("Trajectory/2.5m/velocity", -.65),
+        new TunableNumber("Trajectory/3.0m/velocity", -.6),
+        new TunableNumber("Trajectory/3.5m/velocity", -.7),
+        new TunableNumber("Trajectory/4.0m/velocity", -.8),
+        new TunableNumber("Trajectory/4.5m/velocity", -1.25),
+        new TunableNumber("Trajectory/5.0m/velocity", -.75),
+        new TunableNumber("Trajectory/5.5m/velocity", -.75),
+        new TunableNumber("Trajectory/6.0m/velocity", -.75),
+        new TunableNumber("Trajectory/6.5m/velocity", -.75),
+        new TunableNumber("Trajectory/7.0m/velocity", -.75),
+        new TunableNumber("Trajectory/7.5m/velocity", -.75),
+        new TunableNumber("Trajectory/8.0m/velocity", -.75)
       };
 }
