@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,6 +79,7 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
 import frc.robot.util.SmartController;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
@@ -447,6 +449,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
+
+    Command autonInitCommand = new PathPlannerAuto("Neutral").ignoringDisable(true);
+    TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);
+    new Trigger(autoLagTrigger).onTrue(autonInitCommand);
   }
 
   private void configureButtonBindings() {
@@ -533,6 +539,21 @@ public class RobotContainer {
     //                 () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
     //                 m_hopper)
     //             .finallyDo(m_hopper::stop));
+    m_testController
+        .a()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_hopper.run();
+                      m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                    },
+                    m_hopper,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_hopper.stop();
+                      m_kicker.stop();
+                    }));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
     m_testController
@@ -1263,12 +1284,6 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-    // m_kicker.setDefaultCommand(
-    //     Commands.run(
-    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    // new Trigger(() -> dynamicTrajectory.ready())
-    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {

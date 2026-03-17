@@ -51,13 +51,17 @@ public class Hopper extends RelEncoderSparkMax {
   }
 
   public void run() {
-    if (overrideJam) {
+    if (overrideJam && IntakeConstants.unjamEnabled.get()) {
       setPower(IntakeConstants.hopperUnjamPower.get());
       Logger.recordOutput("Subsystems/Intake/Hopper/outtake", true);
       return;
     }
-    setPower(IntakeConstants.hopperSpeed.get());
     Logger.recordOutput("Subsystems/Intake/Hopper/outtake", false);
+    if (IntakeConstants.runHopperPID.get()) {
+      setSpeed(IntakeConstants.hopperSpeed.get());
+      return;
+    }
+    setPower(IntakeConstants.hopperPower.get());
   }
 
   @Override
