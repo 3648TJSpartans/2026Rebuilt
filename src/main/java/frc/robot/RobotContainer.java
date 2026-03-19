@@ -450,7 +450,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
 
-    Command autonInitCommand = new PathPlannerAuto("Neutral").ignoringDisable(true);
+    Command autonInitCommand = new PathPlannerAuto("TestHumpToIntake").ignoringDisable(true);
     TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);
     new Trigger(autoLagTrigger).onTrue(autonInitCommand);
   }
