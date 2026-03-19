@@ -26,7 +26,7 @@ public class TrajectoryConstants {
   public static final TunableNumber postshotDelay =
       new TunableNumber("Trajectory/postshotDelay", 3.0);
   public static final TunableNumber translationalSpeedThreshold =
-      new TunableNumber("Trajectory/translationalSpeedThreshold", 2.0);
+      new TunableNumber("Trajectory/translationalSpeedThreshold", 1.0);
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
   public static final TunableNumber headUpShootSpeed =

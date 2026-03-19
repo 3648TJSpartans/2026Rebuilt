@@ -11,7 +11,7 @@ public class TurretConstants {
   public static final MotorConfig kTurretMotorConfig =
       new MotorConfig("Subsystems/Turret/MotorIO/")
           .motorCan(12)
-          .p(0.3)
+          .p(1.0)
           .d(0.0)
           .i(0.0)
           .positionTolerance(0.1)

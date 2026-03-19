@@ -46,7 +46,7 @@ public final class LedConstants {
           Color.kTeal); // Stoplight-esque gradient to use on the elevator
 
   // Animated Patterns
-  public static LEDPattern blinkingBlue = blue.blink(Seconds.of(0.5));
-  public static LEDPattern blinkingRed = red.blink(Seconds.of(0.5));
-  public static LEDPattern blinkingBlueRed = bluered.blink(Seconds.of(0.5));
+  public static LEDPattern blinkingBlue = blue.blink(Seconds.of(0.2));
+  public static LEDPattern blinkingRed = red.blink(Seconds.of(0.2));
+  public static LEDPattern blinkingBlueRed = bluered.blink(Seconds.of(0.2));
 }
