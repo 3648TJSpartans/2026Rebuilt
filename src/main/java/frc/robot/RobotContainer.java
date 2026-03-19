@@ -255,10 +255,8 @@ public class RobotContainer {
                     // new
                     // VisionIOLimelight(VisionConstants.camera1Name,
                     // m_drive::getRotation),
-                    new VisionIOLimelight("limelight-three", m_drive::getRotation),
                     new VisionIOLimelight("limelight-foura", m_drive::getRotation),
-                    new VisionIOLimelight("limelight-fourb", m_drive::getRotation),
-                    new VisionIOLimelight("limelight-fourc", m_drive::getRotation));
+                    new VisionIOLimelight("limelight-fourb", m_drive::getRotation));
             break;
           default:
             m_vision =
