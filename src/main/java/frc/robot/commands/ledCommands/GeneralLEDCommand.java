@@ -9,13 +9,13 @@ import frc.robot.util.statusableUtils.Statusable;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class StatusCheckLEDCommand extends Command {
+public class GeneralLEDCommand extends Command {
   private final Statusable[] m_statuses;
   private final LedSubsystem m_leds;
   private final ShiftTracker m_shiftTracker;
   private final BooleanSupplier shooting;
 
-  public StatusCheckLEDCommand(
+  public GeneralLEDCommand(
       LedSubsystem leds,
       ShiftTracker shiftTracker,
       BooleanSupplier shooting,
@@ -45,17 +45,17 @@ public class StatusCheckLEDCommand extends Command {
       }
       if (m_shiftTracker.whichShift().equals("red")) {
         if (shooting.getAsBoolean()) {
-          m_leds.setGlobalPattern(LedConstants.red); // add blinking red
+          m_leds.setGlobalPattern(LedConstants.blinkingRed);
           return;
         }
         m_leds.setGlobalPattern(LedConstants.red);
         return;
       }
       if (shooting.getAsBoolean()) {
-        m_leds.setGlobalPattern(LedConstants.red); // add blinking blue and red
+        m_leds.setGlobalPattern(LedConstants.blinkingBlueRed);
         return;
       }
-      m_leds.setGlobalPattern(LedConstants.red); // add blinking blue and red
+      m_leds.setGlobalPattern(LedConstants.bluered);
       return;
     } else {
       for (int i = 0; i < m_statuses.length; i++) {

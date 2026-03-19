@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -42,9 +41,9 @@ import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
+import frc.robot.commands.ledCommands.GeneralLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
-import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -1406,19 +1405,16 @@ public class RobotContainer {
     shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
     shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
 
-    WrapperCommand statusCheck =
-        new StatusCheckLEDCommand(m_leds, m_shiftTracker, m_statusLogger.getStatuses())
+    WrapperCommand ledCommand =
+        new GeneralLEDCommand(
+                m_leds,
+                m_shiftTracker,
+                () -> m_driveController.rightTrigger().getAsBoolean(),
+                m_statusLogger.getStatuses())
             .ignoringDisable(true);
 
-    m_leds.setDefaultCommand(statusCheck);
-    m_copilotController
-        .a()
-        .whileTrue(statusCheck)
-        .onFalse(
-            new ConditionalCommand(
-                new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green),
-                new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red),
-                () -> m_shiftTracker.onShiftDeprecated()));
+    m_leds.setDefaultCommand(ledCommand);
+
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
   }
