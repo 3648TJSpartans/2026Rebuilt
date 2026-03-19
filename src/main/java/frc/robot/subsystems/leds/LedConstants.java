@@ -8,15 +8,19 @@ import edu.wpi.first.wpilibj.util.Color;
 public final class LedConstants {
 
   // Values //
-  public static int ledLength = 25;
+  public static int ledLength = 30;
   public static final int ledPWMID = 1;
 
   public static int leftBufferStart = 0;
   public static int leftBufferEnd = 8;
-  public static int centerBufferStart = 9;
-  public static int centerBufferEnd = 18;
-  public static int rightBufferStart = 19;
-  public static int rightBufferEnd = 24;
+  public static int centerBuffer1Start = 9;
+  public static int centerBuffer1End = 14;
+  public static int centerBuffer2Start = 15;
+  public static int centerBuffer2End = 19;
+  public static int centerBuffer3Start = 20;
+  public static int centerBuffer3End = 24;
+  public static int rightBufferStart = 25;
+  public static int rightBufferEnd = 29;
 
   public static int statusCheckOffset = 0;
   // Colors & Patterns //
@@ -27,6 +31,7 @@ public final class LedConstants {
   public static LEDPattern blue = LEDPattern.solid(Color.kBlue);
   public static LEDPattern teal = LEDPattern.solid(Color.kTeal);
   public static LEDPattern yellow = LEDPattern.solid(Color.kYellow);
+  public static LEDPattern orange = LEDPattern.solid(Color.kOrange);
   public static LEDPattern purple = LEDPattern.solid(Color.kPurple);
   public static LEDPattern white = LEDPattern.solid(Color.kWhite);
   public static LEDPattern noColor = LEDPattern.solid(Color.kBlack);
