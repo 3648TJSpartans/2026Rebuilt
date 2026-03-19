@@ -9,15 +9,15 @@ import java.util.Map;
 public final class LedConstants {
 
   // Values //
-  public static int ledLength = 25;
+  public static int ledLength = 20;
   public static final int ledPWMID = 1;
 
   public static int leftBufferStart = 0;
   public static int leftBufferEnd = 8;
   public static int centerBufferStart = 9;
-  public static int centerBufferEnd = 18;
-  public static int rightBufferStart = 19;
-  public static int rightBufferEnd = 24;
+  public static int centerBufferEnd = 17;
+  public static int rightBufferStart = 18;
+  public static int rightBufferEnd = 19;
 
   public static int statusCheckOffset = 0;
   // Colors & Patterns //
