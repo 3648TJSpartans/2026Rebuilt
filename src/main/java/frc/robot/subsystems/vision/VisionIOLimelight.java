@@ -114,7 +114,7 @@ public class VisionIOLimelight implements VisionIO {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
       if (mt1 == null) {
         doRejectUpdate = true;
-      } else if (mt1.tagCount == 0) {
+      } else if (mt1.tagCount < 2) {
         doRejectUpdate = true;
       }
       if (!doRejectUpdate) {
