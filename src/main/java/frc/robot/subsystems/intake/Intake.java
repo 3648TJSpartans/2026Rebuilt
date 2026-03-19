@@ -3,10 +3,8 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.Status;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
-import frc.robot.util.solenoids.DoubleSolenoidIO;
 import frc.robot.util.solenoids.SolenoidIO;
 import frc.robot.util.statusableUtils.Statusable;
 import frc.robot.util.zoneCalc.Polygon;
@@ -69,7 +67,7 @@ public class Intake extends SubsystemBase implements Statusable {
 
   @Override
   public Status getStatus() {
-    return m_solenoid.getStatus();
+    return roller.getStatus();
   }
 
   @Override
