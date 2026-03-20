@@ -4,19 +4,20 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
+import java.util.Map;
 
 public final class LedConstants {
 
   // Values //
-  public static int ledLength = 25;
+  public static int ledLength = 20;
   public static final int ledPWMID = 1;
 
   public static int leftBufferStart = 0;
   public static int leftBufferEnd = 8;
   public static int centerBufferStart = 9;
-  public static int centerBufferEnd = 18;
-  public static int rightBufferStart = 19;
-  public static int rightBufferEnd = 24;
+  public static int centerBufferEnd = 17;
+  public static int rightBufferStart = 18;
+  public static int rightBufferEnd = 19;
 
   public static int statusCheckOffset = 0;
   // Colors & Patterns //
@@ -30,6 +31,8 @@ public final class LedConstants {
   public static LEDPattern purple = LEDPattern.solid(Color.kPurple);
   public static LEDPattern white = LEDPattern.solid(Color.kWhite);
   public static LEDPattern noColor = LEDPattern.solid(Color.kBlack);
+  public static LEDPattern bluered =
+      LEDPattern.steps(Map.of(0, Color.kRed, 0.25, Color.kBlue, 0.5, Color.kRed, 1, Color.kBlue));
   // Gradients
   public static LEDPattern rainbow = LEDPattern.rainbow(255, 128);
   public static LEDPattern purpleGradient =
@@ -43,7 +46,7 @@ public final class LedConstants {
           Color.kTeal); // Stoplight-esque gradient to use on the elevator
 
   // Animated Patterns
-  public static LEDPattern breathingGreen = green.breathe(Seconds.of(2));
-  public static LEDPattern blinkingBlue = blue.breathe(Seconds.of(1.5));
-  public static LEDPattern blinkingteal = teal.breathe(Seconds.of(1.5));
+  public static LEDPattern blinkingBlue = blue.blink(Seconds.of(0.2));
+  public static LEDPattern blinkingRed = red.blink(Seconds.of(0.2));
+  public static LEDPattern blinkingBlueRed = bluered.blink(Seconds.of(0.2));
 }
