@@ -43,7 +43,7 @@ public class IntakeConstants {
           .positionTolerance(0.0);
 
   public static final TunableNumber intakeRollerSpeed =
-      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.25);
+      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.4);
   public static final TunableNumber hopperSpeed =
       new TunableNumber("Subsystems/Intake/hopperSpeed", -1000);
   public static final TunableNumber hopperPower =
