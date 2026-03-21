@@ -64,7 +64,7 @@ public class IntakeConstants {
   // attempts to bring it up.
 
   public static final TunableBoolean runHopperPID =
-      new TunableBoolean("Subsystems/Hopper/RunHopperPID", true);
+      new TunableBoolean("Subsystems/Hopper/RunHopperPID", false);
   public static final TunableNumber pullUpTime =
       new TunableNumber("Subsystems/Intake/pullUpTime", 0.25);
 

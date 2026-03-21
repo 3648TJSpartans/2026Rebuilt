@@ -116,8 +116,6 @@ public class Drive extends SubsystemBase implements Statusable {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            // new PIDConstants(5, 0.0, DriveConstants.driveKd),
-            // new PIDConstants(1, 0.0, DriveConstants.turnKd)),
             new PIDConstants(goToConstants.drivekP, 0.0, goToConstants.drivekD),
             new PIDConstants(goToConstants.thetakP, 0.0, goToConstants.thetakD)),
         ppConfig,
