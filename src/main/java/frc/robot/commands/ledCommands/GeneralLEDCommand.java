@@ -1,6 +1,7 @@
 package frc.robot.commands.ledCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
@@ -58,7 +59,11 @@ public class GeneralLEDCommand extends Command {
       m_leds.setGlobalPattern(LedConstants.bluered);
       return;
     } else {
-      for (int i = 0; i < m_statuses.length; i++) {
+      for (int i = 0; i < LedConstants.ledLength; i++) {
+        if (i >= m_statuses.length) {
+          m_leds.setSingleLed(0, 0, 0, i);
+          continue;
+        }
         if (m_statuses[i].getStatus() == null) {
           continue;
         }

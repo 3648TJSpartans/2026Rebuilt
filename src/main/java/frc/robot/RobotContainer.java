@@ -1413,10 +1413,6 @@ public class RobotContainer {
   }
 
   public void configureLeds() {
-    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.onShiftDeprecated());
-    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
-    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
-
     WrapperCommand ledCommand =
         new GeneralLEDCommand(
                 m_leds,
@@ -1425,7 +1421,7 @@ public class RobotContainer {
                 m_statusLogger.getStatuses())
             .ignoringDisable(true);
 
-    m_leds.setDefaultCommand(ledCommand);
+    m_leds.setDefaultCommand(ledCommand);    
 
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));

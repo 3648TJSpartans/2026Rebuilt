@@ -32,7 +32,7 @@ public final class LedConstants {
   public static LEDPattern white = LEDPattern.solid(Color.kWhite);
   public static LEDPattern noColor = LEDPattern.solid(Color.kBlack);
   public static LEDPattern bluered =
-      LEDPattern.steps(Map.of(0, Color.kRed, 0.25, Color.kBlue, 0.5, Color.kRed, 1, Color.kBlue));
+      LEDPattern.steps(Map.of(0, Color.kRed, 0.25, Color.kBlue, 0.5, Color.kRed, 0.75, Color.kBlue));
   // Gradients
   public static LEDPattern rainbow = LEDPattern.rainbow(255, 128);
   public static LEDPattern purpleGradient =
