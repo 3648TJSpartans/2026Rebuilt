@@ -441,11 +441,13 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake).finallyDo(m_intake::stopRollers);
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake);
+    Command stopIntake = Commands.run(m_intake::setSolenoidAndRollerUp, m_intake);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
+    NamedCommands.registerCommand("StopIntake", stopIntake);
 
     Command autonInitCommand = new PathPlannerAuto("TestHumpToIntake").ignoringDisable(true);
     TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);

@@ -56,9 +56,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "StopIntake"
+            "pathName": "OverHumpAndStay"
           }
         }
       ]

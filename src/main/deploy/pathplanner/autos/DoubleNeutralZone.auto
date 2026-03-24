@@ -56,9 +56,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "StopIntake"
+            "pathName": "HumpDoubleDip"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootToHub"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
           }
         }
       ]
