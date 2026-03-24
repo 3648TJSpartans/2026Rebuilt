@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class SmartController extends CommandXboxController implements Statusable {
 
-  private Status m_status;
   private final String m_name;
 
   private SmartButton[] buttonArray;
@@ -74,7 +73,6 @@ public class SmartController extends CommandXboxController implements Statusable
   public SmartController(String name, int port) {
     super(port);
     m_name = name;
-    m_status = Status.OK;
     buttonArray =
         new SmartButton[] {
           new SmartButton("Placeholder", 0),
@@ -126,7 +124,6 @@ public class SmartController extends CommandXboxController implements Statusable
 
   private Trigger getButton(SmartButton button) {
     if (button.allocated) {
-      m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/ButtonAllocation/" + button,
           button + " is allocated multiple times.");
@@ -139,7 +136,6 @@ public class SmartController extends CommandXboxController implements Statusable
 
   private Trigger getPOV(SmartPOV pov) {
     if (pov.allocated) {
-      m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/PovAllocation/" + pov, pov + " is allocated multiple times.");
     }
@@ -149,7 +145,6 @@ public class SmartController extends CommandXboxController implements Statusable
 
   private double getAxis(SmartAxis axis) {
     if (axis.allocated) {
-      m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/AxisAllocation/" + axis, axis + " is allocated multiple times.");
     }
@@ -230,7 +225,6 @@ public class SmartController extends CommandXboxController implements Statusable
   @Override
   public Trigger leftTrigger() {
     if (axisArray[XboxController.Axis.kLeftTrigger.value].allocated) {
-      m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/AxisAllocation/",
           axisArray[XboxController.Axis.kLeftTrigger.value] + " is allocated multiple times.");
@@ -241,7 +235,6 @@ public class SmartController extends CommandXboxController implements Statusable
   @Override
   public Trigger rightTrigger() {
     if (axisArray[XboxController.Axis.kRightTrigger.value].allocated) {
-      m_status = Status.WARNING;
       Logger.recordOutput(
           "Debug/" + m_name + "/AxisAllocation/",
           axisArray[XboxController.Axis.kRightTrigger.value] + " is allocated multiple times.");
@@ -285,7 +278,7 @@ public class SmartController extends CommandXboxController implements Statusable
       Logger.recordOutput("Debug/" + m_name + "/Connection/", "Not connected.");
       return Status.ERROR;
     }
-    return m_status;
+    return Status.OK;
   }
 
   @Override
