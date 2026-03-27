@@ -61,7 +61,8 @@ public class Hopper extends RelEncoderSparkMax {
       setSpeed(IntakeConstants.hopperSpeed.get());
       return;
     }
-    setPower(IntakeConstants.hopperPower.get());
+    super.setPower(IntakeConstants.topHopperRollerPower.get());
+    followMotor.setPower(IntakeConstants.bottomHopperRollerPower.get());
   }
 
   @Override
