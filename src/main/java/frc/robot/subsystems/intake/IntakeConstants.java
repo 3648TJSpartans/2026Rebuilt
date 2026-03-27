@@ -43,9 +43,11 @@ public class IntakeConstants {
           .positionTolerance(0.0);
 
   public static final TunableNumber intakeRollerSpeed =
-      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.25);
+      new TunableNumber("Subsystems/Intake/intakeRollerSpeed", -0.4);
   public static final TunableNumber hopperSpeed =
-      new TunableNumber("Subsystems/Intake/hopperSpeed", -.5);
+      new TunableNumber("Subsystems/Intake/hopperSpeed", -1000);
+  public static final TunableNumber hopperPower =
+      new TunableNumber("Subsystems/Intake/hopperPower", -.3);
   public static final TunableNumber hopperOuttakeSpeed =
       new TunableNumber("Subsystems/Intake/hopperOuttakeSpeed", .4);
   // Ideally the hopper is slowly spinning even when the robot isn't intaking or shooting
@@ -60,6 +62,9 @@ public class IntakeConstants {
   // This is how many seconds the robot will look into the future to decide when it will crash into
   // a wall. If the intake is going to hit a wall in less time than it can pull up the intake, it
   // attempts to bring it up.
+
+  public static final TunableBoolean runHopperPID =
+      new TunableBoolean("Subsystems/Hopper/RunHopperPID", false);
   public static final TunableNumber pullUpTime =
       new TunableNumber("Subsystems/Intake/pullUpTime", 0.25);
 
@@ -78,6 +83,8 @@ public class IntakeConstants {
       new TunableNumber("Subsystems/Intake/Hopper/speedThreshold", 0.5);
   public static final TunableNumber currentThreshold =
       new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
+
+    public static final TunableBoolean unjamEnabled = new TunableBoolean("Subsystems/Intake/Hopper/unjamEnabled", true);
 
   public static final int upSolenoidChannel = 8;
 

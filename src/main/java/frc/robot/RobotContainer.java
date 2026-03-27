@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,7 +27,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -42,9 +42,9 @@ import frc.robot.commands.HomeTurretCmd;
 import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
+import frc.robot.commands.ledCommands.GeneralLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
 import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
-import frc.robot.commands.ledCommands.StatusCheckLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -78,6 +78,7 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
 import frc.robot.util.SmartController;
+import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
@@ -255,7 +256,7 @@ public class RobotContainer {
                     // new
                     // VisionIOLimelight(VisionConstants.camera1Name,
                     // m_drive::getRotation),
-                    new VisionIOLimelight("limelight-foura", m_drive::getRotation),
+                    new VisionIOLimelight("limelight-fourc", m_drive::getRotation),
                     new VisionIOLimelight("limelight-fourb", m_drive::getRotation));
             break;
           default:
@@ -440,11 +441,17 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake).finallyDo(m_intake::stopRollers);
+        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake);
+    Command stopIntake = Commands.run(m_intake::setSolenoidAndRollerUp, m_intake);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
+    NamedCommands.registerCommand("StopIntake", stopIntake);
+
+    Command autonInitCommand = new PathPlannerAuto("TestHumpToIntake").ignoringDisable(true);
+    TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);
+    new Trigger(autoLagTrigger).onTrue(autonInitCommand);
   }
 
   private void configureButtonBindings() {
@@ -531,6 +538,21 @@ public class RobotContainer {
     //                 () -> m_hopper.setPower(-m_test3Controller.getLeftTriggerAxis() / 2.0),
     //                 m_hopper)
     //             .finallyDo(m_hopper::stop));
+    m_testController
+        .a()
+        .whileTrue(
+            Commands.run(
+                    () -> {
+                      m_hopper.run();
+                      m_kicker.setPower(ShooterConstants.kickerSpeed.get());
+                    },
+                    m_hopper,
+                    m_kicker)
+                .finallyDo(
+                    () -> {
+                      m_hopper.stop();
+                      m_kicker.stop();
+                    }));
 
     TunableNumber shootSpeed = new TunableNumber("Test/Subsystems/Shooter/testShootRPM", 500);
     m_testController
@@ -1261,12 +1283,6 @@ public class RobotContainer {
                           m_kicker.stop();
                           m_hopper.stop();
                         })));
-    // m_kicker.setDefaultCommand(
-    //     Commands.run(
-    //         () -> m_kicker.runExceptSensor(ShooterConstants.kickerSlowSpeed.get()), m_kicker));
-    // new Trigger(() -> dynamicTrajectory.ready())
-    //     .whileTrue(Commands.run(() -> m_kicker.setSpeed(ShooterConstants.kickerSpeed.get())))
-    //     .whileTrue(Commands.run(() -> m_hopper.setSpeed(IntakeConstants.hopperSpeed.get())));
   }
 
   private void configureShooter() {
@@ -1399,23 +1415,16 @@ public class RobotContainer {
   }
 
   public void configureLeds() {
+    WrapperCommand ledCommand =
+        new GeneralLEDCommand(
+                m_leds,
+                m_shiftTracker,
+                () -> m_driveController.rightTrigger().getAsBoolean(),
+                m_statusLogger.getStatuses())
+            .ignoringDisable(true);
 
-    Trigger shiftTrigger = new Trigger(() -> m_shiftTracker.onShiftDeprecated());
-    shiftTrigger.onTrue(new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green));
-    shiftTrigger.onFalse(new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red));
+    m_leds.setDefaultCommand(ledCommand);    
 
-    WrapperCommand statusCheck =
-        new StatusCheckLEDCommand(m_leds, m_statusLogger.getStatuses()).ignoringDisable(true);
-
-    m_leds.setDefaultCommand(statusCheck);
-    m_copilotController
-        .a()
-        .whileTrue(statusCheck)
-        .onFalse(
-            new ConditionalCommand(
-                new ShiftOnLEDCommand(m_leds, m_shiftTracker, LedConstants.green),
-                new ShiftOffLEDCommand(m_leds, m_shiftTracker, LedConstants.red),
-                () -> m_shiftTracker.onShiftDeprecated()));
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
   }

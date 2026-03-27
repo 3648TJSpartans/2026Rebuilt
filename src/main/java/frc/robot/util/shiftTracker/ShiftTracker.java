@@ -117,6 +117,26 @@ public class ShiftTracker extends SubsystemBase {
     }
   }
 
+  public String whichShift() {
+    if (DriverStation.isAutonomousEnabled()) {
+      return "both";
+    }
+    if (isEndgame()) {
+      return "both";
+    }
+
+    if (isOnShift()) {
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        return "blue";
+      }
+      return "red";
+    }
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      return "red";
+    }
+    return "blue";
+  }
+
   // This requires input from the copilot, so it isn't as good in theory as the
   // above solution. However, we can't verify that the above solution works because
   // it requires data from the FMS, which we don't have unless we're in competition.
@@ -175,4 +195,3 @@ public class ShiftTracker extends SubsystemBase {
     return onShift;
   }
 }
-/*  make the controller vibrate evey second  */
