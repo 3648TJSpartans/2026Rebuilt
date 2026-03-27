@@ -21,6 +21,15 @@ public class Polygon {
     return vertices;
   }
 
+  public void setCorners(Translation2d... newVertices) {
+    if (newVertices.length != vertices.length) {
+      throw new IllegalArgumentException("argument must have the same number of corners as the polygon");
+    }
+    for (int i = 0; i < vertices.length; i++) {
+      vertices[i] = newVertices[i];
+    }
+  }
+
   /** Checks if a single point is inside this polygon. */
   public boolean contains(Translation2d point) {
     boolean inside = false;
