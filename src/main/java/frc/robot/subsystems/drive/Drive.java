@@ -143,6 +143,7 @@ public class Drive extends SubsystemBase implements Statusable {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    // m_polygon = getPolygon(getPose());
   }
 
   @Override
