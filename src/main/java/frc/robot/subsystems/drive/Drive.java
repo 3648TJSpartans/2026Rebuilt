@@ -143,11 +143,12 @@ public class Drive extends SubsystemBase implements Statusable {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    // m_polygon = getPolygon(getPose());
   }
 
   @Override
   public void periodic() {
-    updatePolygon();
+    // updatePolygon();
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -425,6 +426,16 @@ public class Drive extends SubsystemBase implements Statusable {
   }
 
   private void updatePolygon() {
+    // Pose2d pose = getPose();
+    // Translation2d frontLeft =
+    //     DriveConstants.frontLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    // Translation2d frontRight =
+    //     DriveConstants.frontRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    // Translation2d backLeft =
+    //     DriveConstants.backLeftCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    // Translation2d backRight =
+    //     DriveConstants.backRightCorner.rotateBy(pose.getRotation()).plus(pose.getTranslation());
+    // m_polygon.setCorners(frontLeft, frontRight, backRight, backLeft);
     m_polygon = getPolygon(getPose());
   }
 

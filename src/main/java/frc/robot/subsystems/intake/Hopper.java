@@ -24,9 +24,17 @@ public class Hopper extends RelEncoderSparkMax {
         : 0.0;
   }
 
+  @AutoLogOutput(key = "Subsystems/Intake/Hopper/currentToSpeed")
+  public double getFollowCurrentToSpeed() {
+    return Math.abs(followMotor.getSpeed()) > IntakeConstants.speedThreshold.get()
+            && Math.abs(followMotor.getCurrent()) > IntakeConstants.currentThreshold.get()
+        ? Math.abs(followMotor.getCurrent() / followMotor.getSpeed())
+        : 0.0;
+  }
+
   @AutoLogOutput(key = "Subsystems/Intake/Hopper/jammed")
   public boolean jammed() {
-    return getCurrentToSpeed() > IntakeConstants.jamThreshold.get();
+    return getCurrentToSpeed() > IntakeConstants.jamThreshold.get() || getFollowCurrentToSpeed() > IntakeConstants.jamThreshold.get();
   }
 
   public void overrideJam(boolean override) {
@@ -61,7 +69,8 @@ public class Hopper extends RelEncoderSparkMax {
       setSpeed(IntakeConstants.hopperSpeed.get());
       return;
     }
-    setPower(IntakeConstants.hopperPower.get());
+    super.setPower(IntakeConstants.topHopperRollerPower.get());
+    followMotor.setPower(IntakeConstants.bottomHopperRollerPower.get());
   }
 
   @Override
