@@ -1348,9 +1348,9 @@ public class RobotContainer {
         .whileTrue(Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
-    m_driveController
-        .leftBumper()
-        .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
+    // m_driveController
+    //     .leftBumper()
+    //     .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
     new Trigger(
             () -> {
@@ -1381,8 +1381,8 @@ public class RobotContainer {
                         (IntakeConstants.intakeProtected.get()
                             && (m_drive.getChassisSpeeds().vxMetersPerSecond
                                 > IntakeConstants.maxIntakeSpeed.get()))));
-    m_copilotController
-        .leftTrigger()
+    m_driveController
+        .leftBumper()
         .whileTrue(
             Commands.run(
                     () -> {
