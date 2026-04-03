@@ -91,9 +91,7 @@ public class IntakeConstants {
 
     public static final TunableBoolean unjamEnabled = new TunableBoolean("Subsystems/Intake/Hopper/unjamEnabled", true);
 
-  public static final int upSolenoidChannel = 8;
-
-  public static final int downSolenoidChannel = 9;
+  public static final int solenoidChannel = 8;
 
   public static final Translation3d intakeOffset = new Translation3d(0.27, 0.0, .22);
   public static final Rotation3d intakeDownRotation = new Rotation3d(0, Math.PI / 2, 0);
