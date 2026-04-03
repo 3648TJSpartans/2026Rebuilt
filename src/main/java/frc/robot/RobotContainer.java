@@ -441,8 +441,7 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(m_intake::setSolenoidAndRollerDown, m_intake);
-    Command stopIntake = Commands.run(m_intake::setSolenoidAndRollerUp, m_intake);
+        Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake).finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -1343,14 +1342,15 @@ public class RobotContainer {
     //             m_intake)
     //         .finallyDo(m_intake::stopRollers));
 
+    new Trigger(() -> DriverStation.isEnabled()).onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false))));
     m_driveController
         .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerDown(), m_intake))
+        .whileTrue(Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
     m_driveController
         .leftBumper()
-        .onTrue(Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp(), m_intake));
+        .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
     new Trigger(
             () -> {
@@ -1375,7 +1375,7 @@ public class RobotContainer {
               return false;
             })
         .onTrue(
-            Commands.runOnce(() -> m_intake.setSolenoidAndRollerUp())
+            Commands.runOnce(() -> m_intake.stopRollers())
                 .onlyIf(
                     () ->
                         (IntakeConstants.intakeProtected.get()
@@ -1386,7 +1386,6 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                     () -> {
-                      m_intake.getSolenoid().setSolenoid(true);
                       m_hopper.setPower(IntakeConstants.hopperOuttakeSpeed.get());
                       m_intake.setRollers(-IntakeConstants.intakeRollerSpeed.get());
                       m_kicker.setPower(-ShooterConstants.kickerSpeed.get());
@@ -1512,7 +1511,7 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> {
                   m_vision.setPipeline(1, 0);
-                  m_intake.setSolenoidAndRollerDown();
+                  m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get());
                 },
                 m_intake))
         .whileTrue(
