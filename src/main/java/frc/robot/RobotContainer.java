@@ -446,7 +446,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
     NamedCommands.registerCommand("HomeTurret", new HomeTurretCmd(m_turret));
-    NamedCommands.registerCommand("StopIntake", stopIntake);
 
     Command autonInitCommand = new PathPlannerAuto("TestHumpToIntake").ignoringDisable(true);
     TunableBoolean autoLagTrigger = new TunableBoolean("AutoLagSwitch", false);
@@ -1342,12 +1341,16 @@ public class RobotContainer {
     //             m_intake)
     //         .finallyDo(m_intake::stopRollers));
 
-    new Trigger(() -> DriverStation.isEnabled()).onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false))));
+    new Trigger(() -> DriverStation.isEnabled()).onTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake).andThen(new WaitCommand(0.5)).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false))));
     m_driveController
         .leftTrigger()
         .whileTrue(Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
+// m_driveController
+//         .leftTrigger()
+//         .whileTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake))
+//         .onFalse(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false), m_intake));
     // m_driveController
     //     .leftBumper()
     //     .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
