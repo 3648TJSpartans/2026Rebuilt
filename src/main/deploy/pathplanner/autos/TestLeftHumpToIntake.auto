@@ -17,13 +17,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootToHub"
+                  "name": "Intake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "ShootToHub"
                 }
               }
             ]
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TestHumpToIntake"
+                  "pathName": "TestHumpToIntakeLeft"
                 }
               },
               {

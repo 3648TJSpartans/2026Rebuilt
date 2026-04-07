@@ -956,6 +956,7 @@ public class RobotContainer {
                         m_kicker.run();
                         m_hopper.run();
                       }
+                      
                     },
                     m_kicker)
                 .finallyDo(
