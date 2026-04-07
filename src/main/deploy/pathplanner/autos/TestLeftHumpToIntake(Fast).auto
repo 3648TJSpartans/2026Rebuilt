@@ -45,12 +45,6 @@
                 "data": {
                   "name": "ShootToHub"
                 }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
               }
             ]
           }
