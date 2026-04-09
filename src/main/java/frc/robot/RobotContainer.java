@@ -399,7 +399,7 @@ public class RobotContainer {
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
                   case 1 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -730,9 +730,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -752,7 +751,7 @@ public class RobotContainer {
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
                   case 1 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -773,7 +772,7 @@ public class RobotContainer {
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
                   case 1 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -794,7 +793,7 @@ public class RobotContainer {
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
                   case 1 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
