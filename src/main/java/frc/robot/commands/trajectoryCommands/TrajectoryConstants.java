@@ -112,11 +112,11 @@ public class TrajectoryConstants {
         new TunableNumber("Trajectory/4.0m/velocity", -.8),
         new TunableNumber("Trajectory/4.5m/velocity", -1.25),
         new TunableNumber("Trajectory/5.0m/velocity", -.75),
-        new TunableNumber("Trajectory/5.5m/velocity", -.75),
-        new TunableNumber("Trajectory/6.0m/velocity", -.75),
-        new TunableNumber("Trajectory/6.5m/velocity", -.75),
-        new TunableNumber("Trajectory/7.0m/velocity", -.75),
-        new TunableNumber("Trajectory/7.5m/velocity", -.75),
-        new TunableNumber("Trajectory/8.0m/velocity", -.75)
+        new TunableNumber("Trajectory/5.5m/velocity", -.25),
+        new TunableNumber("Trajectory/6.0m/velocity", -.25),
+        new TunableNumber("Trajectory/6.5m/velocity", -.25),
+        new TunableNumber("Trajectory/7.0m/velocity", -.25),
+        new TunableNumber("Trajectory/7.5m/velocity", -.25),
+        new TunableNumber("Trajectory/8.0m/velocity", -.25)
       };
 }

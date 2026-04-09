@@ -15,13 +15,10 @@ public class RangeCalc {
    */
   public static int zoneCalc(Pose2d robotPose) {
     double x = AllianceFlipUtil.applyY(robotPose.getY());
-    if (x < PoseConstants.zone1) {
+    if (x < 4.021) {
       return 0;
     }
-    if (x < PoseConstants.zone2) {
-      return 1;
-    }
-    return 2;
+    return 1;
   }
 
   public static boolean inField(Pose2d robotPose) {

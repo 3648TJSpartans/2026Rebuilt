@@ -398,8 +398,7 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
+                  case 1 -> TrajectoryConstants.feedLeft;
                   default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
@@ -752,8 +751,7 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
+                  case 1 -> TrajectoryConstants.feedLeft;
                   default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
@@ -774,8 +772,7 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
+                  case 1 -> TrajectoryConstants.feedLeft;
                   default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
@@ -796,8 +793,7 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
+                  case 1 -> TrajectoryConstants.feedLeft;
                   default -> TrajectoryConstants.feedMiddle;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
@@ -847,7 +843,7 @@ public class RobotContainer {
                             m_kicker.run();
                             m_hopper.run();
                           }
-                          if (m_turret.getAngleTolerance() > 1.0) {
+                          if (m_turret.getAngleTolerance() > 0.5) {
                             m_kicker.stop();
                             m_hopper.stop();
                           }
@@ -1241,9 +1237,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
