@@ -196,4 +196,8 @@ public class Turret extends SubsystemBase implements Statusable {
     return Math.abs(new Rotation2d(turretSetAngle).minus(getTurretRotation()).getRadians())
         < TurretConstants.turretAngleTolerance.get();
   }
+
+  public double getAngleTolerance() {
+    return Math.abs(new Rotation2d(turretSetAngle).minus(getTurretRotation()).getRadians());
+  }
 }

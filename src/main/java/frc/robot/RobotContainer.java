@@ -43,8 +43,6 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.ledCommands.GeneralLEDCommand;
-import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
-import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -62,7 +60,6 @@ import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants;
-import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
@@ -441,7 +438,8 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake).finallyDo(m_intake::stopRollers);
+        Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake)
+            .finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -849,6 +847,10 @@ public class RobotContainer {
                             m_kicker.run();
                             m_hopper.run();
                           }
+                          if (m_turret.getAngleTolerance() > 1.0) {
+                            m_kicker.stop();
+                            m_hopper.stop();
+                          }
                         },
                         m_kicker,
                         m_hopper)
@@ -956,7 +958,6 @@ public class RobotContainer {
                         m_kicker.run();
                         m_hopper.run();
                       }
-                      
                     },
                     m_kicker)
                 .finallyDo(
@@ -1341,18 +1342,25 @@ public class RobotContainer {
     // 0.1)),
     //             m_intake)
     //         .finallyDo(m_intake::stopRollers));
-    Command deployIntake = Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)).andThen(new WaitCommand(0.5)).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
+    Command deployIntake =
+        Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true))
+            .andThen(new WaitCommand(0.5))
+            .andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     new Trigger(() -> DriverStation.isEnabled()).onTrue(deployIntake);
     m_copilotController.y().onTrue(deployIntake);
     m_driveController
         .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
+        .whileTrue(
+            Commands.runOnce(
+                () -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
-// m_driveController
-//         .leftTrigger()
-//         .whileTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake))
-//         .onFalse(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false), m_intake));
+    // m_driveController
+    //         .leftTrigger()
+    //         .whileTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true),
+    // m_intake))
+    //         .onFalse(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false),
+    // m_intake));
     // m_driveController
     //     .leftBumper()
     //     .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
@@ -1427,7 +1435,7 @@ public class RobotContainer {
                 m_statusLogger.getStatuses())
             .ignoringDisable(true);
 
-    m_leds.setDefaultCommand(ledCommand);    
+    m_leds.setDefaultCommand(ledCommand);
 
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
