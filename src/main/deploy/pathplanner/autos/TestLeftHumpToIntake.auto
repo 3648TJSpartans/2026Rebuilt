@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "Intake"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootToHub"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TestHumpToIntake"
+                  "pathName": "TestHumpToIntakeLeft"
                 }
               },
               {

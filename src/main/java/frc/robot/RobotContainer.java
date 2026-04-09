@@ -956,6 +956,7 @@ public class RobotContainer {
                         m_kicker.run();
                         m_hopper.run();
                       }
+                      
                     },
                     m_kicker)
                 .finallyDo(
@@ -1340,7 +1341,7 @@ public class RobotContainer {
     // 0.1)),
     //             m_intake)
     //         .finallyDo(m_intake::stopRollers));
-    Command deployIntake = Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake).andThen(new WaitCommand(0.5)).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
+    Command deployIntake = Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true)).andThen(new WaitCommand(0.5)).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     new Trigger(() -> DriverStation.isEnabled()).onTrue(deployIntake);
     m_copilotController.y().onTrue(deployIntake);
     m_driveController
