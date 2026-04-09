@@ -339,7 +339,8 @@ public class RobotContainer {
             m_shooter::getVelocity,
             () -> 2.0,
             () -> m_turret.getTurretFieldPose().getTranslation(),
-            m_turret::getTurretTranslationalVelocity);
+            m_turret::getTurretTranslationalVelocity,
+            m_turret);
 
     m_neural = new Neural(m_drive::getPose);
 

@@ -200,4 +200,17 @@ public class Turret extends SubsystemBase implements Statusable {
   public double getAngleTolerance() {
     return Math.abs(new Rotation2d(turretSetAngle).minus(getTurretRotation()).getRadians());
   }
+
+  public double speedAwayFrom(Translation2d target) {
+    Pose2d turretPose = getTurretFieldPose().toPose2d();
+    double[] turretVel = getTurretTranslationalVelocity();
+    double vx = turretVel[0];
+    double vy = turretVel[1];
+    double xt = turretPose.getX();
+    double yt = turretPose.getY();
+    double xtarget = target.getX();
+    double ytarget = target.getY();
+    return ((xt - xtarget) * vx + (yt - ytarget) * vy)
+        / Math.sqrt((xt - xtarget) * (xt - xtarget) + (yt - ytarget) * (yt - ytarget));
+  }
 }

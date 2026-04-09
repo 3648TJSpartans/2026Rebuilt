@@ -119,4 +119,13 @@ public class TrajectoryConstants {
         new TunableNumber("Trajectory/7.5m/velocity", -.25),
         new TunableNumber("Trajectory/8.0m/velocity", -.25)
       };
+
+  public static final TunableNumber[] turretSpeedMatrix =
+      new TunableNumber[] {
+        new TunableNumber("Trajectory/-1.0ms/velocity", 0.0),
+        new TunableNumber("Trajectory/-0.5ms/velocity", 0.0),
+        new TunableNumber("Trajectory/.0ms/velocity", 0.0),
+        new TunableNumber("Trajectory/.5ms/velocity", 0.5),
+        new TunableNumber("Trajectory/1.0ms/velocity", 0.5)
+      };
 }
