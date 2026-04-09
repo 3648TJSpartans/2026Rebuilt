@@ -9,9 +9,9 @@ import frc.robot.util.TunableNumber;
 
 public class TrajectoryConstants {
   private static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
-  private static final Translation3d blueFeedRight = new Translation3d(1.0, 1.5, 0.0);
-  private static final Translation3d blueFeedMiddle = new Translation3d(1.0, 4.021, 0.0);
-  private static final Translation3d blueFeedLeft = new Translation3d(1.0, 6.542, 0.0);
+  private static final Translation3d blueFeedRight = new Translation3d(0.5, 1.5, 0.0);
+  private static final Translation3d blueFeedMiddle = new Translation3d(0.5, 4.021, 0.0);
+  private static final Translation3d blueFeedLeft = new Translation3d(0.5, 6.542, 0.0);
   public static final TunableNumber overhangHeight =
       new TunableNumber("Trajectory/overhangHeight", 1.5);
   public static final TunableNumber overhangAspect =

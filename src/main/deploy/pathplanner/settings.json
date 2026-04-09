@@ -15,8 +15,9 @@
     "Depot",
     "Disrupt",
     "Neutral",
-    "Test",
-    "Stationary"
+    "SecondChoice",
+    "Stationary",
+    "Test"
   ],
   "defaultMaxVel": 8.0,
   "defaultMaxAccel": 8.0,
