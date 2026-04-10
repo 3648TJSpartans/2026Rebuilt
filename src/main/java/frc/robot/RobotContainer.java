@@ -91,7 +91,6 @@ import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import frc.robot.util.zoneCalc.Polygon;
-import java.io.File;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -157,18 +156,18 @@ public class RobotContainer {
     m_usbStatus =
         new GenericStatusable(
             () -> {
-              File drive = new File(Constants.usbPath);
-              if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                double freeSpace = drive.getUsableSpace();
-                if (freeSpace < Constants.usbFreeThreshold) {
-                  Logger.recordOutput("Debug/USB/warning", "USB near full");
-                  Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
-                  return Status.WARNING;
-                }
-                Logger.recordOutput("Debug/USB/warning", "N/A");
-                return Status.OK;
-              }
-              Logger.recordOutput("Debug/USB/warning", "not found");
+              // File drive = new File(Constants.usbPath);
+              // if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+              //   double freeSpace = drive.getUsableSpace();
+              //   if (freeSpace < Constants.usbFreeThreshold) {
+              //     Logger.recordOutput("Debug/USB/warning", "USB near full");
+              //     Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
+              //     return Status.WARNING;
+              //   }
+              //   Logger.recordOutput("Debug/USB/warning", "N/A");
+              //   return Status.OK;
+              // }
+              // Logger.recordOutput("Debug/USB/warning", "not found");
               return Status.ERROR;
             },
             "USB",
@@ -489,6 +488,9 @@ public class RobotContainer {
   }
 
   private void configureTestBindings() {
+    // new Trigger(() -> DriverStation.isTeleopEnabled())
+    //     .onFalse(Commands.runOnce(() -> {DataLogManager.stop();Logger.edn}));
+
     new Trigger(DriverStation::isTeleopEnabled)
         .whileTrue(
             Commands.run(
