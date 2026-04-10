@@ -1472,7 +1472,8 @@ public class RobotContainer {
             () -> -m_driveController.getLeftY(),
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
-            m_driveController.rightBumper()));
+            m_driveController.rightBumper(),
+            m_driveController.leftTrigger()::getAsBoolean));
 
     // Lock to nearest 45° when A button is held
     Rotation2d[] lockpoints = {

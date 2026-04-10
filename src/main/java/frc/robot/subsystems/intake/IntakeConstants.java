@@ -9,7 +9,8 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
 public class IntakeConstants {
-
+  public static final TunableNumber intakeDrivePower =
+      new TunableNumber("Subsystems/Intake/intakeDrivePower", 0.5);
   public static final MotorConfig hopperMotorConfig =
       new MotorConfig("Subsystems/Intake/HopperMotorIO")
           .motorCan(15)
