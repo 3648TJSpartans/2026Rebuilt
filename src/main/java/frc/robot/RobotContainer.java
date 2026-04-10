@@ -1409,6 +1409,8 @@ public class RobotContainer {
                       m_intake.stopRollers();
                       m_kicker.stop();
                     }));
+    new Trigger(() -> DriverStation.isEnabled() && DriverStation.getMatchNumber() > 0)
+        .onTrue(Commands.runOnce(() -> m_compressor.disableCompressor()));
   }
 
   public void configureHopper() {
