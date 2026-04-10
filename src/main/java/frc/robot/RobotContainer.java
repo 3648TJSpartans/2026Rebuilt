@@ -1006,7 +1006,11 @@ public class RobotContainer {
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
             m_driveController.rightBumper());
-    m_driveController.rightTrigger().and(Constants.turretWorking).whileTrue(driveSlow);
+    m_driveController
+        .rightTrigger()
+        .and(Constants.turretWorking)
+        .and(() -> !m_driveController.x().getAsBoolean())
+        .whileTrue(driveSlow);
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
