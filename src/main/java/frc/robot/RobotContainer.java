@@ -43,8 +43,6 @@ import frc.robot.commands.goToCommands.DriveTo;
 import frc.robot.commands.goToCommands.DriveToTag;
 import frc.robot.commands.goToCommands.goToConstants;
 import frc.robot.commands.ledCommands.GeneralLEDCommand;
-import frc.robot.commands.ledCommands.ShiftOffLEDCommand;
-import frc.robot.commands.ledCommands.ShiftOnLEDCommand;
 import frc.robot.commands.trajectoryCommands.RunDynamicMatrixAddTrajectory;
 import frc.robot.commands.trajectoryCommands.RunTrajectoryCmd;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
@@ -62,7 +60,6 @@ import frc.robot.subsystems.intake.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.Intake.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants;
-import frc.robot.subsystems.leds.LedConstants;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.shooter.Kicker;
 import frc.robot.subsystems.shooter.Shooter;
@@ -94,7 +91,6 @@ import frc.robot.util.statusableUtils.StatusLogger;
 import frc.robot.util.trajectorySolver.Trajectory;
 import frc.robot.util.trajectorySolver.TrajectoryLogger;
 import frc.robot.util.zoneCalc.Polygon;
-import java.io.File;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -160,18 +156,18 @@ public class RobotContainer {
     m_usbStatus =
         new GenericStatusable(
             () -> {
-              File drive = new File(Constants.usbPath);
-              if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
-                double freeSpace = drive.getUsableSpace();
-                if (freeSpace < Constants.usbFreeThreshold) {
-                  Logger.recordOutput("Debug/USB/warning", "USB near full");
-                  Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
-                  return Status.WARNING;
-                }
-                Logger.recordOutput("Debug/USB/warning", "N/A");
-                return Status.OK;
-              }
-              Logger.recordOutput("Debug/USB/warning", "not found");
+              // File drive = new File(Constants.usbPath);
+              // if (drive.exists() && drive.isDirectory() && drive.canWrite()) {
+              //   double freeSpace = drive.getUsableSpace();
+              //   if (freeSpace < Constants.usbFreeThreshold) {
+              //     Logger.recordOutput("Debug/USB/warning", "USB near full");
+              //     Logger.recordOutput("Debug/USB/freeSpace", freeSpace);
+              //     return Status.WARNING;
+              //   }
+              //   Logger.recordOutput("Debug/USB/warning", "N/A");
+              //   return Status.OK;
+              // }
+              // Logger.recordOutput("Debug/USB/warning", "not found");
               return Status.ERROR;
             },
             "USB",
@@ -342,7 +338,8 @@ public class RobotContainer {
             m_shooter::getVelocity,
             () -> 2.0,
             () -> m_turret.getTurretFieldPose().getTranslation(),
-            m_turret::getTurretTranslationalVelocity);
+            m_turret::getTurretTranslationalVelocity,
+            m_turret);
 
     m_neural = new Neural(m_drive::getPose);
 
@@ -401,9 +398,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -441,7 +437,8 @@ public class RobotContainer {
                     }));
 
     Command intake =
-        Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake).finallyDo(m_intake::stopRollers);
+        Commands.run(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake)
+            .finallyDo(m_intake::stopRollers);
     NamedCommands.registerCommand("ShootToHub", shootToHubCommand);
     NamedCommands.registerCommand("ShootToField", shootToFieldCommand);
     NamedCommands.registerCommand("Intake", intake);
@@ -491,6 +488,9 @@ public class RobotContainer {
   }
 
   private void configureTestBindings() {
+    // new Trigger(() -> DriverStation.isTeleopEnabled())
+    //     .onFalse(Commands.runOnce(() -> {DataLogManager.stop();Logger.edn}));
+
     new Trigger(DriverStation::isTeleopEnabled)
         .whileTrue(
             Commands.run(
@@ -733,9 +733,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -754,9 +753,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -776,9 +774,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -798,9 +795,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt(),
@@ -848,6 +844,10 @@ public class RobotContainer {
                           if (shootToHub.ready()) {
                             m_kicker.run();
                             m_hopper.run();
+                          }
+                          if (m_turret.getAngleTolerance() > 0.5) {
+                            m_kicker.stop();
+                            m_hopper.stop();
                           }
                         },
                         m_kicker,
@@ -1006,7 +1006,11 @@ public class RobotContainer {
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
             m_driveController.rightBumper());
-    m_driveController.rightTrigger().and(Constants.turretWorking).whileTrue(driveSlow);
+    m_driveController
+        .rightTrigger()
+        .and(Constants.turretWorking)
+        .and(() -> !m_driveController.x().getAsBoolean())
+        .whileTrue(driveSlow);
     new Trigger(
             () ->
                 DriverStation.isTeleopEnabled()
@@ -1239,9 +1243,8 @@ public class RobotContainer {
             () ->
                 switch (RangeCalc.zoneCalc(m_drive.getPose())) {
                   case 0 -> TrajectoryConstants.feedRight;
-                  case 1 -> TrajectoryConstants.feedMiddle;
-                  case 2 -> TrajectoryConstants.feedLeft;
-                  default -> TrajectoryConstants.feedMiddle;
+                  case 1 -> TrajectoryConstants.feedLeft;
+                  default -> TrajectoryConstants.feedLeft;
                 },
             () -> !RangeCalc.inShootingRange(m_drive.getPose()),
             () -> m_drive.getTilt());
@@ -1340,18 +1343,25 @@ public class RobotContainer {
     // 0.1)),
     //             m_intake)
     //         .finallyDo(m_intake::stopRollers));
-    Command deployIntake = Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake).andThen(new WaitCommand(0.5)).andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
+    Command deployIntake =
+        Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true))
+            .andThen(new WaitCommand(0.5))
+            .andThen(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false)));
     new Trigger(() -> DriverStation.isEnabled()).onTrue(deployIntake);
     m_copilotController.y().onTrue(deployIntake);
     m_driveController
         .leftTrigger()
-        .whileTrue(Commands.runOnce(() -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
+        .whileTrue(
+            Commands.runOnce(
+                () -> m_intake.setRollers(IntakeConstants.intakeRollerSpeed.get()), m_intake))
         .onFalse(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
 
-// m_driveController
-//         .leftTrigger()
-//         .whileTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true), m_intake))
-//         .onFalse(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false), m_intake));
+    // m_driveController
+    //         .leftTrigger()
+    //         .whileTrue(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(true),
+    // m_intake))
+    //         .onFalse(Commands.runOnce(() -> m_intake.getSolenoid().setSolenoid(false),
+    // m_intake));
     // m_driveController
     //     .leftBumper()
     //     .onTrue(Commands.runOnce(() -> m_intake.stopRollers(), m_intake));
@@ -1403,6 +1413,8 @@ public class RobotContainer {
                       m_intake.stopRollers();
                       m_kicker.stop();
                     }));
+    new Trigger(() -> DriverStation.isEnabled() && DriverStation.getMatchNumber() > 0)
+        .onTrue(Commands.runOnce(() -> m_compressor.disableCompressor()));
   }
 
   public void configureHopper() {
@@ -1426,7 +1438,7 @@ public class RobotContainer {
                 m_statusLogger.getStatuses())
             .ignoringDisable(true);
 
-    m_leds.setDefaultCommand(ledCommand);    
+    m_leds.setDefaultCommand(ledCommand);
 
     m_statusLogger.setDefaultCommand(
         Commands.run(() -> m_statusLogger.logStatuses(), m_statusLogger));
@@ -1464,7 +1476,8 @@ public class RobotContainer {
             () -> -m_driveController.getLeftY(),
             () -> -m_driveController.getLeftX(),
             () -> -m_driveController.getRightX(),
-            m_driveController.rightBumper()));
+            m_driveController.rightBumper(),
+            m_driveController.leftTrigger()::getAsBoolean));
 
     // Lock to nearest 45° when A button is held
     Rotation2d[] lockpoints = {

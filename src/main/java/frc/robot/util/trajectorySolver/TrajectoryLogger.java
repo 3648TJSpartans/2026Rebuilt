@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
+import frc.robot.subsystems.turret.Turret;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
@@ -16,6 +17,7 @@ public class TrajectoryLogger extends SubsystemBase {
   private final DoubleSupplier m_turretAngleSupplier;
   private final DoubleSupplier m_shooterSpeedSupplier;
   private final DoubleSupplier m_hangTimeSupplier;
+  private final Turret m_turret;
   private final Supplier<Translation3d> m_turretPoseSupplier;
   private final Supplier<double[]> m_turretVelocitySupplier;
   private final ArrayList<Ball> balls;
@@ -29,13 +31,15 @@ public class TrajectoryLogger extends SubsystemBase {
       DoubleSupplier shooterSpeedSupplier,
       DoubleSupplier hangTimeSupplier,
       Supplier<Translation3d> turretPoseSupplier,
-      Supplier<double[]> turretVelocitySupplier) {
+      Supplier<double[]> turretVelocitySupplier,
+      Turret turret) {
     m_hangTimeSupplier = hangTimeSupplier;
     m_shooterAngleSupplier = shooterAngleSupplier;
     m_shooterSpeedSupplier = shooterSpeedSupplier;
     m_turretAngleSupplier = turretAngleSupplier;
     m_turretPoseSupplier = turretPoseSupplier;
     m_turretVelocitySupplier = turretVelocitySupplier;
+    m_turret = turret;
     balls = new ArrayList<>();
   }
 
@@ -51,7 +55,7 @@ public class TrajectoryLogger extends SubsystemBase {
 
     Translation3d turretPose = m_turretPoseSupplier.get();
     double[] turretVelocity = m_turretVelocitySupplier.get();
-    updateBalls(measuredTraj, turretPose, turretVelocity);
+    // updateBalls(measuredTraj, turretPose, turretVelocity);
     Logger.recordOutput(
         "Utils/TrajectoryLogger/Measured/measuredTrajectory/hangTime", measuredTraj.getHangTime());
     Logger.recordOutput(
@@ -71,6 +75,9 @@ public class TrajectoryLogger extends SubsystemBase {
     Logger.recordOutput(
         "Utils/TrajectoryLogger/Matrix/distance",
         TrajectoryConstants.hubPose.minus(turretPose).toTranslation2d().getNorm());
+    Logger.recordOutput(
+        "Utils/TrajectoryLogger/Matrix/speedAway",
+        m_turret.speedAwayFrom(TrajectoryConstants.hubPose.toTranslation2d()));
     Logger.recordOutput(
         "Utils/TrajectoryLogger/Measured/measuredTrajectory/path",
         TrajectoryCalc.interpolateTrajectory(measuredTraj, turretVelocity, turretPose));

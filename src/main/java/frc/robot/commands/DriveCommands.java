@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.intake.IntakeConstants;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -80,7 +81,8 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
-      BooleanSupplier robotRelativeSupplier) {
+      BooleanSupplier robotRelativeSupplier,
+      BooleanSupplier driveSlow) {
     return Commands.run(
         () -> {
           if (robotRelativeSupplier.getAsBoolean()) {
@@ -94,6 +96,8 @@ public class DriveCommands {
                         * DriveConstants.robotRelativeMaxInputPercent));
           } else {
             // Get linear velocity
+            double slowedMultiplier =
+                driveSlow.getAsBoolean() ? IntakeConstants.intakeDrivePower.get() : 1.0;
             Translation2d linearVelocity =
                 getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
@@ -107,8 +111,12 @@ public class DriveCommands {
             // Convert to field relative speeds & send command
             ChassisSpeeds speeds =
                 new ChassisSpeeds(
-                    linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                    linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                    linearVelocity.getX()
+                        * drive.getMaxLinearSpeedMetersPerSec()
+                        * slowedMultiplier,
+                    linearVelocity.getY()
+                        * drive.getMaxLinearSpeedMetersPerSec()
+                        * slowedMultiplier,
                     omega * drive.getMaxAngularSpeedRadPerSec());
             boolean isFlipped =
                 DriverStation.getAlliance().isPresent()
