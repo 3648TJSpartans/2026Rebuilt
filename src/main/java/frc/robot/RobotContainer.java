@@ -358,6 +358,7 @@ public class RobotContainer {
             m_driveController,
             m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
+
     configureAutos();
 
     // Set up auto routines

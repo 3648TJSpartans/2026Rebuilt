@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.Status;
+import frc.robot.util.MappedSparkMax;
 import org.littletonrobotics.junction.Logger;
 
 public class AbsEncoderSparkMax extends SparkIO implements ConfigurableMotor {
@@ -29,7 +30,7 @@ public class AbsEncoderSparkMax extends SparkIO implements ConfigurableMotor {
 
     m_motorConfig = motorConfig;
     motorConfig.linkMotor(this);
-    motor = new SparkMax(motorConfig.motorCan(), MotorType.kBrushless);
+    motor = new MappedSparkMax(motorConfig.motorCan(), MotorType.kBrushless, motorConfig.name());
     motorController = motor.getClosedLoopController();
     encoder = motor.getAbsoluteEncoder();
     name = getName();
