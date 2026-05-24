@@ -2,6 +2,7 @@ package frc.robot.util.motorUtil;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.util.TunableNumber;
+import java.util.Optional;
 
 public class MotorConfig {
   private static final double DEFAULT_POSITION_TOLERANCE = 0.0;
@@ -21,6 +22,8 @@ public class MotorConfig {
   private String m_loggingName = "Subsystems/MotorIOs/defaultMotor";
   private int m_motorCan = 1;
 
+  private Optional<ConfigurableMotor> m_linkedMotor;
+
   private TunableNumber m_positionTolerance;
   private TunableNumber m_speedTolerance;
   private TunableNumber m_P;
@@ -38,6 +41,11 @@ public class MotorConfig {
 
   public MotorConfig(String name) {
     m_loggingName = name;
+    m_linkedMotor = Optional.empty();
+  }
+
+  protected void linkMotor(ConfigurableMotor motor) {
+    m_linkedMotor = Optional.of(motor);
   }
 
   public MotorConfig name(String name) {
@@ -221,6 +229,12 @@ public class MotorConfig {
       return DEFAULT_FOLLOW_CAN;
     } else {
       return (int) m_followCan.get();
+    }
+  }
+
+  private void configureLinkedMotor() {
+    if (m_linkedMotor.isPresent()) {
+      m_linkedMotor.get().configureMotor(this);
     }
   }
 }
