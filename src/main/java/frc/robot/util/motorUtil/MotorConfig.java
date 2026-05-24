@@ -3,10 +3,13 @@ package frc.robot.util.motorUtil;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TunableNumberAutoUpdater;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class MotorConfig {
   // private static int testCount = 0;
+  private static final Set<String> motorNames = new HashSet<>();
 
   private static final double DEFAULT_POSITION_TOLERANCE = 0.0;
   private static final double DEFAULT_SPEED_TOLERANCE = 0.0;
@@ -44,6 +47,11 @@ public class MotorConfig {
 
   public MotorConfig(String name) {
     m_loggingName = name;
+    if (motorNames.contains(name)) {
+      throw new IllegalArgumentException(
+          "MotorConfig " + name + " already exists. Please choose a different name.");
+    }
+    motorNames.add(name);
     m_linkedMotor = Optional.empty();
   }
 
