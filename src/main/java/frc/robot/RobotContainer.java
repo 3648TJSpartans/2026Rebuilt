@@ -72,6 +72,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.MappedSparkMax;
 import frc.robot.util.RangeCalc;
 import frc.robot.util.SimLogger;
 import frc.robot.util.SmartController;
@@ -358,7 +359,7 @@ public class RobotContainer {
             m_driveController,
             m_copilotController);
     m_simLogger = new SimLogger(m_turret, m_intake);
-
+    MappedSparkMax.logSparkMaxes();
     configureAutos();
 
     // Set up auto routines
