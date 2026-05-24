@@ -2,9 +2,12 @@ package frc.robot.util.motorUtil;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.TunableNumberAutoUpdater;
 import java.util.Optional;
 
 public class MotorConfig {
+  // private static int testCount = 0;
+
   private static final double DEFAULT_POSITION_TOLERANCE = 0.0;
   private static final double DEFAULT_SPEED_TOLERANCE = 0.0;
   private static final double DEFAULT_P = 0.0;
@@ -54,55 +57,72 @@ public class MotorConfig {
   }
 
   public MotorConfig motorCan(int motorCAN) {
-    m_motorCan = (int) new TunableNumber(m_loggingName + "/motorCAN", motorCAN).get();
+    m_motorCan =
+        (int)
+            new TunableNumberAutoUpdater(
+                    m_loggingName + "/motorCAN", motorCAN, this::configureLinkedMotor)
+                .get();
     return this;
   }
 
   public MotorConfig positionTolerance(double positionTolerance) {
     m_positionTolerance =
-        new TunableNumber(m_loggingName + "/Tolerances/positionTolerance", positionTolerance);
+        new TunableNumberAutoUpdater(
+            m_loggingName + "/Tolerances/positionTolerance",
+            positionTolerance,
+            this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig speedTolerance(double speedTolerance) {
     m_speedTolerance =
-        new TunableNumber(m_loggingName + "/Tolerances/speedTolerance", speedTolerance);
+        new TunableNumberAutoUpdater(
+            m_loggingName + "/Tolerances/speedTolerance",
+            speedTolerance,
+            this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig p(double p) {
-    m_P = new TunableNumber(m_loggingName + "/PIDF/P", p);
+    m_P = new TunableNumberAutoUpdater(m_loggingName + "/PIDF/P", p, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig i(double i) {
-    m_I = new TunableNumber(m_loggingName + "/PIDF/I", i);
+    m_I = new TunableNumberAutoUpdater(m_loggingName + "/PIDF/I", i, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig d(double d) {
-    m_D = new TunableNumber(m_loggingName + "/PIDF/D", d);
+    m_D = new TunableNumberAutoUpdater(m_loggingName + "/PIDF/D", d, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig ff(double ff) {
-    m_FF = new TunableNumber(m_loggingName + "/PIDF/FF", ff);
+    m_FF = new TunableNumberAutoUpdater(m_loggingName + "/PIDF/FF", ff, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig minPower(double minPower) {
-    m_minPower = new TunableNumber(m_loggingName + "/PowerRange/minPower", minPower);
+    m_minPower =
+        new TunableNumberAutoUpdater(
+            m_loggingName + "/PowerRange/minPower", minPower, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig maxPower(double maxPower) {
-    m_maxPower = new TunableNumber(m_loggingName + "/PowerRange/maxPower", maxPower);
+    m_maxPower =
+        new TunableNumberAutoUpdater(
+            m_loggingName + "/PowerRange/maxPower", maxPower, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig encoderOdometryFrequency(double encoderOdometryFrequency) {
     m_encoderOdometryFrequency =
-        new TunableNumber(m_loggingName + "/EncoderOdometryFrequency", encoderOdometryFrequency)
+        new TunableNumberAutoUpdater(
+                m_loggingName + "/EncoderOdometryFrequency",
+                encoderOdometryFrequency,
+                this::configureLinkedMotor)
             .get();
     return this;
   }
@@ -113,12 +133,12 @@ public class MotorConfig {
   }
 
   public MotorConfig Ks(double Ks) {
-    m_Ks = new TunableNumber(m_loggingName + "/FF/Ks", Ks);
+    m_Ks = new TunableNumberAutoUpdater(m_loggingName + "/FF/Ks", Ks, this::configureLinkedMotor);
     return this;
   }
 
   public MotorConfig Kv(double Kv) {
-    m_Kv = new TunableNumber(m_loggingName + "/FF/Kv", Kv);
+    m_Kv = new TunableNumberAutoUpdater(m_loggingName + "/FF/Kv", Kv, this::configureLinkedMotor);
     return this;
   }
 
@@ -130,7 +150,9 @@ public class MotorConfig {
   }
 
   public MotorConfig follow(int followCan) {
-    m_followCan = new TunableNumber(m_loggingName + "/followCan", followCan);
+    m_followCan =
+        new TunableNumberAutoUpdater(
+            m_loggingName + "/followCan", followCan, this::configureLinkedMotor);
     return this;
   }
 
@@ -234,7 +256,14 @@ public class MotorConfig {
 
   private void configureLinkedMotor() {
     if (m_linkedMotor.isPresent()) {
+      // long startTime = System.nanoTime();
       m_linkedMotor.get().configureMotor(this);
+      // Logger.recordOutput("MotorConfig/configureTime", (System.nanoTime() - startTime) * 1e-9);
+      // testCount++;
+      // Logger.recordOutput("MotorConfig/testCount", testCount);
     }
+    //  else {
+    //   System.out.println("No motor linked to " + m_loggingName + " to configure.");
+    // }
   }
 }
