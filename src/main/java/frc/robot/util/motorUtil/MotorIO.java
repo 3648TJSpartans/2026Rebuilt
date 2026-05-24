@@ -2,13 +2,13 @@ package frc.robot.util.motorUtil;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.statusableUtils.Statusable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class MotorIO extends SubsystemBase implements Statusable {
 
-  private static List<MotorIO> m_motorList = new ArrayList<MotorIO>();
+  private static Set<MotorIO> m_motorSet = new HashSet<MotorIO>();
 
   private final String name;
   private double m_speedSetpoint;
@@ -17,7 +17,7 @@ public abstract class MotorIO extends SubsystemBase implements Statusable {
 
   public MotorIO(String loggingName) {
     this.name = loggingName;
-    m_motorList.add(this);
+    m_motorSet.add(this);
   }
 
   public abstract double getPosition();
@@ -83,8 +83,6 @@ public abstract class MotorIO extends SubsystemBase implements Statusable {
   public void configureMotor() {}
 
   public static final void reconfigureMotors() {
-    for (MotorIO motor : m_motorList) {
-      motor.configureMotor();
-    }
+    m_motorSet.forEach(MotorIO::configureMotor);
   }
 }
