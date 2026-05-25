@@ -74,6 +74,8 @@ public class goToConstants {
   public static ProfiledPIDController thetaController;
 
   public static void configurePID() {
+    // Test Print
+    // System.out.println("Configuring goToConstants PID controllers with tunable values...");
     driveController =
         new ProfiledPIDController(
             tunableDriveP.get(),
