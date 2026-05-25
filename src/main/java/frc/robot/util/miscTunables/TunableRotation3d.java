@@ -6,7 +6,7 @@ package frc.robot.util.miscTunables;
 
 import static frc.robot.util.TuningUpdater.*;
 
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.Tunable;
 import org.littletonrobotics.junction.Logger;
@@ -15,33 +15,33 @@ import org.littletonrobotics.junction.Logger;
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
-public class TunableTranslation3d extends Tunable<Translation3d> {
+public class TunableRotation3d extends Tunable<Rotation3d> {
 
   /**
-   * Create a new TunableTranslation3d
+   * Create a new TunableRotation3d
    *
    * @param dashboardKey Key on dashboard
    */
-  public TunableTranslation3d(String dashboardKey) {
+  public TunableRotation3d(String dashboardKey) {
     super(dashboardKey);
   }
 
   /**
-   * Create a new TunableTranslation3d with the default value
+   * Create a new TunableRotation3d with the default value
    *
    * @param dashboardKey Key on dashboard
    * @param defaultValue Default value
    */
-  public TunableTranslation3d(String dashboardKey, Translation3d defaultValue) {
+  public TunableRotation3d(String dashboardKey, Rotation3d defaultValue) {
     super(dashboardKey, defaultValue);
   }
 
-  public TunableTranslation3d(String dashboardKey, Translation3d defaultValue, Runnable update) {
+  public TunableRotation3d(String dashboardKey, Rotation3d defaultValue, Runnable update) {
     super(dashboardKey, defaultValue, update);
   }
 
   @Override
-  protected void putDashboardValue(String key, Translation3d defaultValue) {
+  protected void putDashboardValue(String key, Rotation3d defaultValue) {
     SmartDashboard.putNumber(
         key + "/pitch", SmartDashboard.getNumber(key + "/pitch", defaultValue.getX()));
     SmartDashboard.putNumber(
@@ -51,9 +51,9 @@ public class TunableTranslation3d extends Tunable<Translation3d> {
   }
 
   @Override
-  protected Translation3d getDashboardValue(String key, Translation3d defaultValue) {
+  protected Rotation3d getDashboardValue(String key, Rotation3d defaultValue) {
     return TUNING_MODE
-        ? new Translation3d(
+        ? new Rotation3d(
             SmartDashboard.getNumber(key + "/pitch", defaultValue.getX()),
             SmartDashboard.getNumber(key + "/yaw", defaultValue.getY()),
             SmartDashboard.getNumber(key + "/roll", defaultValue.getZ()))
@@ -62,7 +62,7 @@ public class TunableTranslation3d extends Tunable<Translation3d> {
 
   @Override
   protected void logValue(
-      String key, boolean TUNING_MODE, Translation3d value, Translation3d defaultValue) {
+      String key, boolean TUNING_MODE, Rotation3d value, Rotation3d defaultValue) {
     Logger.recordOutput(key, getDashboardValue(key, defaultValue));
   }
 }
