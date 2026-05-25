@@ -3,6 +3,8 @@ package frc.robot.util;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import java.util.HashSet;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class TuningUpdater extends SubsystemBase {
@@ -12,10 +14,16 @@ public class TuningUpdater extends SubsystemBase {
   public static final String TABLE_KEY = "TunableNumbers";
   public static final String dashBoardKey = "TuningOn";
 
+  private static Set<Tunable<?>> autoUpdaters = new HashSet<>();
+
   private final String key = TABLE_KEY + "/" + dashBoardKey;
 
   public TuningUpdater() {
     SmartDashboard.putBoolean(key, SmartDashboard.getBoolean(key, Constants.DEFAULT_TUNING_MODE));
+  }
+
+  public static void addAutoUpdater(Tunable<?> tunable) {
+    autoUpdaters.add(tunable);
   }
 
   @Override
@@ -23,8 +31,9 @@ public class TuningUpdater extends SubsystemBase {
     TUNING_MODE = SmartDashboard.getBoolean(key, Constants.DEFAULT_TUNING_MODE);
     Logger.recordOutput(key, TUNING_MODE);
     if (TUNING_MODE) {
-      TunableNumberAutoUpdater.update();
-      TunableBooleanAutoUpdater.update();
+      for (Tunable<?> tunable : autoUpdaters) {
+        tunable.update();
+      }
     }
   }
 }
