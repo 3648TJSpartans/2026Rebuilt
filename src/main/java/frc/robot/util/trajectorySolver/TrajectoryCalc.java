@@ -3,6 +3,7 @@ package frc.robot.util.trajectorySolver;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.commands.trajectoryCommands.TrajectoryConstants;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -83,10 +84,13 @@ public class TrajectoryCalc {
                   robotVelocity[0] * trajectory.getHangTime(),
                   robotVelocity[1] * trajectory.getHangTime(),
                   0));
-      
+
       trajectory = stationaryTrajectory(current, newTarget, overhangRatio, zOverhang);
     }
-    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    double error =
+        newTarget
+            .minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current))
+            .getNorm();
     trajectory.setError(error);
     return trajectory;
   }
@@ -104,7 +108,10 @@ public class TrajectoryCalc {
                   0));
       trajectory = stationaryTrajectory(current, newTarget, shootAngle);
     }
-    double error = newTarget.minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current)).getNorm();
+    double error =
+        newTarget
+            .minus(trajectoryAtTime(trajectory.getHangTime(), trajectory, robotVelocity, current))
+            .getNorm();
     trajectory.setError(error);
     return trajectory;
   }
@@ -138,7 +145,8 @@ public class TrajectoryCalc {
       Translation3d target,
       double[] robotVelocity,
       double overhangRatio,
-      double zOverhang) {
+      double zOverhang,
+      Turret turret) {
     Trajectory traj = dynamicTrajectory(current, target, robotVelocity, overhangRatio, zOverhang);
     double distance =
         target
@@ -148,25 +156,43 @@ public class TrajectoryCalc {
             .getNorm();
     Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     return traj.plus(
-        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
+        new Trajectory(
+            0.0,
+            0,
+            linearInterpolate(distance, TrajectoryConstants.velocityMatrix)
+                + linearInterpolate(
+                    turret.speedAwayFrom(target.toTranslation2d()),
+                    TrajectoryConstants.turretSpeedMatrix),
+            0));
   }
 
   public static Trajectory matrixTrajectory(
-      Translation3d current, Translation3d target, double[] turretVelocity, double shootAngle) {
+      Translation3d current,
+      Translation3d target,
+      double[] turretVelocity,
+      double shootAngle,
+      Turret turret) {
     long startTime = System.nanoTime();
     Trajectory traj = dynamicTrajectory(current, target, turretVelocity, shootAngle);
     double distance =
         target
             .minus(current)
             .toTranslation2d()
-            .minus(new Translation2d(turretVelocity[0], turretVelocity[1]).times(traj.getHangTime()))
+            .minus(
+                new Translation2d(turretVelocity[0], turretVelocity[1]).times(traj.getHangTime()))
             .getNorm();
     Logger.recordOutput("Utils/TrajectoryCalc/matrixCalc/distance", distance);
     Logger.recordOutput(
-                      "Utils/TrajectoryCalc/matrixCalc/calcTime", ( System.nanoTime() - startTime) * 1e-9);
+        "Utils/TrajectoryCalc/matrixCalc/calcTime", (System.nanoTime() - startTime) * 1e-9);
     return traj.plus(
-        new Trajectory(0.0, 0, linearInterpolate(distance, TrajectoryConstants.velocityMatrix), 0));
-        
+        new Trajectory(
+            0.0,
+            0,
+            linearInterpolate(distance, TrajectoryConstants.velocityMatrix)
+                + linearInterpolate(
+                    turret.speedAwayFrom(target.toTranslation2d()),
+                    TrajectoryConstants.turretSpeedMatrix),
+            0));
   }
 
   public static Translation3d trajectoryAtTime(

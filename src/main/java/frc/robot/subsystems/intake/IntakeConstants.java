@@ -9,7 +9,8 @@ import frc.robot.util.TunableNumber;
 import frc.robot.util.motorUtil.MotorConfig;
 
 public class IntakeConstants {
-
+  public static final TunableNumber intakeDrivePower =
+      new TunableNumber("Subsystems/Intake/intakeDrivePower", 0.5);
   public static final MotorConfig hopperMotorConfig =
       new MotorConfig("Subsystems/Intake/HopperMotorIO")
           .motorCan(15)
@@ -77,8 +78,7 @@ public class IntakeConstants {
       new TunableBoolean("Subsystems/Intake/protected", true);
 
   public static final TunableNumber jamThreshold =
-      new TunableNumber("Subsystems/Hopper/jamThreshold", 20); // 0.025
-
+      new TunableNumber("Subsystems/Hopper/jamThreshold", 80);
   public static final TunableNumber hopperUnjamPower =
       new TunableNumber("Subsystems/Intake/Hopper/unjamPower", 0.25);
 
@@ -89,7 +89,8 @@ public class IntakeConstants {
   public static final TunableNumber currentThreshold =
       new TunableNumber("Subsystems/Intake/Hopper/currentThreshold", 0.5);
 
-    public static final TunableBoolean unjamEnabled = new TunableBoolean("Subsystems/Intake/Hopper/unjamEnabled", true);
+  public static final TunableBoolean unjamEnabled =
+      new TunableBoolean("Subsystems/Intake/Hopper/unjamEnabled", true);
 
   public static final int upSolenoidChannel = 9;
 

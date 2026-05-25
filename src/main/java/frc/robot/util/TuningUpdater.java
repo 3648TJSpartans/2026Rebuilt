@@ -22,5 +22,9 @@ public class TuningUpdater extends SubsystemBase {
   public void periodic() {
     TUNING_MODE = SmartDashboard.getBoolean(key, Constants.DEFAULT_TUNING_MODE);
     Logger.recordOutput(key, TUNING_MODE);
+    if (TUNING_MODE) {
+      TunableNumberAutoUpdater.update();
+      TunableBooleanAutoUpdater.update();
+    }
   }
 }

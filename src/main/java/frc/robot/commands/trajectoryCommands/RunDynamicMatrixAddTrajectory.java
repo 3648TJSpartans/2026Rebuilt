@@ -56,14 +56,20 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           double[] turretVelocity = turret.getTurretTranslationalVelocity();
           Trajectory traj =
               TrajectoryCalc.matrixTrajectory(
-                  turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
+                  turretPose,
+                  target,
+                  turretVelocity,
+                  overhangAspect.get(),
+                  overhangHeight.get(),
+                  turret);
           if (traj.getShooterAngle() < Units.degreesToRadians(HoodConstants.maxAngle.get())) {
             traj =
                 TrajectoryCalc.matrixTrajectory(
                     turretPose,
                     target,
                     turretVelocity,
-                    Units.degreesToRadians(HoodConstants.maxAngle.get()));
+                    Units.degreesToRadians(HoodConstants.maxAngle.get()),
+                    turret);
             Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
           } else if (traj.getShooterAngle()
               > Units.degreesToRadians(HoodConstants.minAngle.get())) {
@@ -72,7 +78,8 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
                     turretPose,
                     target,
                     turretVelocity,
-                    Units.degreesToRadians(HoodConstants.minAngle.get()));
+                    Units.degreesToRadians(HoodConstants.minAngle.get()),
+                    turret);
             Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", true);
           } else {
             Logger.recordOutput("Commands/RunDynamicMatrixTrajectory/trajectory/endCapped", false);
@@ -82,9 +89,8 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           Logger.recordOutput(
               "Commands/RunDynamicMatrixTrajectory/trajectory/shooterSpeed",
               traj.getShooterSpeed());
-        Logger.recordOutput(
-              "Commands/RunDynamicMatrixTrajectory/trajectory/error",
-              traj.getError());
+          Logger.recordOutput(
+              "Commands/RunDynamicMatrixTrajectory/trajectory/error", traj.getError());
           Logger.recordOutput(
               "Commands/RunDynamicMatrixTrajectory/trajectory/shooterAngle",
               traj.getShooterAngle());
@@ -130,7 +136,12 @@ public class RunDynamicMatrixAddTrajectory extends RunTrajectoryCmd {
           double[] turretVelocity = turret.getTurretTranslationalVelocity();
           Trajectory traj =
               TrajectoryCalc.matrixTrajectory(
-                  turretPose, target, turretVelocity, overhangAspect.get(), overhangHeight.get());
+                  turretPose,
+                  target,
+                  turretVelocity,
+                  overhangAspect.get(),
+                  overhangHeight.get(),
+                  turret);
           if (hoodBroken) {
             traj =
                 TrajectoryCalc.dynamicTrajectory(

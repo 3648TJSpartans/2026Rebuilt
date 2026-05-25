@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
-public class TunableBoolean extends Supplier<Boolean> implements BooleanSupplier {
+public class TunableBoolean implements BooleanSupplier {
 
   private String key;
   private boolean defaultValue;

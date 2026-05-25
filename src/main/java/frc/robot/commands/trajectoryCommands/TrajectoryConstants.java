@@ -9,9 +9,9 @@ import frc.robot.util.TunableNumber;
 
 public class TrajectoryConstants {
   private static final Translation3d blueHubPose = new Translation3d(4.625594, 4.034536, 1.430425);
-  private static final Translation3d blueFeedRight = new Translation3d(1.0, 1.5, 0.0);
-  private static final Translation3d blueFeedMiddle = new Translation3d(1.0, 4.021, 0.0);
-  private static final Translation3d blueFeedLeft = new Translation3d(1.0, 6.542, 0.0);
+  private static final Translation3d blueFeedRight = new Translation3d(0.5, 1.5, 0.0);
+  private static final Translation3d blueFeedMiddle = new Translation3d(0.5, 4.021, 0.0);
+  private static final Translation3d blueFeedLeft = new Translation3d(0.5, 6.542, 0.0);
   public static final TunableNumber overhangHeight =
       new TunableNumber("Trajectory/overhangHeight", 1.5);
   public static final TunableNumber overhangAspect =
@@ -101,22 +101,31 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] velocityMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.0m/velocity", -.4),
-        new TunableNumber("Trajectory/.5m/velocity", -.4),
-        new TunableNumber("Trajectory/1.0m/velocity", -.4),
-        new TunableNumber("Trajectory/1.5m/velocity", -.45),
-        new TunableNumber("Trajectory/2.0m/velocity", -.55),
-        new TunableNumber("Trajectory/2.5m/velocity", -.65),
-        new TunableNumber("Trajectory/3.0m/velocity", -.6),
-        new TunableNumber("Trajectory/3.5m/velocity", -.7),
-        new TunableNumber("Trajectory/4.0m/velocity", -.8),
-        new TunableNumber("Trajectory/4.5m/velocity", -1.25),
-        new TunableNumber("Trajectory/5.0m/velocity", -.75),
-        new TunableNumber("Trajectory/5.5m/velocity", -.75),
-        new TunableNumber("Trajectory/6.0m/velocity", -.75),
-        new TunableNumber("Trajectory/6.5m/velocity", -.75),
-        new TunableNumber("Trajectory/7.0m/velocity", -.75),
-        new TunableNumber("Trajectory/7.5m/velocity", -.75),
-        new TunableNumber("Trajectory/8.0m/velocity", -.75)
+        new TunableNumber("Trajectory/positionAddMatrix/.0m/velocity", -.4),
+        new TunableNumber("Trajectory/positionAddMatrix/.5m/velocity", -.4),
+        new TunableNumber("Trajectory/positionAddMatrix/1.0m/velocity", -.4),
+        new TunableNumber("Trajectory/positionAddMatrix/1.5m/velocity", -.45),
+        new TunableNumber("Trajectory/positionAddMatrix/2.0m/velocity", -.55),
+        new TunableNumber("Trajectory/positionAddMatrix/2.5m/velocity", -.65),
+        new TunableNumber("Trajectory/positionAddMatrix/3.0m/velocity", -.6),
+        new TunableNumber("Trajectory/positionAddMatrix/3.5m/velocity", -.7),
+        new TunableNumber("Trajectory/positionAddMatrix/4.0m/velocity", -.8),
+        new TunableNumber("Trajectory/positionAddMatrix/4.5m/velocity", -.8),
+        new TunableNumber("Trajectory/positionAddMatrix/5.0m/velocity", -.75),
+        new TunableNumber("Trajectory/positionAddMatrix/5.5m/velocity", -.25),
+        new TunableNumber("Trajectory/positionAddMatrix/6.0m/velocity", -.25),
+        new TunableNumber("Trajectory/positionAddMatrix/6.5m/velocity", -.25),
+        new TunableNumber("Trajectory/positionAddMatrix/7.0m/velocity", -.25),
+        new TunableNumber("Trajectory/positionAddMatrix/7.5m/velocity", -.25),
+        new TunableNumber("Trajectory/positionAddMatrix/8.0m/velocity", -.25)
+      };
+
+  public static final TunableNumber[] turretSpeedMatrix =
+      new TunableNumber[] {
+        new TunableNumber("Trajectory/SpeedAwayMatrix/-1.0ms/velocity", 0.0),
+        new TunableNumber("Trajectory/SpeedAwayMatrix/-0.5ms/velocity", 0.0),
+        new TunableNumber("Trajectory/SpeedAwayMatrix/.0ms/velocity", 0.0),
+        new TunableNumber("Trajectory/SpeedAwayMatrix/.5ms/velocity", 1.5),
+        new TunableNumber("Trajectory/SpeedAwayMatrix/1.0ms/velocity", 2.5)
       };
 }
