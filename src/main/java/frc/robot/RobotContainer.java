@@ -473,7 +473,7 @@ public class RobotContainer {
                 })
             .ignoringDisable(true);
     m_copilotController.rightTrigger().onTrue(updateCommand);
-    m_testController
+    m_testController // TODO, this code cuases a huge loop overrun, there is an issue.
         .povUp()
         .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
     new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
