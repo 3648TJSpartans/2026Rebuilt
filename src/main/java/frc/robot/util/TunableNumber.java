@@ -35,6 +35,10 @@ public class TunableNumber extends Tunable<Double> implements DoubleSupplier {
     super(dashboardKey, defaultValue);
   }
 
+    public TunableNumber(String dashboardKey, double defaultValue, Runnable update) {
+      super(dashboardKey, defaultValue, update);
+    }
+
   public double getAsDouble() {
     return get();
   }

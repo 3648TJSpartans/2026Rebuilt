@@ -5,7 +5,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
-import frc.robot.util.TunableNumberAutoUpdater;
 
 public class goToConstants {
 
@@ -28,46 +27,40 @@ public class goToConstants {
       new TunableBoolean("Commands/DriveTo/inFieldConstraint", false);
 
   public static final TunableNumber tunableDriveP =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/drive/P", drivekP, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/drive/P", drivekP, goToConstants::configurePID);
   public static final TunableNumber tunableDriveI =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/drive/I", drivekI, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/drive/I", drivekI, goToConstants::configurePID);
   public static final TunableNumber tunableDriveD =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/drive/D", drivekD, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/drive/D", drivekD, goToConstants::configurePID);
   public static final TunableNumber tunableThetaP =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/theta/P", thetakP, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/theta/P", thetakP, goToConstants::configurePID);
   public static final TunableNumber tunableThetaI =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/theta/I", thetakI, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/theta/I", thetakI, goToConstants::configurePID);
   public static final TunableNumber tunableThetaD =
-      new TunableNumberAutoUpdater(
-          "Commands/DriveTo/theta/D", thetakD, goToConstants::configurePID);
+      new TunableNumber("Commands/DriveTo/theta/D", thetakD, goToConstants::configurePID);
   public static final TunableNumber tunableDriveMaxVelocity =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/drive/maxVelocity", driveMaxVelocity, goToConstants::configurePID);
   public static final TunableNumber tunableDriveMaxAcceleration =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/drive/maxAcceleration",
           driveMaxAcceleration,
           goToConstants::configurePID);
   public static final TunableNumber tunableThetaMaxVelocity =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/theta/maxVelocity(degrees)",
           thetaMaxVelocity,
           goToConstants::configurePID);
   public static final TunableNumber tunableThetaMaxAcceleration =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/theta/maxAcceleration(degrees)",
           thetaMaxAcceleration,
           goToConstants::configurePID);
   public static final TunableNumber tunableDriveTolerance =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/drive/Tolerance", driveTolerance, goToConstants::configurePID);
   public static final TunableNumber tunableThetaTolerance =
-      new TunableNumberAutoUpdater(
+      new TunableNumber(
           "Commands/DriveTo/theta/Tolerance(degrees)", thetaTolerance, goToConstants::configurePID);
   public static ProfiledPIDController driveController;
 

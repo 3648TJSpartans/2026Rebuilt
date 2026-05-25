@@ -35,6 +35,10 @@ public class TunableBoolean extends Tunable<Boolean> implements BooleanSupplier 
     super(dashboardKey, defaultValue);
   }
 
+  public TunableBoolean(String dashboardKey, Boolean defaultValue, Runnable update) {
+    super(dashboardKey, defaultValue, update);
+  }
+
   public boolean getAsBoolean() {
     return get();
   }

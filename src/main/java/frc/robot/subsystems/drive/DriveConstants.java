@@ -88,7 +88,7 @@ public class DriveConstants {
   }
 
   public static int chasNum =
-      (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get();
+      (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get().doubleValue();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
