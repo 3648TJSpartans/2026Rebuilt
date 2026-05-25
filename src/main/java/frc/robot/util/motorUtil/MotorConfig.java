@@ -2,6 +2,7 @@ package frc.robot.util.motorUtil;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.miscTunables.TunableInteger;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class MotorConfig {
   private IdleMode m_IdleMode = DEFAULT_IDLE_MODE;
   private double m_encoderOdometryFrequency = DEFAULT_ODOMETRY_FREQUENCY;
   private boolean m_isInverted = false;
-  private TunableNumber m_followCan;
+  private TunableInteger m_followCan;
 
   public MotorConfig(String name) {
     m_loggingName = name;
@@ -65,10 +66,7 @@ public class MotorConfig {
 
   public MotorConfig motorCan(int motorCAN) {
     m_motorCan =
-        (int)
-            new TunableNumber(m_loggingName + "/motorCAN", motorCAN, this::configureLinkedMotor)
-                .get()
-                .doubleValue();
+        new TunableInteger(m_loggingName + "/motorCAN", motorCAN, this::configureLinkedMotor).get();
     return this;
   }
 
@@ -158,7 +156,7 @@ public class MotorConfig {
 
   public MotorConfig follow(int followCan) {
     m_followCan =
-        new TunableNumber(m_loggingName + "/followCan", followCan, this::configureLinkedMotor);
+        new TunableInteger(m_loggingName + "/followCan", followCan, this::configureLinkedMotor);
     return this;
   }
 
@@ -256,7 +254,7 @@ public class MotorConfig {
     if (m_followCan == null) {
       return DEFAULT_FOLLOW_CAN;
     } else {
-      return (int) m_followCan.get().doubleValue();
+      return m_followCan.getAsInt();
     }
   }
 

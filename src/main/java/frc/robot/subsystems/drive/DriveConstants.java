@@ -21,7 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.util.TunableNumber;
+import frc.robot.util.miscTunables.TunableInteger;
 
 public class DriveConstants {
 
@@ -87,8 +87,7 @@ public class DriveConstants {
     return 0;
   }
 
-  public static int chasNum =
-      (int) new TunableNumber("Drive/ChassisNumber", getChassisSerial()).get().doubleValue();
+  public static int chasNum = new TunableInteger("Drive/ChassisNumber", getChassisSerial()).get();
   public static final double frontLeftExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
