@@ -63,6 +63,7 @@ public class TunableRotation3d extends Tunable<Rotation3d> {
   @Override
   protected void logValue(
       String key, boolean TUNING_MODE, Rotation3d value, Rotation3d defaultValue) {
+    // System.out.println("Log Value run");
     Logger.recordOutput(key, getDashboardValue(key, defaultValue));
   }
 }

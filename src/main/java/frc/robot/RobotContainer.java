@@ -18,7 +18,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -79,6 +81,10 @@ import frc.robot.util.SmartController;
 import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
+import frc.robot.util.miscTunables.TunablePose2d;
+import frc.robot.util.miscTunables.TunablePose3d;
+import frc.robot.util.miscTunables.TunableRotation3d;
+import frc.robot.util.miscTunables.TunableTranslation3d;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
@@ -367,6 +373,18 @@ public class RobotContainer {
     configureAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
+
+    TunablePose3d examplePose3d = new TunablePose3d("examplePose3d", new Pose3d());
+    TunablePose2d examplePose2d =
+        new TunablePose2d("examplePose2d", new Pose2d(0.79, 0.42, new Rotation2d(0.8)));
+    TunableTranslation3d exampleTranslation3d =
+        new TunableTranslation3d("exampleTranslation3d", new Translation3d());
+    TunableRotation3d exampleRotation3d =
+        new TunableRotation3d("exampleRotation3d", new Rotation3d());
+    exampleTranslation3d.get();
+    exampleRotation3d.get();
+    examplePose3d.get();
+    examplePose2d.get();
   }
 
   /**
