@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.littletonrobotics.junction.Logger;
 
 public class Polygon {
-  private final Translation2d[] vertices;
+  private Translation2d[] vertices;
   private final String name;
 
   public Polygon(String name, Translation2d... vertices) {
@@ -29,13 +29,8 @@ public class Polygon {
   }
 
   public void setCorners(Translation2d... newVertices) {
-    if (newVertices.length != vertices.length) {
-      throw new IllegalArgumentException(
-          "argument must have the same number of corners as the polygon");
-    }
-    for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = newVertices[i];
-    }
+    this.vertices = newVertices;
+    Logger.recordOutput("Utils/ZoneCalc/" + name, newVertices);
   }
 
   /** Checks if a single point is inside this polygon. */

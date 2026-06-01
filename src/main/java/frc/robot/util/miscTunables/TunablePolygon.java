@@ -62,18 +62,9 @@ public class TunablePolygon extends Tunable<Polygon> {
 
   @Override
   protected Polygon getDashboardValue(String key, Polygon defaultValue) {
-    ArrayList<Translation2d> corners = new ArrayList<>(translation2ds.size());
-    for (int i = 0; i < this.translation2ds.size(); i++) {
-      corners.add(
-          translation2ds
-              .get(i)
-              .getDashboardValue(
-                  key + "/corner" + i,
-                  i < defaultValue.getCorners().length
-                      ? defaultValue.getCorners()[i]
-                      : new Translation2d()));
-    }
-    return new Polygon(key, corners.toArray(new Translation2d[0]));
+    defaultValue.setCorners(
+        translation2ds.stream().map(TunableTranslation2d::get).toArray(Translation2d[]::new));
+    return defaultValue;
   }
 
   @Override
