@@ -17,12 +17,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
@@ -86,6 +88,7 @@ import frc.robot.util.miscTunables.TunablePose2d;
 import frc.robot.util.miscTunables.TunablePose3d;
 import frc.robot.util.miscTunables.TunableRotation3d;
 import frc.robot.util.miscTunables.TunableTranslation3d;
+import frc.robot.util.miscTunables.profiledPID.TunableProfiledPIDController;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
 import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
@@ -376,6 +379,27 @@ public class RobotContainer {
     configureButtonBindings();
 
     TunablePose3d examplePose3d = new TunablePose3d("examplePose3d", new Pose3d());
+    TunableProfiledPIDController exampleController =
+        new TunableProfiledPIDController(
+            "exampleController",
+            new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(1, 1), 0.02),
+            (value) ->
+                System.out.println(
+                    "Controller changed: \nP: "
+                        + value.getP()
+                        + "\nI: "
+                        + value.getI()
+                        + "\nD: "
+                        + value.getD()
+                        + "\nMaxVel: "
+                        + value.getConstraints().maxVelocity
+                        + "\nMaxAccel: "
+                        + value.getConstraints().maxAcceleration
+                        + "\nGoal: "
+                        + value.getGoal().position
+                        + "\nTolerance: "
+                        + value.getPositionTolerance()));
+
     TunablePolygon examplePolygon =
         new TunablePolygon(
             "examplePolygon",

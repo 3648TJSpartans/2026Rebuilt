@@ -8,6 +8,7 @@ import static frc.robot.util.TuningUpdater.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -37,6 +38,19 @@ public class TunableBoolean extends Tunable<Boolean> implements BooleanSupplier 
 
   public TunableBoolean(String dashboardKey, Boolean defaultValue, Runnable update) {
     super(dashboardKey, defaultValue, update);
+  }
+
+  public TunableBoolean(
+      String dashboardKey, Boolean defaultValue, Consumer<Boolean> updateConsumer) {
+    super(dashboardKey, defaultValue, updateConsumer);
+  }
+
+  public TunableBoolean(
+      String dashboardKey,
+      Boolean defaultValue,
+      Runnable update,
+      Consumer<Boolean> updateConsumer) {
+    super(dashboardKey, defaultValue, update, updateConsumer);
   }
 
   public boolean getAsBoolean() {

@@ -3,6 +3,7 @@ package frc.robot.util;
 import static frc.robot.util.TuningUpdater.*;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class Tunable<E> implements Supplier<E> {
@@ -11,6 +12,7 @@ public abstract class Tunable<E> implements Supplier<E> {
   private E defaultValue;
   private E lastHasChangedValue = defaultValue;
   private final Optional<Runnable> update;
+  private final Optional<Consumer<E>> updateConsumer;
 
   /**
    * Create a new TunableNumber
@@ -20,6 +22,7 @@ public abstract class Tunable<E> implements Supplier<E> {
   public Tunable(String dashboardKey) {
     this.key = TABLE_KEY + "/" + dashboardKey;
     this.update = Optional.empty();
+    this.updateConsumer = Optional.empty();
   }
 
   /**
@@ -37,6 +40,23 @@ public abstract class Tunable<E> implements Supplier<E> {
     this.key = TABLE_KEY + "/" + dashboardKey;
     setDefault(defaultValue);
     this.update = Optional.of(update);
+    this.updateConsumer = Optional.empty();
+    TuningUpdater.addAutoUpdater(this);
+  }
+
+  public Tunable(String dashboardKey, E defaultValue, Consumer<E> updateConsumer) {
+    this.key = TABLE_KEY + "/" + dashboardKey;
+    setDefault(defaultValue);
+    this.update = Optional.empty();
+    this.updateConsumer = Optional.of(updateConsumer);
+    TuningUpdater.addAutoUpdater(this);
+  }
+
+  public Tunable(String dashboardKey, E defaultValue, Runnable update, Consumer<E> updateConsumer) {
+    this.key = TABLE_KEY + "/" + dashboardKey;
+    setDefault(defaultValue);
+    this.update = Optional.of(update);
+    this.updateConsumer = Optional.of(updateConsumer);
     TuningUpdater.addAutoUpdater(this);
   }
 
@@ -78,8 +98,13 @@ public abstract class Tunable<E> implements Supplier<E> {
   }
 
   public final void update() {
-    if (hasChanged() && update.isPresent()) {
-      update.get().run();
+    if (hasChanged()) {
+      if (update.isPresent()) {
+        update.get().run();
+      }
+      if (updateConsumer.isPresent()) {
+        updateConsumer.get().accept(lastHasChangedValue);
+      }
     }
   }
 
