@@ -17,13 +17,21 @@ public class Polygon {
     Logger.recordOutput("Utils/ZoneCalc/" + name, out.toArray(new Translation2d[0]));
   }
 
+  public Polygon(Translation2d... vertices) {
+    this.name = "Generic Polygon";
+    this.vertices = vertices;
+    ArrayList<Translation2d> out = new ArrayList<>(Arrays.asList(vertices));
+    out.add(vertices[0]);
+  }
+
   public Translation2d[] getCorners() {
     return vertices;
   }
 
   public void setCorners(Translation2d... newVertices) {
     if (newVertices.length != vertices.length) {
-      throw new IllegalArgumentException("argument must have the same number of corners as the polygon");
+      throw new IllegalArgumentException(
+          "argument must have the same number of corners as the polygon");
     }
     for (int i = 0; i < vertices.length; i++) {
       vertices[i] = newVertices[i];
@@ -137,5 +145,25 @@ public class Polygon {
 
   public String getName() {
     return name;
+  }
+
+  public boolean equals(Object other) {
+    if (other instanceof Polygon otherPolygon) {
+      Translation2d[] thisCorners = this.getCorners();
+      Translation2d[] otherCorners = otherPolygon.getCorners();
+
+      if (thisCorners.length != otherCorners.length) {
+        return false;
+      }
+
+      for (int i = 0; i < thisCorners.length; i++) {
+        if (!thisCorners[i].equals(otherCorners[i])) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+    return false;
   }
 }

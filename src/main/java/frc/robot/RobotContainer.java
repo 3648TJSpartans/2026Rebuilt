@@ -81,6 +81,7 @@ import frc.robot.util.SmartController;
 import frc.robot.util.TunableBoolean;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.TuningUpdater;
+import frc.robot.util.miscTunables.TunablePolygon;
 import frc.robot.util.miscTunables.TunablePose2d;
 import frc.robot.util.miscTunables.TunablePose3d;
 import frc.robot.util.miscTunables.TunableRotation3d;
@@ -375,8 +376,21 @@ public class RobotContainer {
     configureButtonBindings();
 
     TunablePose3d examplePose3d = new TunablePose3d("examplePose3d", new Pose3d());
+    TunablePolygon examplePolygon =
+        new TunablePolygon(
+            "examplePolygon",
+            new Polygon(
+                "defaultPolygon",
+                new Translation2d(0, 0),
+                new Translation2d(1, 0),
+                new Translation2d(1, 1),
+                new Translation2d(0, 1)),
+            () -> System.out.println("Polygon changed"));
     TunablePose2d examplePose2d =
-        new TunablePose2d("examplePose2d", new Pose2d(0.79, 0.42, new Rotation2d(0.8)));
+        new TunablePose2d(
+            "examplePose2d",
+            new Pose2d(0.79, 0.42, new Rotation2d(0.8)),
+            () -> System.out.println("Example pose 2d changed."));
     TunableTranslation3d exampleTranslation3d =
         new TunableTranslation3d("exampleTranslation3d", new Translation3d());
     TunableRotation3d exampleRotation3d =
