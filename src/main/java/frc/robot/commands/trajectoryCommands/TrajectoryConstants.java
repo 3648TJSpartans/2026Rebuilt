@@ -80,7 +80,7 @@ public class TrajectoryConstants {
 
   public static final TunableNumber[] hangTimeMatrix =
       new TunableNumber[] {
-        new TunableNumber("Trajectory/.5m/hangTime", 1.0),
+        new TunableNumber("Trajectory/0m/hangTime", 1.0),
         new TunableNumber("Trajectory/.5m/hangTime", 1.0),
         new TunableNumber("Trajectory/1.0m/hangTime", 1.1),
         new TunableNumber("Trajectory/1.5m/hangTime", 1.2),

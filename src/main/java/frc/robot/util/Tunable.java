@@ -2,7 +2,9 @@ package frc.robot.util;
 
 import static frc.robot.util.TuningUpdater.*;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -13,6 +15,7 @@ public abstract class Tunable<E> implements Supplier<E> {
   private E lastHasChangedValue = defaultValue;
   private final Optional<Runnable> update;
   private final Optional<Consumer<E>> updateConsumer;
+  private static final Set<String> usedKeys = new HashSet<String>();
 
   /**
    * Create a new TunableNumber
@@ -23,6 +26,7 @@ public abstract class Tunable<E> implements Supplier<E> {
     this.key = TABLE_KEY + "/" + dashboardKey;
     this.update = Optional.empty();
     this.updateConsumer = Optional.empty();
+    checkKey(this.key);
   }
 
   /**
@@ -42,6 +46,7 @@ public abstract class Tunable<E> implements Supplier<E> {
     this.update = Optional.of(update);
     this.updateConsumer = Optional.empty();
     TuningUpdater.addAutoUpdater(this);
+    checkKey(this.key);
   }
 
   public Tunable(String dashboardKey, E defaultValue, Consumer<E> updateConsumer) {
@@ -50,6 +55,7 @@ public abstract class Tunable<E> implements Supplier<E> {
     this.update = Optional.empty();
     this.updateConsumer = Optional.of(updateConsumer);
     TuningUpdater.addAutoUpdater(this);
+    checkKey(this.key);
   }
 
   public Tunable(String dashboardKey, E defaultValue, Runnable update, Consumer<E> updateConsumer) {
@@ -58,6 +64,14 @@ public abstract class Tunable<E> implements Supplier<E> {
     this.update = Optional.of(update);
     this.updateConsumer = Optional.of(updateConsumer);
     TuningUpdater.addAutoUpdater(this);
+    checkKey(this.key);
+  }
+
+  private final void checkKey(String key) {
+    if (usedKeys.contains(key)) {
+      throw new IllegalArgumentException("Dashboard key " + key + " is already in use.");
+    }
+    usedKeys.add(key);
   }
 
   /**
@@ -99,12 +113,21 @@ public abstract class Tunable<E> implements Supplier<E> {
 
   public final void update() {
     if (hasChanged()) {
-      if (update.isPresent()) {
-        update.get().run();
-      }
       if (updateConsumer.isPresent()) {
         updateConsumer.get().accept(lastHasChangedValue);
       }
+      if (update.isPresent()) {
+        update.get().run();
+      }
+    }
+  }
+
+  public final void forceUpdate() {
+    if (updateConsumer.isPresent()) {
+      updateConsumer.get().accept(get());
+    }
+    if (update.isPresent()) {
+      update.get().run();
     }
   }
 
@@ -113,4 +136,9 @@ public abstract class Tunable<E> implements Supplier<E> {
   protected abstract E getDashboardValue(String key, E defaultValue);
 
   protected abstract void logValue(String key, boolean TUNING_MODE, E value, E defaultValue);
+
+  public final void kill() {
+    TuningUpdater.removeAutoUpdater(this);
+    usedKeys.remove(key);
+  }
 }

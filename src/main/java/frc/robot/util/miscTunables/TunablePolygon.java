@@ -55,7 +55,7 @@ public class TunablePolygon extends Tunable<Polygon> {
       }
     } else {
       for (int i = translation2ds.size() - 1; i >= corners.get(); i--) {
-        translation2ds.remove(i);
+        translation2ds.remove(i).kill();
       }
     }
   }
