@@ -26,6 +26,10 @@ public class TuningUpdater extends SubsystemBase {
     autoUpdaters.add(tunable);
   }
 
+  public static void removeAutoUpdater(Tunable<?> tunable) {
+    autoUpdaters.remove(tunable);
+  }
+
   @Override
   public void periodic() {
     TUNING_MODE = SmartDashboard.getBoolean(key, Constants.DEFAULT_TUNING_MODE);

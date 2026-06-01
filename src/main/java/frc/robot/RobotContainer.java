@@ -86,11 +86,10 @@ import frc.robot.util.TuningUpdater;
 import frc.robot.util.miscTunables.TunablePolygon;
 import frc.robot.util.miscTunables.TunablePose2d;
 import frc.robot.util.miscTunables.TunablePose3d;
+import frc.robot.util.miscTunables.TunableProfiledPIDController;
 import frc.robot.util.miscTunables.TunableRotation3d;
 import frc.robot.util.miscTunables.TunableTranslation3d;
-import frc.robot.util.miscTunables.profiledPID.TunableProfiledPIDController;
 import frc.robot.util.motorUtil.AbsEncoderSparkMax;
-import frc.robot.util.motorUtil.MotorIO;
 import frc.robot.util.motorUtil.RelEncoderSparkMax;
 import frc.robot.util.motorUtil.SparkSim;
 import frc.robot.util.shiftTracker.ShiftTracker;
@@ -399,7 +398,8 @@ public class RobotContainer {
                         + value.getGoal().position
                         + "\nTolerance: "
                         + value.getPositionTolerance()));
-
+    goToConstants.tunableDriveController.get();
+    goToConstants.tunableThetaController.get();
     TunablePolygon examplePolygon =
         new TunablePolygon(
             "examplePolygon",
@@ -521,18 +521,9 @@ public class RobotContainer {
     configureKicker();
     configureSmartShoot();
     configureTestBindings();
-    Command updateCommand =
-        new InstantCommand(
-                () -> {
-                  MotorIO.reconfigureMotors();
-                  goToConstants.configurePID();
-                })
-            .ignoringDisable(true);
-    m_copilotController.rightTrigger().onTrue(updateCommand);
     m_testController // TODO, this code cuases a huge loop overrun, there is an issue.
         .povUp()
         .onTrue(new InstantCommand(() -> LoggedAnalogEncoder.updateZeros()).ignoringDisable(true));
-    new Trigger(() -> DriverStation.isEnabled() && TuningUpdater.TUNING_MODE).onTrue(updateCommand);
     m_copilotController.povLeft().onTrue(Commands.runOnce(() -> setOverride(false)));
     m_copilotController.povRight().onTrue(Commands.runOnce(() -> setOverride(true)));
     m_copilotController.b().onTrue(Commands.runOnce(() -> m_shiftTracker.setTimeSlot(true)));

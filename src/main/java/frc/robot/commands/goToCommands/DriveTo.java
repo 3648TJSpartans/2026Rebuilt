@@ -16,7 +16,6 @@ public class DriveTo extends Command {
   private final Drive drive;
 
   public DriveTo(Drive drive, Supplier<Pose2d> robotPose, Supplier<Pose2d> targetPose) {
-    goToConstants.configurePID();
     this.robotPoseSupplier = robotPose;
     this.targetPoseSupplier = targetPose;
     this.drive = drive;
@@ -46,7 +45,8 @@ public class DriveTo extends Command {
     Translation2d displacement = targetPose.getTranslation().minus(robotPose.getTranslation());
     // Defines translational speed the robot should go. displacement.getNorm is the
     // magnitude of the displacement.
-    double driveSpeed = goToConstants.driveController.calculate(displacement.getNorm());
+    double driveSpeed =
+        goToConstants.tunableDriveController.get().calculate(displacement.getNorm());
     // sets velocity to the normalized displacement vector(direction of
     // displacement) timesd the desired drive speed.
     Translation2d setVelocity = displacement.div(displacement.getNorm()).times(driveSpeed);
@@ -55,7 +55,8 @@ public class DriveTo extends Command {
     // switch target pose and robot pose.
     Rotation2d thetaDisplacement = targetPose.getRotation().minus(robotPose.getRotation());
     // Gets PID for thera displacement
-    double thetaVelocity = goToConstants.thetaController.calculate(thetaDisplacement.getRadians());
+    double thetaVelocity =
+        goToConstants.tunableThetaController.get().calculate(thetaDisplacement.getRadians());
     // runs velocities
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -72,7 +73,8 @@ public class DriveTo extends Command {
   }
 
   public boolean atGoal() {
-    return goToConstants.driveController.atGoal() && goToConstants.thetaController.atGoal();
+    return goToConstants.tunableDriveController.get().atGoal()
+        && goToConstants.tunableThetaController.get().atGoal();
   }
 
   @Override
