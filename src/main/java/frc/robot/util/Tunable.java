@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/*
+ * Concept inspired by mechanical advantage.
+ */
 public abstract class Tunable<E> implements Supplier<E> {
 
   private String key;
