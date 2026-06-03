@@ -19,13 +19,13 @@ public class DriveForwardTy extends Command {
   @Override
   public void execute() {
     double targetTy = 23 - m_ty.get();
-    double targetSpeed = -goToConstants.driveController.calculate(targetTy);
+    double targetSpeed = -goToConstants.tunableDriveController.get().calculate(targetTy);
     m_drive.runVelocity(new ChassisSpeeds(targetSpeed, 0.0, 0.0));
   }
 
   @Override
   public boolean isFinished() {
-    return goToConstants.driveController.atGoal();
+    return goToConstants.tunableDriveController.get().atGoal();
   }
 
   @Override

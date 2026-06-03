@@ -14,7 +14,7 @@ public class LoggedAnalogEncoder {
   private final double convFactor;
 
   public LoggedAnalogEncoder(String name, int index, double convFactor, double zero) {
-    tunableZero = new TunableNumber(name + "/zeroOffset", zero);
+    tunableZero = new TunableNumber(name + "/zeroOffset", zero, this::updateZero);
     this.name = name;
     this.convFactor = convFactor;
     this.index = index;

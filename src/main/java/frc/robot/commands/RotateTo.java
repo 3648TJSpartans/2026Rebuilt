@@ -27,7 +27,7 @@ public class RotateTo extends Command {
   public void execute() {
     // Calculate the rotation displacement using our theta controller
     double rotationDisplacement =
-        goToConstants.thetaController.calculate(Math.toRadians(-targetRotation.get()));
+        goToConstants.tunableThetaController.get().calculate(Math.toRadians(-targetRotation.get()));
     ChassisSpeeds speeds = new ChassisSpeeds(0, 0, rotationDisplacement);
     drive.runVelocity(speeds);
 
@@ -38,7 +38,7 @@ public class RotateTo extends Command {
 
   @Override
   public boolean isFinished() {
-    return goToConstants.thetaController.atGoal();
+    return goToConstants.tunableThetaController.get().atGoal();
   }
 
   @Override
