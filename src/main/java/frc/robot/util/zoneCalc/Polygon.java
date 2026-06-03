@@ -20,17 +20,17 @@ public class Polygon {
   public Polygon(Translation2d... vertices) {
     this.name = "Generic Polygon";
     this.vertices = vertices;
-    ArrayList<Translation2d> out = new ArrayList<>(Arrays.asList(vertices));
-    out.add(vertices[0]);
   }
 
   public Translation2d[] getCorners() {
     return vertices;
   }
 
-  public void setCorners(Translation2d... newVertices) {
-    this.vertices = newVertices;
-    Logger.recordOutput("Utils/ZoneCalc/" + name, newVertices);
+  public void setCorners(Translation2d... vertices) {
+    this.vertices = vertices;
+    ArrayList<Translation2d> out = new ArrayList<>(Arrays.asList(vertices));
+    out.add(vertices[0]);
+    Logger.recordOutput("Utils/ZoneCalc/" + name, out.toArray(new Translation2d[0]));
   }
 
   /** Checks if a single point is inside this polygon. */
