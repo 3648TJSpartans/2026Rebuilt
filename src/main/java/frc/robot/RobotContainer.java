@@ -177,8 +177,8 @@ public class RobotContainer {
               //   Logger.recordOutput("Debug/USB/warning", "N/A");
               //   return Status.OK;
               // }
-              // Logger.recordOutput("Debug/USB/warning", "not found");
-              return Status.ERROR;
+              Logger.recordOutput("Debug/USB/warning", "not implemented");
+              return Status.WARNING;
             },
             "USB",
             5);
