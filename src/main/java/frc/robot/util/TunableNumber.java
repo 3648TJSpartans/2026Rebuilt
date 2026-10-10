@@ -29,8 +29,8 @@ public class TunableNumber extends Tunable<Double> implements DoubleSupplier {
   /**
    * Create a new TunableNumber with the default value
    *
-   * @param dashboardKey Key on dashboard
-   * @param defaultValue Default value
+   * @param dashboardKey Slash-delimited key path on dashboard/networktables
+   * @param defaultValue Default value number is instantiated with.
    */
   public TunableNumber(String dashboardKey, double defaultValue) {
     super(dashboardKey, defaultValue);
