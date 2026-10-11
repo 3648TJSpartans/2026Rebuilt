@@ -144,4 +144,11 @@ public abstract class Tunable<E> implements Supplier<E> {
     TuningUpdater.removeAutoUpdater(this);
     usedKeys.remove(key);
   }
+
+  @Override
+  // This is used for an efficient way to store Tunables in a HashSet. Note, they must be unique by
+  // their key
+  public int hashCode() {
+    return key.hashCode();
+  }
 }
