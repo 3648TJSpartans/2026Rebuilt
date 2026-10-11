@@ -2,13 +2,16 @@ package frc.robot.util.motorUtil;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.statusableUtils.Statusable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class MotorIO extends SubsystemBase implements Statusable {
 
-  private static Set<MotorIO> m_motorSet = new HashSet<MotorIO>();
+  private static List<MotorIO> m_motorSet =
+      new ArrayList<MotorIO>(
+          20); // This initial capacity number isn't so important, but aim for it to be roughly the
+               // amount of motors on the robot. No problem if it isn't.
 
   private final String name;
   private double m_speedSetpoint;
