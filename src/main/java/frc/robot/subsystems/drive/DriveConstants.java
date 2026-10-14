@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.util.TunableNumber;
 import frc.robot.util.miscTunables.TunableInteger;
 
 public class DriveConstants {
@@ -30,7 +31,11 @@ public class DriveConstants {
   public static final double fieldRelativeMaxInputPercent = 1; // value between 0+ and 1,
   // allowing control maximum
   // input for field relative
-  public static final double robotRelativeMaxInputPercent = 0.85; // value between 0+ and 1,
+  public static final TunableNumber robotRelativeMaxTranslationPercent =
+    new TunableNumber("Drive/RobotRelativeMaxTranslationPercent", 1); // value between 0+ and 1,
+  public static TunableNumber robotRelativeMaxRotationPercent =
+      new TunableNumber("Drive/RobotRelativeMaxRotationPercent", 0.6); // value between 0+ and 1,
+
   // allowing control
   // maximum input for robot
   // relative
@@ -115,7 +120,7 @@ public class DriveConstants {
   public static final double backRightExpectedZero =
       switch (chasNum) {
         case 0 -> 0.0;
-        case 1 -> 1.59;
+        case 1 -> 3.91;
         case 2 -> 0.217;
         case 3 -> 1.71;
         default -> 0.0;
