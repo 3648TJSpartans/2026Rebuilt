@@ -30,7 +30,7 @@ public class DriveConstants {
   public static final double fieldRelativeMaxInputPercent = 1; // value between 0+ and 1,
   // allowing control maximum
   // input for field relative
-  public static final double robotRelativeMaxInputPercent = .5; // value between 0+ and 1,
+  public static final double robotRelativeMaxInputPercent = 0.85; // value between 0+ and 1,
   // allowing control
   // maximum input for robot
   // relative
@@ -61,7 +61,7 @@ public class DriveConstants {
   /*
    * Chassis Numbers
    * 0- Tuning
-   * 1- Walter
+   * 1- Walter (comp)
    * 2- Jebediah
    * 3- Charles
    *

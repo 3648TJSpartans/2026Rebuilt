@@ -25,6 +25,7 @@ public class TrajectoryConstants {
       new TunableNumber("Trajectory/preshotDelay", 0.0);
   public static final TunableNumber postshotDelay =
       new TunableNumber("Trajectory/postshotDelay", 3.0);
+// Determines the max speed in m/s that the robot can move while shooting
   public static final TunableNumber translationalSpeedThreshold =
       new TunableNumber("Trajectory/translationalSpeedThreshold", 1.0);
   public static final double allianceFeedingCutoffTime = 0.0;
@@ -103,15 +104,15 @@ public class TrajectoryConstants {
       new TunableNumber[] {
         new TunableNumber("Trajectory/positionAddMatrix/.0m/velocity", -.4),
         new TunableNumber("Trajectory/positionAddMatrix/.5m/velocity", -.4),
-        new TunableNumber("Trajectory/positionAddMatrix/1.0m/velocity", -.4),
+        new TunableNumber("Trajectory/positionAddMatrix/1.0m/velocity", -.6),
         new TunableNumber("Trajectory/positionAddMatrix/1.5m/velocity", -.45),
-        new TunableNumber("Trajectory/positionAddMatrix/2.0m/velocity", -.55),
-        new TunableNumber("Trajectory/positionAddMatrix/2.5m/velocity", -.5),
+        new TunableNumber("Trajectory/positionAddMatrix/2.0m/velocity", -.3),
+        new TunableNumber("Trajectory/positionAddMatrix/2.5m/velocity", -.3),
         new TunableNumber("Trajectory/positionAddMatrix/3.0m/velocity", -.2),
         new TunableNumber("Trajectory/positionAddMatrix/3.5m/velocity", 0),
         new TunableNumber("Trajectory/positionAddMatrix/4.0m/velocity", 0),
-        new TunableNumber("Trajectory/positionAddMatrix/4.5m/velocity", 0),
-        new TunableNumber("Trajectory/positionAddMatrix/5.0m/velocity", -.75),
+        new TunableNumber("Trajectory/positionAddMatrix/4.5m/velocity", .1),
+        new TunableNumber("Trajectory/positionAddMatrix/5.0m/velocity", .3),
         new TunableNumber("Trajectory/positionAddMatrix/5.5m/velocity", -.25),
         new TunableNumber("Trajectory/positionAddMatrix/6.0m/velocity", -.25),
         new TunableNumber("Trajectory/positionAddMatrix/6.5m/velocity", -.25),
