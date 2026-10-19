@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Status;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.statusableUtils.Statusable;
 import java.util.LinkedList;
 import java.util.List;
@@ -132,7 +133,8 @@ public class Vision extends SubsystemBase implements Statusable {
                 || observation.pose().getX() < 0.0
                 || observation.pose().getX() > aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
-                || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                || observation.pose().getY() > aprilTagLayout.getFieldWidth()
+                || observation.type() == PoseObservationType.MEGATAG_2; // Temporary until we figure out issue
 
         // Add pose to log
         robotPoses.add(observation.pose());

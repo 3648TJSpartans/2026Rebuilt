@@ -89,11 +89,11 @@ public class DriveCommands {
             drive.runVelocity(
                 new ChassisSpeeds(
                     MathUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent,
+                        * DriveConstants.robotRelativeMaxTranslationPercent.getAsDouble() * DriveConstants.maxSpeedMetersPerSec,
                     MathUtil.applyDeadband(ySupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent,
+                        * DriveConstants.robotRelativeMaxTranslationPercent.getAsDouble() * DriveConstants.maxSpeedMetersPerSec,
                     MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent));
+                        * DriveConstants.robotRelativeMaxRotationPercent.getAsDouble() * drive.getMaxAngularSpeedRadPerSec()));
           } else {
             // Get linear velocity
             double slowedMultiplier =
@@ -144,11 +144,11 @@ public class DriveCommands {
             drive.runVelocity(
                 new ChassisSpeeds(
                     MathUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent,
+                        * DriveConstants.robotRelativeMaxTranslationPercent.getAsDouble() * DriveConstants.maxSpeedMetersPerSec,
                     MathUtil.applyDeadband(ySupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent,
+                        * DriveConstants.robotRelativeMaxTranslationPercent.getAsDouble() * DriveConstants.maxSpeedMetersPerSec,
                     MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND)
-                        * DriveConstants.robotRelativeMaxInputPercent));
+                        * DriveConstants.robotRelativeMaxRotationPercent.getAsDouble() * drive.getMaxAngularSpeedRadPerSec()));
           } else {
             // Get linear velocity
             Translation2d linearVelocity =
