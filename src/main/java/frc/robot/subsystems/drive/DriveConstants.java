@@ -32,7 +32,7 @@ public class DriveConstants {
   // allowing control maximum
   // input for field relative
   public static final TunableNumber robotRelativeMaxTranslationPercent =
-    new TunableNumber("Drive/RobotRelativeMaxTranslationPercent", 1); // value between 0+ and 1,
+    new TunableNumber("Drive/RobotRelativeMaxTranslationPercent", 0.6); // value between 0+ and 1,
   public static TunableNumber robotRelativeMaxRotationPercent =
       new TunableNumber("Drive/RobotRelativeMaxRotationPercent", 0.6); // value between 0+ and 1,
 

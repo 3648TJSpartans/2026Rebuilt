@@ -31,8 +31,8 @@ public class TrajectoryConstants {
   public static final double allianceFeedingCutoffTime = 0.0;
   public static final int movingtargetIts = 2;
   public static final TunableNumber headUpShootSpeed =
-      new TunableNumber("Trajectory/headUpShot/shootSpeed", 5.75);
-  public static final Rotation2d headUpShotRobotAngle = new Rotation2d(-Math.PI / 2);
+      new TunableNumber("Trajectory/headUpShot/shootSpeed", 5);
+  public static final Rotation2d headUpShotRobotAngle = new Rotation2d(Math.PI); // Previously -pi/2
   public static final TunableNumber headUpHoodAngle =
       new TunableNumber(
           "Trajectory/headUpShot/shootAngle", Units.degreesToRadians(HoodConstants.minAngle.get()));
