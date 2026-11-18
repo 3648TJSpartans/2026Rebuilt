@@ -28,13 +28,14 @@ public class DriveConstants {
 
   public static final NavXComType navXComType = NavXComType.kUSB1;
 
-  public static final double fieldRelativeMaxInputPercent = 1; // value between 0+ and 1,
+  public static final TunableNumber fieldRelativeMaxInputPercent = new TunableNumber("Drive/FieldRelativeMaxInputPercent", 1.0); // value between 0+ and 1,
   // allowing control maximum
   // input for field relative
   public static final TunableNumber robotRelativeMaxTranslationPercent =
-    new TunableNumber("Drive/RobotRelativeMaxTranslationPercent", 1); // value between 0+ and 1,
+    new TunableNumber("Drive/RobotRelativeMaxTranslationPercent", 0.6); // value between 0+ and 1,
   public static TunableNumber robotRelativeMaxRotationPercent =
       new TunableNumber("Drive/RobotRelativeMaxRotationPercent", 0.6); // value between 0+ and 1,
+
 
   // allowing control
   // maximum input for robot

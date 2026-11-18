@@ -65,7 +65,7 @@ public class DriveCommands {
 
     // Square magnitude for more precise control
     linearMagnitude =
-        linearMagnitude * linearMagnitude * DriveConstants.fieldRelativeMaxInputPercent;
+        linearMagnitude * linearMagnitude * DriveConstants.fieldRelativeMaxInputPercent.getAsDouble();
 
     // Return new linear velocity
     return new Pose2d(new Translation2d(), linearDirection)
@@ -106,7 +106,7 @@ public class DriveCommands {
 
             // Square rotation value for more precise control
             omega =
-                Math.copySign(omega * omega, omega) * DriveConstants.fieldRelativeMaxInputPercent;
+                Math.copySign(omega * omega, omega) * DriveConstants.fieldRelativeMaxInputPercent.getAsDouble();
 
             // Convert to field relative speeds & send command
             ChassisSpeeds speeds =
